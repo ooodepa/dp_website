@@ -1,0 +1,31 @@
+.breadcrumbs {
+  background-color: #f7f7f7;
+  color: #8e8e8e;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.breadcrumbs ol {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+}
+
+.breadcrumbs ol li {
+  list-style-type: none;
+  display: inline-block;
+  display: flex;
+}
+
+.breadcrumbs ol li::before {
+  content: '/';
+}
+
+.breadcrumbs ol li a {
+  display: block;
+  padding-left: 4px;
+  padding-right: 4px;
+  text-decoration: none;
+  color: #06c;
+}
