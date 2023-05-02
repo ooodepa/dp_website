@@ -6,6 +6,7 @@ export default class HttpException extends Error {
     const message = `${method} ${response.url} ${response.status}`;
     super(message);
     this.name = this.constructor.name;
+    // eslint-disable-next-line no-console
     console.log(message);
   }
 }
