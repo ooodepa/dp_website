@@ -65,7 +65,9 @@ export default function AppNav() {
           {menu.map(element => {
             return (
               <li key={element.url}>
-                <Link href={element.url}>{element.title}</Link>
+                <Link href={element.url} onClick={event => setIsOpen(!isOpen)}>
+                  {element.title}
+                </Link>
               </li>
             );
           })}
