@@ -1,0 +1,126 @@
+@media (min-width: 1023px) {
+  .nav__menu_icon,
+  .nav__menu_no_icon {
+    display: none;
+  }
+
+  .nav__wrapper {
+    background-color: white;
+    height: 64px;
+    border-bottom: 1px solid #d3d3d3;
+  }
+
+  .nav__wrapper ul {
+    margin: 0;
+    padding: 0;
+    display: flex !important;
+    height: 100%;
+  }
+
+  .nav__wrapper ul li {
+    list-style-type: none;
+  }
+
+  .nav__wrapper ul li a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 8px;
+  }
+
+  .nav__wrapper ul li a:hover {
+    background-color: var(--site-color);
+    color: white;
+  }
+
+  .nav__container {
+    height: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+
+  .nav__wrapper_inner {
+    height: 100%;
+    float: left;
+  }
+
+  .nav__image_block {
+    float: left;
+    height: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .nav__image_block:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .nav__image_block img {
+    height: calc(100% - 2 * 4px);
+    padding: 4px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .nav__wrapper_inner {
+    display: flex;
+    justify-content: space-between;
+    height: 64px;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .nav__menu_no_icon {
+    width: 64px;
+  }
+
+  .nav__menu_icon {
+    width: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .nav__menu_icon svg {
+    width: 32px;
+    color: var(--site-color);
+  }
+
+  .nav__menu_icon:hover {
+    background-color: var(--site-color);
+  }
+
+  .nav__menu_icon:hover svg {
+    color: white;
+  }
+
+  .nav__image_block img {
+    padding: 8px;
+    height: calc(100% - 2 * 8px);
+  }
+
+  .nav__image_block:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .nav__wrapper ul {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    border-bottom: 1px solid #e3e3e3;
+  }
+
+  .nav__wrapper ul li {
+    list-style-type: none;
+  }
+
+  .nav__wrapper ul li a {
+    display: block;
+    text-align: center;
+    padding: 16px 0;
+  }
+
+  .nav__wrapper ul li a:hover {
+    background-color: var(--site-color);
+    color: white;
+  }
+}

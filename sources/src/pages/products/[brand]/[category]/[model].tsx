@@ -1,13 +1,22 @@
 import { useRouter } from 'next/router';
 
-import ItemEntity from '@/dto/item/ItemEntity';
-import ItemBrandEntity from '@/dto/item-brand/ItemBrandDto';
-import ItemCategory from '@/dto/item-category/ItemCategoryDto';
+import Item from '@/components/Item/Item';
+import ItemByIdDto from '@/dto/item/ItemByIdDto';
+import AppHead from '@/components/AppHead/AppHead';
+import AppTitle from '@/components/AppTitle/AppTitle';
+import AppWrapper from '@/components/AppWrapper/AppWrapper';
+import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
-import Image from 'next/image';
+import AppKeywords from '@/components/AppKeywords/AppKeywords';
+import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
+import AppDescription from '@/components/AppDescription/AppDescription';
+import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
+import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
+import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 
 interface IProps {
-  item: ItemEntity;
+  item: ItemByIdDto;
+  itemCharacteristics: ItemCharacteristicsDto[];
 }
 
 export default function ModelPage(props: IProps) {
@@ -15,35 +24,29 @@ export default function ModelPage(props: IProps) {
   const { brand, category, model } = route.query;
 
   return (
-    <div>
+    <AppWrapper>
+      <AppTitle title={props.item.dp_name} />
+      <AppDescription description={props.item.dp_seoDescription} />
+      <AppKeywords keywords={props.item.dp_seoKeywords} />
+      <AppHead />
       <Breadcrumbs />
-
-      <Image
-        src={props.item.dp_photoUrl}
-        alt=""
-        height={100}
-        width={100}
-        style={{
-          height: 'auto',
-          objectFit: 'contain',
-          position: 'relative',
-        }}
+      <Item
+        item={props.item}
+        itemCharacteristics={props.itemCharacteristics}
+        brand={`${brand}`}
+        category={`${category}`}
       />
-      {props.item.dp_name}
-    </div>
+    </AppWrapper>
   );
 }
 
 export async function getStaticProps(context: any) {
   const { model } = context.params;
 
-  const item: ItemEntity = await (
-    await fetch(
-      `${process.env.NEXT_JS__BACKEND_URL}/api/v1/items/model/${model}`,
-    )
-  ).json();
+  const item = await FetchItems.filterOneByModel(model);
+  const itemCharacteristics = await FetchItemCharacteristics.get();
 
-  const props: IProps = { item };
+  const props: IProps = { item, itemCharacteristics };
   return { props };
 }
 
@@ -56,17 +59,9 @@ interface IServerSideProps {
 }
 
 export async function getStaticPaths() {
-  const itemsCategories: ItemCategory[] = await (
-    await fetch(`${process.env.NEXT_JS__BACKEND_URL}/api/v1/item-categories`)
-  ).json();
-
-  const itemBrand: ItemBrandEntity[] = await (
-    await fetch(`${process.env.NEXT_JS__BACKEND_URL}/api/v1/item-brands`)
-  ).json();
-
-  const items: ItemEntity[] = await (
-    await fetch(`${process.env.NEXT_JS__BACKEND_URL}/api/v1/items`)
-  ).json();
+  const itemBrand = await FetchItemBrand.get();
+  const itemsCategories = await FetchItemCategories.get();
+  const items = await FetchItems.get();
 
   let paths: IServerSideProps[] = [];
 

@@ -1,0 +1,40 @@
+.posts {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.posts li {
+  list-style-type: none;
+  border: 1px solid lightgray;
+  width: 200px;
+  margin: 16px;
+  border-radius: 8px;
+}
+
+.posts li a {
+  display: block;
+  height: calc(100% - 2 * 8px);
+  min-height: 80px;
+  padding: 8px;
+}
+
+.posts li a:hover {
+  background-color: lightgrey;
+}
+
+.post__image_block {
+  display: flex;
+  justify-content: center;
+}
+
+.post__image_block svg {
+  height: 32px;
+}
+
+.post__title {
+  text-align: center;
+  font-weight: bolder;
+}

@@ -1,13 +1,12 @@
 .breadcrumbs {
-  background-color: #f7f7f7;
+  background-color: #f0f0f0;
   color: #8e8e8e;
   padding-top: 16px;
   padding-bottom: 16px;
 }
 
 .breadcrumbs ol {
-  max-width: 1024px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
   display: flex;
 }

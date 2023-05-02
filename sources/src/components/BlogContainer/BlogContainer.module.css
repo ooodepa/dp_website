@@ -1,0 +1,29 @@
+.app__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 800px) {
+  .app__container img {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 800px) {
+  .app__container img {
+    max-width: 480px;
+    float: left;
+    margin: 16px;
+    width: 100%;
+  }
+
+  .app__container ul {
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+}

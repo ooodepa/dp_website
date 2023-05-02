@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import styles from './Breadcrumbs.module.css';
+import AppContainer from '@/components/AppContainer/AppContainer';
 
 const convertBreadcrumb = (string: string) => {
   return string;
@@ -39,20 +40,22 @@ const Breadcrumbs = () => {
 
   return (
     <nav className={styles.breadcrumbs}>
-      <ol>
-        <li>
-          <Link href="/">home</Link>
-        </li>
-        {breadcrumbs.map((breadcrumb, i) => {
-          return (
-            <li key={breadcrumb.href}>
-              <Link href={breadcrumb.href}>
-                {convertBreadcrumb(breadcrumb.breadcrumb)}
-              </Link>
-            </li>
-          );
-        })}
-      </ol>
+      <AppContainer>
+        <ol>
+          <li>
+            <Link href="/">home</Link>
+          </li>
+          {breadcrumbs.map((breadcrumb, i) => {
+            return (
+              <li key={breadcrumb.href}>
+                <Link href={breadcrumb.href}>
+                  {convertBreadcrumb(breadcrumb.breadcrumb)}
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+      </AppContainer>
     </nav>
   );
 };

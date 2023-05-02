@@ -25,7 +25,7 @@ module.exports = {
   // jsxSingleQuote - нужно ли использовать одинарные кавычки для атрибутов JSX.
   jsxSingleQuote: false,
   // jsxBracketSameLine - располагать ли фигурные скобки в JSX на той же строке, что и оператор или на следующей строке.
-  jsxBracketSameLine: false,
+  // jsxBracketSameLine: false,
   // insertPragma - вставлять ли специальный комментарий в начало форматируемого файла,
   // указывающий, что этот файл форматируется с помощью Prettier.
   insertPragma: false,

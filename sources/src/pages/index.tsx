@@ -1,18 +1,35 @@
-import Head from 'next/head';
-import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
 
-export default function HomePage() {
+import ArticleDto from '@/dto/article/ArticleDto';
+import AppHead from '@/components/AppHead/AppHead';
+import AppTitle from '@/components/AppTitle/AppTitle';
+import AppWrapper from '@/components/AppWrapper/AppWrapper';
+import FetchArticles from '@/utils/FetchBackend/rest/api/article';
+import BlogContainer from '@/components/BlogContainer/BlogContainer';
+import AppDescription from '@/components/AppDescription/AppDescription';
+
+interface IProps {
+  article: ArticleDto;
+}
+
+export default function HomePage(props: IProps) {
   return (
-    <>
-      <Head>
-        <title>Главная</title>
-        <meta name="description" content="Главная" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main>
-        <Link href="/products">products</Link>
-      </main>
-    </>
+    <AppWrapper>
+      <AppTitle title="Главная" />
+      <AppDescription description="Главная" />
+      <AppHead />
+      <BlogContainer>
+        {props.article?.dp_text.split(/\\n+/).map((element, index) => {
+          return <ReactMarkdown key={index}>{element}</ReactMarkdown>;
+        })}
+      </BlogContainer>
+    </AppWrapper>
   );
+}
+
+export async function getStaticProps() {
+  const article = await FetchArticles.filterOneByUrl('index');
+
+  const props: IProps = { article };
+  return { props };
 }

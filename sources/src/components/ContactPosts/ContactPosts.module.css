@@ -1,0 +1,121 @@
+.helpers {
+  margin: 0;
+  padding: 0;
+}
+
+.helpers > li {
+  list-style-type: none;
+}
+
+.helper__title {
+  color: var(--site-color);
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.6em;
+}
+
+.helper__description {
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.phonesEmails {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.phonesEmails > li {
+  list-style-type: none;
+}
+
+.phonesEmails > li > a {
+  border: 1px solid var(--site-color);
+  background-color: var(--site-color);
+  color: white;
+  min-width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  margin: 8px;
+  border-radius: 8px;
+}
+
+.phonesEmails > li > a:hover {
+  background-color: white;
+  color: var(--site-color);
+}
+
+.socials {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.socials > li {
+  list-style-type: none;
+}
+
+.socials > li > a {
+  border: 1px solid var(--site-color);
+  background-color: var(--site-color);
+  color: white;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px;
+  border-radius: 12px;
+}
+
+.socials > li > a > svg {
+  width: 32px;
+}
+
+.social__skype {
+  background-color: #1583ce !important;
+  border-color: #1583ce !important;
+}
+
+.social__skype:hover {
+  background-color: white !important;
+  color: #1583ce !important;
+}
+
+.social__whatsapp {
+  background-color: #00e676 !important;
+  border-color: #00e676 !important;
+}
+
+.social__whatsapp:hover {
+  background-color: white !important;
+  color: #00e676 !important;
+}
+
+.social__viber {
+  background-color: #7360f1 !important;
+  border-color: #7360f1 !important;
+}
+
+.social__viber:hover {
+  background-color: white !important;
+  color: #7360f1 !important;
+}
+
+.social__telegram {
+  background-color: #23a0dd !important;
+  border-color: #23a0dd !important;
+}
+
+.social__telegram:hover {
+  background-color: white !important;
+  color: #23a0dd !important;
+}

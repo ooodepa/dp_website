@@ -1,0 +1,21 @@
+.item__image {
+  width: 100%;
+  height: 200px !important;
+  margin-bottom: 16px;
+}
+
+.item__table {
+  margin-bottom: 16px;
+  border-collapse: collapse;
+  margin: 0 auto;
+  margin-bottom: 16px;
+}
+
+.item__table td:first-child {
+  font-weight: bolder;
+}
+
+.item__table td {
+  border: 1px solid black;
+  padding: 4px;
+}
