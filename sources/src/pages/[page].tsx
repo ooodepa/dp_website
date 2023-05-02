@@ -81,11 +81,13 @@ export async function getStaticPaths() {
   let paths: IServerSideProps[] = [];
 
   articles.forEach(element => {
-    paths.push({
-      params: {
-        page: element.dp_urlSegment,
-      },
-    });
+    if (element.dp_urlSegment !== 'index') {
+      paths.push({
+        params: {
+          page: element.dp_urlSegment,
+        },
+      });
+    }
   });
 
   return {
