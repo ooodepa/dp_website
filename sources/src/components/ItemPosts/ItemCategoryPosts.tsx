@@ -23,17 +23,19 @@ export default function ItemPosts(props: IProps) {
                 <div className={styles.post__wrapper}>
                   <div className={styles.post__content}>
                     <div className={styles.post__image_block}>
-                      <Image
-                        src={element.dp_photoUrl}
-                        alt="нет картинки"
-                        height={100}
-                        width={100}
-                        style={{
-                          height: 'auto',
-                          objectFit: 'contain',
-                          position: 'relative',
-                        }}
-                      />
+                      {!element.dp_photoUrl ? 'нет картинки' : (
+                        <Image
+                          src={element.dp_photoUrl}
+                          alt=" "
+                          height={100}
+                          width={100}
+                          style={{
+                            height: 'auto',
+                            objectFit: 'contain',
+                            position: 'relative',
+                          }}
+                        />
+                      )}
                     </div>
                     <div className={styles.post__model}>{element.dp_model}</div>
                     <div className={styles.post__title}>{element.dp_name}</div>

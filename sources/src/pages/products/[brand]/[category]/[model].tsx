@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 
+import ItemDto from '@/dto/item/ItemDto';
 import Item from '@/components/Item/Item';
-import ItemByIdDto from '@/dto/item/ItemByIdDto';
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
@@ -15,7 +15,7 @@ import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristi
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 
 interface IProps {
-  item: ItemByIdDto;
+  item: ItemDto;
   itemCharacteristics: ItemCharacteristicsDto[];
 }
 

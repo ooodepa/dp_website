@@ -1,6 +1,5 @@
 import AppEnv from '@/AppEnv';
 import ItemDto from '@/dto/item/ItemDto';
-import ItemByIdDto from '@/dto/item/ItemByIdDto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 
 export default class FetchItems {
@@ -28,7 +27,7 @@ export default class FetchItems {
     const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/items/filter-one/model/${model}`;
     const response = await fetch(URL);
     if (response.status === 200) {
-      const json: ItemByIdDto = await response.json();
+      const json: ItemDto = await response.json();
       return json;
     }
     throw new HttpException('GET', response);

@@ -7,4 +7,7 @@ yarn add @fortawesome/free-solid-svg-icons
 yarn add @fortawesome/react-fontawesome
 yarn add @fortawesome/free-brands-svg-icons
 yarn add react-markdown
-yarn add next-sitemap
+yarn add -D next-sitemap
+yarn add -D @next/env
+yarn add xlsx
+yarn add sharp

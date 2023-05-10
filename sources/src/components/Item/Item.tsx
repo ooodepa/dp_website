@@ -2,12 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import styles from './Item.module.css';
-import ItemByIdDto from '@/dto/item/ItemByIdDto';
+import ItemDto from '@/dto/item/ItemDto';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
 
 interface IProps {
-  item: ItemByIdDto;
+  item: ItemDto;
   itemCharacteristics: ItemCharacteristicsDto[];
   brand: string;
   category: string;
@@ -17,18 +17,20 @@ export default function Item(props: IProps) {
   return (
     <AppContainer>
       <h1>{props.item.dp_name}</h1>
-      <Image
-        src={props.item.dp_photoUrl}
-        alt=""
-        height={100}
-        width={100}
-        style={{
-          height: 'auto',
-          objectFit: 'contain',
-          position: 'relative',
-        }}
-        className={styles.item__image}
-      />
+      {!props.item.dp_photoUrl ? null : (
+        <Image
+          src={props.item.dp_photoUrl}
+          alt=" "
+          height={100}
+          width={100}
+          style={{
+            height: 'auto',
+            objectFit: 'contain',
+            position: 'relative',
+          }}
+          className={styles.item__image}
+        />
+      )}
       <table className={styles.item__table}>
         <tbody>
           <tr>
@@ -82,7 +84,7 @@ export default function Item(props: IProps) {
               Дополнительные характеристики:
             </td>
           </tr>
-          {props.item.dp_itemCharecteristics.length !== 0 ? null : (
+          {!props.item?.dp_itemCharacteristics?.length ? null : (
             <tr>
               <td
                 colSpan={2}
@@ -91,7 +93,7 @@ export default function Item(props: IProps) {
               </td>
             </tr>
           )}
-          {props.item.dp_itemCharecteristics.map(element => {
+          {props.item?.dp_itemCharacteristics?.map(element => {
             let characteristicName = '';
             for (let i = 0; i < props.itemCharacteristics.length; ++i) {
               if (

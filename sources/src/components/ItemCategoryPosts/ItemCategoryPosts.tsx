@@ -23,17 +23,21 @@ export default function ItemCategoryPosts(props: IProps) {
             <li key={element.dp_id}>
               <Link href={`/products/${props.brand}/${element.dp_urlSegment}`}>
                 <div className={styles.post__image_block}>
-                  <Image
-                    src={element.dp_photoUrl}
-                    alt="нет картинки"
-                    height={100}
-                    width={100}
-                    style={{
-                      height: 'auto',
-                      objectFit: 'contain',
-                      position: 'relative',
-                    }}
-                  />
+                  {!element.dp_photoUrl ? (
+                    'нет картинки'
+                  ) : (
+                    <Image
+                      src={element.dp_photoUrl}
+                      alt=" "
+                      height={100}
+                      width={100}
+                      style={{
+                        height: 'auto',
+                        objectFit: 'contain',
+                        position: 'relative',
+                      }}
+                    />
+                  )}
                 </div>
                 <div className={styles.post__title}>{element.dp_name}</div>
               </Link>

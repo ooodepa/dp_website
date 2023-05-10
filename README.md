@@ -5,11 +5,10 @@ cd sources
 cp .env.example .env
 yarn
 yarn build
-yarn export
 yarn serve
 ```
 
-Open: http://localhost:3000
+Open: http://localhost
 
 Result: `sources/out`
 

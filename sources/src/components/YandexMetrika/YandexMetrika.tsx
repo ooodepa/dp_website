@@ -26,6 +26,8 @@ export default function YandexMetrika() {
         <div>
           <Image
             src={`https://mc.yandex.ru/watch/${AppEnv.NEXT_PUBLIC__SITE_YANDEX_METRIKA_COUNTER}`}
+            width={0}
+            height={0}
             style={{ position: 'absolute', left: '-9999px' }}
             alt=""
           />

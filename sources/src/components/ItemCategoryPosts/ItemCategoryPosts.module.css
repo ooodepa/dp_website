@@ -24,12 +24,21 @@
   background-color: lightgrey;
 }
 
-.post__image_block img {
+.post__image_block {
+  border: 1px solid lightgray;
+  height: 72px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+a:hover .post__image_block {
+  border: 1px solid white;
+}
+
+.post__image_block img {
   width: 100%;
-  height: 72px !important;
+  height: 100% !important;
 }
 
 .post__title {
