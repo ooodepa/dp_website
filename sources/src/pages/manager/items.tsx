@@ -10,6 +10,7 @@ import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 import BrowserDownloadFileController from '@/package/BrowserDownloadFileController';
+import AppManagerTableView from '@/components/AppManagerTableView/AppManagerTableView';
 
 export default function ManagerItemsPage() {
   const [isAdmin, setIsAdmin] = useState(true);
@@ -231,135 +232,127 @@ export default function ManagerItemsPage() {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.table_block}>
-        <table>
-          <thead>
-            <tr>
-              <td>Картинка</td>
-              <td>Модель</td>
-              <td>Наименование</td>
-              <td>Код категории</td>
-              <td>Цена</td>
-              <td>edit</td>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(e => {
-              return (
-                <tr key={e.dp_id}>
-                  <td>
-                    {!e.dp_photoUrl ? (
-                      'нет'
-                    ) : (
-                      <Image
-                        src={e.dp_photoUrl}
-                        alt="x"
-                        width={64}
-                        height={32}
-                      />
-                    )}
-                  </td>
-                  <td>{e.dp_model}</td>
-                  <td>{e.dp_name}</td>
-                  <td>{e.dp_itemCategoryId}</td>
-                  <td>{Number(e.dp_cost).toFixed(2)}</td>
-                  <td>
-                    <Link href={`/manager/items/${e.dp_id}`}>edit</Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <div className={styles.filters_block}>
-        <button onClick={saveAsJson}>Скачать как JSON</button>
-        <button onClick={saveItemsAsXlsx}> XLSX</button>
+    <AppManagerTableView
+      side={
+        <div className={styles.filters_block}>
+          <button onClick={saveAsJson}>Скачать как JSON</button>
+          <button onClick={saveItemsAsXlsx}>Скачать как XLSX</button>
 
-        <p>
-          Фильтр: <button onClick={removeFilters}>убрать</button>
-        </p>
-        <ul>
-          <li>
-            <label htmlFor="filterCategoryId">Код категории</label>
-            <input
-              id="filterCategoryId"
-              type="number"
-              value={filterCategoryId}
-              onChange={event =>
-                setFilterCategoryId(Number(event.target.value))
-              }
-              min={0}
-            />
-          </li>
-          <li>
-            <label htmlFor="filterModel">Модель</label>
-            <input
-              id="filterModel"
-              type="text"
-              value={filterModel}
-              onChange={event => setFilterModel(event.target.value)}
-            />
-          </li>
-          <li>
-            <label htmlFor="filterName">Наименование</label>
-            <input
-              id="filterName"
-              type="text"
-              value={filterName}
-              onChange={event => setFilterName(event.target.value)}
-            />
-          </li>
-
-          <li>
-            <label>
-              Сортировка:
+          <p>Фильтр:</p>
+          <button onClick={removeFilters}>убрать фильтры</button>
+          <ul>
+            <li>
+              <label htmlFor="filterCategoryId">Код категории</label>
               <input
-                type="checkbox"
-                checked={isReverseSort}
-                onChange={() => setIsReverseSort(!isReverseSort)}
+                id="filterCategoryId"
+                type="number"
+                value={filterCategoryId}
+                onChange={event =>
+                  setFilterCategoryId(Number(event.target.value))
+                }
+                min={0}
               />
-              Обратная
-            </label>
-
-            <ul>
-              <li>
-                <input
-                  type="radio"
-                  name="sort"
-                  onChange={() => setSortType('model')}
-                />
-                Модель
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="sort"
-                  onChange={() => setSortType('name')}
-                />
-                Наименование
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="sort"
-                  onChange={() => setSortType('categoryId')}
-                />
-                Код категори
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="sort"
-                  onChange={() => setSortType('cost')}
-                />
-                Цена
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
+            </li>
+            <li>
+              <label htmlFor="filterModel">Модель</label>
+              <input
+                id="filterModel"
+                type="text"
+                value={filterModel}
+                onChange={event => setFilterModel(event.target.value)}
+              />
+            </li>
+            <li>
+              <label htmlFor="filterName">Наименование</label>
+              <input
+                id="filterName"
+                type="text"
+                value={filterName}
+                onChange={event => setFilterName(event.target.value)}
+              />
+            </li>
+            <li>
+              <p>Сортировка:</p>
+              <ul>
+                <li>
+                  <input
+                    type="checkbox"
+                    checked={isReverseSort}
+                    onChange={() => setIsReverseSort(!isReverseSort)}
+                  />
+                  Обратная
+                </li>
+                <li>
+                  <input
+                    type="radio"
+                    name="sort"
+                    onChange={() => setSortType('model')}
+                  />
+                  Модель
+                </li>
+                <li>
+                  <input
+                    type="radio"
+                    name="sort"
+                    onChange={() => setSortType('name')}
+                  />
+                  Наименование
+                </li>
+                <li>
+                  <input
+                    type="radio"
+                    name="sort"
+                    onChange={() => setSortType('categoryId')}
+                  />
+                  Код категори
+                </li>
+                <li>
+                  <input
+                    type="radio"
+                    name="sort"
+                    onChange={() => setSortType('cost')}
+                  />
+                  Цена
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      }>
+      <table>
+        <thead>
+          <tr>
+            <td>Картинка</td>
+            <td>Модель</td>
+            <td>Наименование</td>
+            <td>Код категории</td>
+            <td>Цена</td>
+            <td>edit</td>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map(e => {
+            return (
+              <tr key={e.dp_id}>
+                <td>
+                  {!e.dp_photoUrl ? (
+                    'нет'
+                  ) : (
+                    <Image src={e.dp_photoUrl} alt="x" width={64} height={32} />
+                  )}
+                </td>
+                <td>{e.dp_model}</td>
+                <td>{e.dp_name}</td>
+                <td>{e.dp_itemCategoryId}</td>
+                <td>{Number(e.dp_cost).toFixed(2)}</td>
+                <td>
+                  <Link href={`/manager/items/${e.dp_id}`}>edit</Link>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </AppManagerTableView>
   );
 }

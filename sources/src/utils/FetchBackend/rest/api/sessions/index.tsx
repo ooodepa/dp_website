@@ -39,4 +39,29 @@ export default class FetchSessions {
 
     throw new HttpException(result.method, response);
   }
+
+  static async update() {
+    const refreshToken = localStorage.getItem('refresh');
+    if (!refreshToken) {
+      return false;
+    }
+
+    const result = await FetchBackend('refresh', 'PATCH', 'sessions');
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: UpdateSessionResponseDto = await response.json();
+      const accessToken = json.dp_accessToken;
+      localStorage.setItem('access', accessToken);
+      return true;
+    }
+
+    if (response.status === 401) {
+      // localStorage.removeItem('access');
+      // localStorage.removeItem('refresh');
+      throw new HttpException(result.method, response);
+    }
+
+    throw new HttpException(result.method, response);
+  }
 }

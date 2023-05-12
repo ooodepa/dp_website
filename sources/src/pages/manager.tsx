@@ -15,6 +15,10 @@ const menu: IMenu[] = [
     title: 'Номенклатура',
     uri: 'items',
   },
+  {
+    title: 'Бренды',
+    uri: 'item-brands',
+  },
 ];
 
 export default function ManagerPage() {

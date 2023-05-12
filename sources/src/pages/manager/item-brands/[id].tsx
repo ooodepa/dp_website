@@ -1,5 +1,3 @@
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import {
   ChangeEvent,
   InputHTMLAttributes,
@@ -8,69 +6,51 @@ import {
   useEffect,
   useState,
 } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import AppModal from '@/components/AppModal/AppModal';
-import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import FetchUsers from '@/utils/FetchBackend/rest/api/users';
 import styles from '@/styles/ManagerItemEditorPage.module.css';
 import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
-import UpdateItemDto from '@/utils/FetchBackend/rest/api/items/dto/update-item.dto';
-import BrowserDownloadFileController from '@/package/BrowserDownloadFileController';
-import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
+import toModalHttpException from '@/utils/FetchBackend/toModalHttpException';
+import RefreshTokenNotFoundException from '@/utils/FetchBackend/RefreshTokenNotFoundException';
 
-export default function ManagerItemEditorPage() {
+export default function ManagerItemBrandEditorPage() {
   const route = useRouter();
   const { id } = route.query;
   const [modal, setModal] = useState(<></>);
   const [isAdmin, setIsAdmin] = useState(true);
   const [is404, setIs404] = useState(false);
-  const [itemCharacteristics, setItemCharacteristics] = useState([
-    {
-      dp_id: 0,
-      dp_name: '',
-    },
-  ]);
   const [original, setOriginal] = useState({
-    dp_id: '',
+    dp_id: 0,
     dp_name: '',
-    dp_model: '',
-    dp_cost: 0,
     dp_photoUrl: '',
+    dp_urlSegment: '',
+    dp_sortingIndex: 0,
     dp_seoKeywords: '',
     dp_seoDescription: '',
-    dp_itemCategoryId: 0,
     dp_isHidden: false,
-    dp_itemCharacteristics: [
-      {
-        dp_characteristicId: 0,
-        dp_value: '',
-      },
-    ],
-    dp_itemGalery: [{ dp_photoUrl: '' }],
   });
   const [data, setData] = useState({
-    dp_id: '',
+    dp_id: 0,
     dp_name: '',
-    dp_model: '',
-    dp_cost: 0,
     dp_photoUrl: '',
+    dp_urlSegment: '',
+    dp_sortingIndex: 0,
     dp_seoKeywords: '',
     dp_seoDescription: '',
-    dp_itemCategoryId: 0,
     dp_isHidden: false,
-    dp_itemCharacteristics: [
-      {
-        dp_characteristicId: 0,
-        dp_value: '',
-      },
-    ],
-    dp_itemGalery: [{ dp_photoUrl: '' }],
   });
 
   useEffect(() => {
-    if (!route.query?.id) {
+    const dp_id: number = Number(route?.query?.id);
+
+    if (!dp_id) {
+      setIs404(true);
       return;
     }
 
@@ -85,31 +65,9 @@ export default function ManagerItemEditorPage() {
 
         setIsAdmin(true);
 
-        const dp_id: string = route?.query?.id as string;
-
-        if (!dp_id) {
-          return;
-        }
-
-        const item = await FetchItems.getById(dp_id);
-        const DATA = {
-          dp_id: item.dp_id,
-          dp_name: item.dp_name,
-          dp_model: item.dp_model,
-          dp_cost: item.dp_cost,
-          dp_photoUrl: item.dp_photoUrl,
-          dp_seoKeywords: item.dp_seoDescription,
-          dp_seoDescription: item.dp_seoDescription,
-          dp_itemCategoryId: item.dp_itemCategoryId,
-          dp_isHidden: item.dp_isHidden !== '0',
-          dp_itemCharacteristics: item.dp_itemCharacteristics.map(e => ({
-            dp_characteristicId: e.dp_characteristicId,
-            dp_value: e.dp_value,
-          })),
-          dp_itemGalery: item.dp_itemGalery,
-        };
-        setData(DATA);
-        setOriginal(DATA);
+        const brand = await FetchItemBrand.getById(dp_id);
+        setData(brand);
+        setOriginal(brand);
         setIs404(false);
       } catch (exception) {
         if (exception instanceof HttpException) {
@@ -117,12 +75,6 @@ export default function ManagerItemEditorPage() {
             setIs404(true);
           }
         }
-      }
-
-      try {
-        setItemCharacteristics(await FetchItemCharacteristics.get());
-      } catch (exception) {
-        alert(exception);
       }
     })();
   }, [route.query?.id]);
@@ -132,46 +84,14 @@ export default function ManagerItemEditorPage() {
 
     if (name === 'dp_isHidden') {
       const { checked } = e.target;
-      setData(prev => ({ ...prev, dp_isHidden: !checked }));
+      setData(prev => ({ ...prev, [name]: !checked }));
       return;
     }
 
     const { value } = e.target;
 
-    let arr = [...data.dp_itemCharacteristics];
-    if (/^dp_itemCharacteristics\[\d+\]$/.test(name)) {
-      const characteristicId: number = Number(
-        name.replace('dp_itemCharacteristics[', '').replace(']', ''),
-      );
-      let isAdded = false;
-      for (let i = 0; i < arr.length; ++i) {
-        if (arr[i].dp_characteristicId === characteristicId) {
-          arr[i].dp_value = value;
-          isAdded = true;
-          break;
-        }
-      }
-
-      if (!isAdded) {
-        arr.push({ dp_characteristicId: characteristicId, dp_value: value });
-      }
-
-      setData(prev => ({
-        ...prev,
-        dp_itemCharacteristics: arr.filter(e => e.dp_value.length),
-      }));
-
-      return;
-    }
-
-    if (name === 'dp_itemGalery') {
-      setData(prev => ({
-        ...prev,
-        dp_itemGalery: value
-          .split(/\s+/)
-          .map(e => ({ dp_photoUrl: e }))
-          .filter(e => e.dp_photoUrl.length),
-      }));
+    if (name === 'dp_sortingIndex') {
+      setData(prev => ({ ...prev, [name]: Number(value) }));
       return;
     }
 
@@ -205,20 +125,23 @@ export default function ManagerItemEditorPage() {
       return;
     }
 
-    route.push('/manager/items');
-  }
-
-  function saveAsJson() {
-    const dp_id: string = route?.query?.id as string;
-    const filename = `DP_CTL_Item__id=${dp_id}.json`;
-    const itemData: UpdateItemDto = { ...data };
-    const text = JSON.stringify(itemData, null, 2);
-    BrowserDownloadFileController.downloadFile(filename, text);
+    try {
+      await FetchItemBrand.update(data.dp_id, data);
+      route.push('/manager/item-brands');
+    } catch (exception) {
+      if (await toModalHttpException(exception, setModal)) {
+        return;
+      }
+      if (exception instanceof RefreshTokenNotFoundException) {
+        route.push('/manager');
+        return;
+      }
+    }
   }
 
   function toListPage() {
     if (JSON.stringify(original) === JSON.stringify(data)) {
-      route.push('/manager/items');
+      route.push('/manager/item-brands');
       return;
     }
 
@@ -227,7 +150,7 @@ export default function ManagerItemEditorPage() {
         title="Сохранение элемента"
         message="Вы отредактировали элемент, но не сохранили.">
         <button onClick={() => setModal(<></>)}>Вернуться к форме</button>
-        <button onClick={() => route.push('/manager/items')}>
+        <button onClick={() => route.push('/manager/item-brands')}>
           Не сохранять
         </button>
       </AppModal>,
@@ -235,7 +158,7 @@ export default function ManagerItemEditorPage() {
   }
 
   if (is404) {
-    return <p>Нет такой номенклатуры в БД с таким UUID (dp_id={id})</p>;
+    return <p>Нет такого бренда в БД (dp_id={id})</p>;
   }
 
   if (!isAdmin) {
@@ -245,11 +168,8 @@ export default function ManagerItemEditorPage() {
   return (
     <AppContainer>
       {modal}
-      <h2>Редактор номенклатуры</h2>
+      <h2>Редактор бренда</h2>
       <div className={styles.specialButtons}>
-        <button className={styles.form__button} onClick={saveAsJson}>
-          Скачать как JSON
-        </button>
         <button className={styles.form__button} onClick={toListPage}>
           Вернуться к списку
         </button>
@@ -257,9 +177,6 @@ export default function ManagerItemEditorPage() {
       <form onSubmit={handleOnSubmit} className={styles.form}>
         <table className={styles.table}>
           <tbody>
-            <tr>
-              <td colSpan={2}>Основные характеристики</td>
-            </tr>
             <tr>
               <td>ID</td>
               <td>{data.dp_id}</td>
@@ -276,25 +193,26 @@ export default function ManagerItemEditorPage() {
               </td>
             </tr>
             <tr>
-              <td>Модель</td>
+              <td>URL сегмент</td>
               <td>
                 <MyInput
                   type="text"
                   onChange={handleOnChange}
-                  name="dp_model"
-                  value={data.dp_model}
+                  name="dp_urlSegment"
+                  value={data.dp_urlSegment}
                 />
               </td>
             </tr>
             <tr>
-              <td>Цена</td>
+              <td>
+                Индекс <br /> для сортировки
+              </td>
               <td>
                 <MyInput
                   type="number"
                   onChange={handleOnChange}
-                  name="dp_cost"
-                  value={data.dp_cost}
-                  step="0.01"
+                  name="dp_sortingIndex"
+                  value={data.dp_sortingIndex}
                   min="0"
                 />
               </td>
@@ -308,18 +226,6 @@ export default function ManagerItemEditorPage() {
                   name="dp_isHidden"
                   checked={!data.dp_isHidden}
                   onChange={handleOnChange}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Код категории</td>
-              <td>
-                <MyInput
-                  type="number"
-                  onChange={handleOnChange}
-                  name="dp_itemCategoryId"
-                  value={data.dp_itemCategoryId}
-                  min="0"
                 />
               </td>
             </tr>
@@ -369,69 +275,6 @@ export default function ManagerItemEditorPage() {
                 />
               </td>
             </tr>
-            <tr>
-              <td colSpan={2}>Табличная часть - Галерея</td>
-            </tr>
-
-            <tr>
-              <td>
-                Галерея <br />
-                <span style={{ color: 'gray' }}>(через Enter)</span>
-              </td>
-              <td>
-                <MyTextArea
-                  onChange={handleOnChange}
-                  name="dp_itemGalery"
-                  value={data.dp_itemGalery.map(e => e.dp_photoUrl).join('\n')}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                {!data.dp_itemGalery.length ? 'галерея пуста' : null}
-                {data.dp_itemGalery.map((e, index) => {
-                  if (!e.dp_photoUrl.length) {
-                    return <span key={index}>не указано изображение</span>;
-                  }
-
-                  return (
-                    <Image
-                      key={index}
-                      src={e.dp_photoUrl}
-                      alt="не рабочая ссылка"
-                      width={100}
-                      height={50}
-                    />
-                  );
-                })}
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={2}>
-                Табличная часть - Дополнительные характеристики
-              </td>
-            </tr>
-            {itemCharacteristics.map((e, index) => {
-              const value =
-                data.dp_itemCharacteristics.find(
-                  ch => ch.dp_characteristicId === e.dp_id,
-                )?.dp_value || '';
-
-              return (
-                <tr key={e.dp_id}>
-                  <td>{e.dp_name}</td>
-                  <td>
-                    <MyInput
-                      type="text"
-                      onChange={handleOnChange}
-                      name={`dp_itemCharacteristics[${e.dp_id}]`}
-                      value={value}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
           </tbody>
         </table>
         <button type="submit" className={styles.form__button}>

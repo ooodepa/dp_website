@@ -2,11 +2,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import styles from './BrandItemPosts.module.css';
-import ItemBrandDto from '@/dto/item-brand/ItemBrandDto';
+import ItemBrandWithIdDto from '@/utils/FetchBackend/rest/api/item-brands/dto/item-brand-with-id.dto';
 import AppContainer from '@/components/AppContainer/AppContainer';
 
 interface IProps {
-  brands: ItemBrandDto[];
+  brands: ItemBrandWithIdDto[];
 }
 
 export default function BrandItemPosts(props: IProps) {

@@ -1,4 +1,5 @@
 import AppEnv from '@/AppEnv';
+import FetchSessions from './rest/api/sessions';
 
 interface FetchBackendResult {
   response: Response;
@@ -21,8 +22,21 @@ export default async function FetchBackend(
   if (method === 'GET') {
     const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/${uri}`;
     const response = await fetch(URL, {
-      headers: token ? { Autorization: token } : {},
+      headers: token ? { Authorization: token } : {},
     });
+
+    if (response.status === 401) {
+      FetchSessions.update();
+      const token: string | undefined =
+        type === 'access'
+          ? `Bearer ${localStorage.getItem('access')}`
+          : undefined;
+      const response2 = await fetch(URL, {
+        headers: token ? { Authorization: token } : {},
+      });
+      return { response: response2, method };
+    }
+
     return { response, method };
   }
 
@@ -37,8 +51,22 @@ export default async function FetchBackend(
     const response = await fetch(URL, {
       method: 'POST',
       body: BODY,
-      headers: token ? { ...HEADERS, Autorization: token } : HEADERS,
+      headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
     });
+
+    if (response.status === 401) {
+      FetchSessions.update();
+      const token: string | undefined =
+        type === 'access'
+          ? `Bearer ${localStorage.getItem('access')}`
+          : undefined;
+      const response2 = await fetch(URL, {
+        method: 'POST',
+        body: BODY,
+        headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
+      });
+      return { response: response2, method };
+    }
 
     return { response, method };
   }
@@ -54,8 +82,22 @@ export default async function FetchBackend(
     const response = await fetch(URL, {
       method: 'PUT',
       body: BODY,
-      headers: token ? { ...HEADERS, Autorization: token } : HEADERS,
+      headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
     });
+
+    if (response.status === 401) {
+      FetchSessions.update();
+      const token: string | undefined =
+        type === 'access'
+          ? `Bearer ${localStorage.getItem('access')}`
+          : undefined;
+      const response2 = await fetch(URL, {
+        method: 'PUT',
+        body: BODY,
+        headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
+      });
+      return { response: response2, method };
+    }
 
     return { response, method };
   }
@@ -71,8 +113,22 @@ export default async function FetchBackend(
     const response = await fetch(URL, {
       method: 'PATCH',
       body: BODY,
-      headers: token ? { ...HEADERS, Autorization: token } : HEADERS,
+      headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
     });
+
+    if (response.status === 401) {
+      FetchSessions.update();
+      const token: string | undefined =
+        type === 'access'
+          ? `Bearer ${localStorage.getItem('access')}`
+          : undefined;
+      const response2 = await fetch(URL, {
+        method: 'PATCH',
+        body: BODY,
+        headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
+      });
+      return { response: response2, method };
+    }
 
     return { response, method };
   }
@@ -85,8 +141,21 @@ export default async function FetchBackend(
 
   const response = await fetch(URL, {
     method: 'DELETE',
-    headers: token ? { ...HEADERS, Autorization: token } : HEADERS,
+    headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
   });
+
+  if (response.status === 401) {
+    FetchSessions.update();
+    const token: string | undefined =
+      type === 'access'
+        ? `Bearer ${localStorage.getItem('access')}`
+        : undefined;
+    const response2 = await fetch(URL, {
+      method: 'DELETE',
+      headers: token ? { ...HEADERS, Authorization: token } : HEADERS,
+    });
+    return { response: response2, method };
+  }
 
   return { response, method };
 }

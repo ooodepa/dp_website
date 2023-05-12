@@ -17,6 +17,7 @@
 
 .wrapper ul li a {
   display: block;
+  width: 240px;
   padding: 8px;
   background-color: var(--site-color);
   color: white;
