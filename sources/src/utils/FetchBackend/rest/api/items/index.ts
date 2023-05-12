@@ -1,5 +1,5 @@
 import AppEnv from '@/AppEnv';
-import ItemDto from '@/dto/item/ItemDto';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 
 export default class FetchItems {
@@ -8,6 +8,16 @@ export default class FetchItems {
     const response = await fetch(URL);
     if (response.status === 200) {
       const json: ItemDto[] = await response.json();
+      return json;
+    }
+    throw new HttpException('GET', response);
+  }
+
+  static async getById(id: string) {
+    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/items/${id}`;
+    const response = await fetch(URL);
+    if (response.status === 200) {
+      const json: ItemDto = await response.json();
       return json;
     }
     throw new HttpException('GET', response);

@@ -1,13 +1,18 @@
 import * as xlsx from 'xlsx';
+import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import ItemDto from '@/dto/item/ItemDto';
-import styles from './Developer.module.css';
+import styles from '@/styles/ManagerItemsPage.module.css';
+import FetchUsers from '@/utils/FetchBackend/rest/api/users';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
+import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
+import BrowserDownloadFileController from '@/package/BrowserDownloadFileController';
 
-export default function Developer() {
+export default function ManagerItemsPage() {
+  const [isAdmin, setIsAdmin] = useState(true);
   const [sortType, setSortType] = useState('');
   const [isReverseSort, setIsReverseSort] = useState(false);
   const [filterCategoryId, setFilterCategoryId] = useState(0);
@@ -44,10 +49,20 @@ export default function Developer() {
 
   useEffect(() => {
     (async function () {
+      const isAdmin = await FetchUsers.isAdmin();
+
+      if (!isAdmin) {
+        setIsAdmin(false);
+        return;
+      }
+
+      setIsAdmin(true);
+
       const itemsJson = await FetchItems.get();
       setItems(itemsJson);
       localStorage.setItem('DP_CTL_Items', JSON.stringify(itemsJson));
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -130,7 +145,7 @@ export default function Developer() {
   function saveAsJson() {
     const filename = 'DP_CTL_Items.json';
     const text = JSON.stringify(items, null, 2);
-    downloadFile(filename, text);
+    BrowserDownloadFileController.downloadFile(filename, text);
   }
 
   function removeFilters() {
@@ -204,31 +219,15 @@ export default function Developer() {
       type: 'array',
     });
 
+    const filename = 'DP_CTL_Items.xlsx';
     const blob = new Blob([excelBuffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
-
-    downloadFileByBlob('DP_CTL_Items.xlsx', blob);
+    BrowserDownloadFileController.downloadFileByBlob(filename, blob);
   }
 
-  function downloadFile(filename: string, text: string) {
-    const element = document.createElement('a');
-    const file = new Blob([text], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = filename;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  }
-
-  function downloadFileByBlob(filename: string, blob: Blob) {
-    const element = document.createElement('a');
-    const file = blob;
-    element.href = URL.createObjectURL(file);
-    element.download = filename;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  if (!isAdmin) {
+    return <YouAreNotAdmin />;
   }
 
   return (
@@ -242,6 +241,7 @@ export default function Developer() {
               <td>Наименование</td>
               <td>Код категории</td>
               <td>Цена</td>
+              <td>edit</td>
             </tr>
           </thead>
           <tbody>
@@ -264,6 +264,9 @@ export default function Developer() {
                   <td>{e.dp_name}</td>
                   <td>{e.dp_itemCategoryId}</td>
                   <td>{Number(e.dp_cost).toFixed(2)}</td>
+                  <td>
+                    <Link href={`/manager/items/${e.dp_id}`}>edit</Link>
+                  </td>
                 </tr>
               );
             })}
@@ -311,12 +314,12 @@ export default function Developer() {
 
           <li>
             <label>
-              Сортировка:{' '}
+              Сортировка:
               <input
                 type="checkbox"
                 checked={isReverseSort}
-                onClick={() => setIsReverseSort(!isReverseSort)}
-              />{' '}
+                onChange={() => setIsReverseSort(!isReverseSort)}
+              />
               Обратная
             </label>
 

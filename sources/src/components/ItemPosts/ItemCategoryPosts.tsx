@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import ItemDto from '@/dto/item/ItemDto';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import styles from './ItemPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
 
@@ -23,7 +23,9 @@ export default function ItemPosts(props: IProps) {
                 <div className={styles.post__wrapper}>
                   <div className={styles.post__content}>
                     <div className={styles.post__image_block}>
-                      {!element.dp_photoUrl ? 'нет картинки' : (
+                      {!element.dp_photoUrl ? (
+                        'нет картинки'
+                      ) : (
                         <Image
                           src={element.dp_photoUrl}
                           alt=" "

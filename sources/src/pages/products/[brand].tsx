@@ -43,7 +43,9 @@ interface IServerSideProps {
 export async function getStaticProps(context: IServerSideProps) {
   const { brand } = context.params;
 
-  const itemCategories = await FetchItemCategories.filterByBrand(brand);
+  const itemCategories = (await FetchItemCategories.filterByBrand(brand)).sort(
+    (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
+  );
   const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
   const props: IProps = { itemCategories, itemBrand };

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import ItemDto from '@/dto/item/ItemDto';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';

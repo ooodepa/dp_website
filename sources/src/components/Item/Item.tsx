@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import styles from './Item.module.css';
-import ItemDto from '@/dto/item/ItemDto';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
 
@@ -84,7 +84,7 @@ export default function Item(props: IProps) {
               Дополнительные характеристики:
             </td>
           </tr>
-          {!props.item?.dp_itemCharacteristics?.length ? null : (
+          {props.item.dp_itemCharacteristics?.length ? null : (
             <tr>
               <td
                 colSpan={2}
