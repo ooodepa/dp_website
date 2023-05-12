@@ -10,47 +10,25 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import AppModal from '@/components/AppModal/AppModal';
-import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import FetchUsers from '@/utils/FetchBackend/rest/api/users';
+import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import styles from '@/styles/ManagerItemEditorPage.module.css';
-import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
 import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
-import UpdateItemDto from '@/utils/FetchBackend/rest/api/items/dto/update-item.dto';
-import BrowserDownloadFileController from '@/package/BrowserDownloadFileController';
+import CreateItemDto from '@/utils/FetchBackend/rest/api/items/dto/create-item.dto';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 
-export default function ManagerItemUpdatePage() {
+export default function ManagerItemCreatePage() {
   const route = useRouter();
-  const { id } = route.query;
   const [modal, setModal] = useState(<></>);
   const [isAdmin, setIsAdmin] = useState(true);
-  const [is404, setIs404] = useState(false);
   const [itemCharacteristics, setItemCharacteristics] = useState([
     {
       dp_id: 0,
       dp_name: '',
     },
   ]);
-  const [original, setOriginal] = useState({
-    dp_id: '',
-    dp_name: '',
-    dp_model: '',
-    dp_cost: 0,
-    dp_photoUrl: '',
-    dp_seoKeywords: '',
-    dp_seoDescription: '',
-    dp_itemCategoryId: 0,
-    dp_isHidden: false,
-    dp_itemCharacteristics: [
-      {
-        dp_characteristicId: 0,
-        dp_value: '',
-      },
-    ],
-    dp_itemGalery: [{ dp_photoUrl: '' }],
-  });
   const [data, setData] = useState({
     dp_id: '',
     dp_name: '',
@@ -72,10 +50,6 @@ export default function ManagerItemUpdatePage() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (!route.query?.id) {
-      return;
-    }
-
     (async function () {
       try {
         const isAdmin = await FetchUsers.isAdmin();
@@ -87,49 +61,25 @@ export default function ManagerItemUpdatePage() {
 
         setIsAdmin(true);
 
-        const dp_id: string = route?.query?.id as string;
-
-        if (!dp_id) {
-          return;
-        }
-
-        const item = await FetchItems.getById(dp_id);
-        const DATA = {
-          dp_id: item.dp_id,
-          dp_name: item.dp_name,
-          dp_model: item.dp_model,
-          dp_cost: item.dp_cost,
-          dp_photoUrl: item.dp_photoUrl,
-          dp_seoKeywords: item.dp_seoDescription,
-          dp_seoDescription: item.dp_seoDescription,
-          dp_itemCategoryId: item.dp_itemCategoryId,
-          dp_isHidden: item.dp_isHidden === '1',
-          dp_itemCharacteristics: item.dp_itemCharacteristics.map(e => ({
-            dp_characteristicId: e.dp_characteristicId,
-            dp_value: e.dp_value,
-          })),
-          dp_itemGalery: item.dp_itemGalery,
-        };
-        setData(DATA);
-        setOriginal(DATA);
-        setIs404(false);
-
         setItemCharacteristics(await FetchItemCharacteristics.get());
       } catch (exception) {
-        if (exception instanceof HttpException) {
-          if (exception.HTTP_STATUS === 404) {
-            setIs404(true);
-          }
-          return;
-        }
-
         await AsyncAlertExceptionHelper(exception);
       }
     })();
-  }, [route.query?.id]);
+  }, []);
 
   function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
-    const { name, value, type } = e.target;
+    setErrors(prev => {});
+
+    const { name } = e.target;
+
+    if (name === 'dp_isHidden') {
+      const { checked } = e.target;
+      setData(prev => ({ ...prev, [name]: !checked }));
+      return;
+    }
+
+    const { value, type } = e.target;
 
     if (type === 'number') {
       setData(prev => ({ ...prev, [name]: Number(value) }));
@@ -182,10 +132,10 @@ export default function ManagerItemUpdatePage() {
     setData(prev => ({ ...prev, [name]: value }));
   }
 
-  function handleOnSubmit(event: SyntheticEvent) {
+  async function handleOnSubmit(event: SyntheticEvent) {
     event.preventDefault();
 
-    let formErrors: Record<string, any> = {};
+    let formErrors: any = {};
 
     if (data.dp_name.length === 0) {
       formErrors.dp_name = 'Наименование не указано (оно обязательно)';
@@ -204,7 +154,7 @@ export default function ManagerItemUpdatePage() {
     if (Object.keys(formErrors).length > 0) {
       setModal(
         <AppModal
-          title="Обновление элемента"
+          title="Создание элемента"
           message={
             'Проверите правильность заполнения полей \n' +
             Object.keys(formErrors)
@@ -218,32 +168,8 @@ export default function ManagerItemUpdatePage() {
       return;
     }
 
-    setModal(
-      <AppModal
-        title="Обновление элемента"
-        message="Вы уверены, что хотите сохранить это">
-        <button onClick={save}>Сохранить</button>
-        <button onClick={() => setModal(<></>)}>Не сохранять</button>
-      </AppModal>,
-    );
-  }
-
-  async function save() {
     try {
-      setModal(<></>);
-
-      if (JSON.stringify(original) === JSON.stringify(data)) {
-        setModal(
-          <AppModal
-            title="Обновление элемента"
-            message="Вы не редактировали элемент. Нет того, что сохранить">
-            <button onClick={() => setModal(<></>)}>Закрыть</button>
-          </AppModal>,
-        );
-        return;
-      }
-
-      const dto: UpdateItemDto = {
+      const dto: CreateItemDto = {
         ...data,
         dp_itemCharacteristics: data.dp_itemCharacteristics.filter(
           e => e.dp_value.length,
@@ -251,7 +177,7 @@ export default function ManagerItemUpdatePage() {
         dp_itemGalery: data.dp_itemGalery.filter(e => e.dp_photoUrl.length),
       };
 
-      await FetchItems.update(data.dp_id, dto);
+      await FetchItems.create(dto);
 
       route.push('/manager/items');
     } catch (exception) {
@@ -259,34 +185,15 @@ export default function ManagerItemUpdatePage() {
     }
   }
 
-  function saveAsJson() {
-    const dp_id: string = route?.query?.id as string;
-    const filename = `DP_CTL_Item__id=${dp_id}.json`;
-    const itemData: UpdateItemDto = { ...data };
-    const text = JSON.stringify(itemData, null, 2);
-    BrowserDownloadFileController.downloadFile(filename, text);
-  }
-
   function toListPage() {
-    if (JSON.stringify(original) === JSON.stringify(data)) {
-      route.push('/manager/items');
-      return;
-    }
-
     setModal(
-      <AppModal
-        title="Сохранение элемента"
-        message="Вы отредактировали элемент, но не сохранили.">
+      <AppModal title="Создание элемента" message="Вы не создали элемент.">
         <button onClick={() => setModal(<></>)}>Вернуться к форме</button>
         <button onClick={() => route.push('/manager/items')}>
-          Не сохранять
+          Не создавать
         </button>
       </AppModal>,
     );
-  }
-
-  if (is404) {
-    return <p>Нет такой номенклатуры в БД с таким UUID (dp_id={id})</p>;
   }
 
   if (!isAdmin) {
@@ -296,11 +203,8 @@ export default function ManagerItemUpdatePage() {
   return (
     <AppContainer>
       {modal}
-      <h2>Редактор номенклатуры</h2>
+      <h2>Создание номенклатуры</h2>
       <div className={styles.specialButtons}>
-        <button className={styles.form__button} onClick={saveAsJson}>
-          Скачать как JSON
-        </button>
         <button className={styles.form__button} onClick={toListPage}>
           Вернуться к списку
         </button>
@@ -360,7 +264,7 @@ export default function ManagerItemUpdatePage() {
                   id="isCheked"
                   type="checkbox"
                   name="dp_isHidden"
-                  checked={data.dp_isHidden}
+                  checked={!data.dp_isHidden}
                   onChange={handleOnChange}
                   errors={errors}
                 />
@@ -518,7 +422,7 @@ function MyInput(props: IMyInputProps<any>) {
         <label
           htmlFor={props.id}
           className={styles.form__checkbox}
-          custom-is-cheked={props.checked ? '1' : '0'}></label>
+          custom-is-cheked={props.checked ? '0' : '1'}></label>
       )}
       <input
         className={styles.form__input}

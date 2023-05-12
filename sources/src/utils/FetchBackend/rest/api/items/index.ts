@@ -1,45 +1,92 @@
-import AppEnv from '@/AppEnv';
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
+import GetItemDto from './dto/get-item.dto';
+import FetchBackend from '@/utils/FetchBackend';
+import UpdateItemDto from './dto/update-item.dto';
+import CreateItemDto from './dto/create-item.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 
 export default class FetchItems {
   static async get() {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/items`;
-    const response = await fetch(URL);
+    const result = await FetchBackend('none', 'GET', 'items');
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ItemDto[] = await response.json();
+      const json: GetItemDto[] = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 
   static async getById(id: string) {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/items/${id}`;
-    const response = await fetch(URL);
+    const result = await FetchBackend('none', 'GET', `items/${id}`);
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ItemDto = await response.json();
+      const json: GetItemDto = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 
   static async filterByCategory(category: string) {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/items?category=${category}`;
-    const response = await fetch(URL);
+    const result = await FetchBackend('none', 'GET', 'items?category=');
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ItemDto[] = await response.json();
+      const json: GetItemDto[] = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 
   static async filterOneByModel(model: string) {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/items/filter-one/model/${model}`;
-    const response = await fetch(URL);
+    const result = await FetchBackend(
+      'none',
+      'GET',
+      `items/filter-one/model/${model}`,
+    );
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ItemDto = await response.json();
+      const json: GetItemDto = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async create(dto: CreateItemDto) {
+    const result = await FetchBackend('access', 'POST', 'items', dto);
+    const response = result.response;
+
+    if (response.status === 201) {
+      return true;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async update(id: string, dto: UpdateItemDto) {
+    const result = await FetchBackend('access', 'PATCH', `items/${id}`, dto);
+    const response = result.response;
+
+    if (response.status === 200) {
+      return true;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async remove(id: string) {
+    const result = await FetchBackend('access', 'DELETE', `items/${id}`);
+    const response = result.response;
+
+    if (response.status === 200) {
+      return true;
+    }
+
+    throw new HttpException(result.method, response);
   }
 }

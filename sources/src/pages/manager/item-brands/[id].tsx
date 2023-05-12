@@ -16,10 +16,9 @@ import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
-import toModalHttpException from '@/utils/FetchBackend/toModalHttpException';
-import RefreshTokenNotFoundException from '@/utils/FetchBackend/RefreshTokenNotFoundException';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 
-export default function ManagerItemBrandEditorPage() {
+export default function ManagerItemBrandUpdatePage() {
   const route = useRouter();
   const { id } = route.query;
   const [modal, setModal] = useState(<></>);
@@ -73,8 +72,11 @@ export default function ManagerItemBrandEditorPage() {
         if (exception instanceof HttpException) {
           if (exception.HTTP_STATUS === 404) {
             setIs404(true);
+            return;
           }
         }
+
+        await AsyncAlertExceptionHelper(exception);
       }
     })();
   }, [route.query?.id]);
@@ -112,30 +114,24 @@ export default function ManagerItemBrandEditorPage() {
   }
 
   async function save() {
-    setModal(<></>);
-
-    if (JSON.stringify(original) === JSON.stringify(data)) {
-      setModal(
-        <AppModal
-          title="Сохранение элемента"
-          message="Вы не редактировали элемент. Нет того, что сохранить">
-          <button onClick={() => setModal(<></>)}>Закрыть</button>
-        </AppModal>,
-      );
-      return;
-    }
-
     try {
+      setModal(<></>);
+
+      if (JSON.stringify(original) === JSON.stringify(data)) {
+        setModal(
+          <AppModal
+            title="Сохранение элемента"
+            message="Вы не редактировали элемент. Нет того, что сохранить">
+            <button onClick={() => setModal(<></>)}>Закрыть</button>
+          </AppModal>,
+        );
+        return;
+      }
+
       await FetchItemBrand.update(data.dp_id, data);
       route.push('/manager/item-brands');
     } catch (exception) {
-      if (await toModalHttpException(exception, setModal)) {
-        return;
-      }
-      if (exception instanceof RefreshTokenNotFoundException) {
-        route.push('/manager');
-        return;
-      }
+      await AsyncAlertExceptionHelper(exception);
     }
   }
 

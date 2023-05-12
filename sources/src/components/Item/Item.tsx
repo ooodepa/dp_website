@@ -2,8 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import styles from './Item.module.css';
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
 
 interface IProps {

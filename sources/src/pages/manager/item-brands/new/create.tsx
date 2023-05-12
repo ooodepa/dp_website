@@ -13,13 +13,11 @@ import AppModal from '@/components/AppModal/AppModal';
 import FetchUsers from '@/utils/FetchBackend/rest/api/users';
 import styles from '@/styles/ManagerItemEditorPage.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
-import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
-import toModalHttpException from '@/utils/FetchBackend/toModalHttpException';
-import toModalHttpResponse from '@/utils/FetchBackend/toModalHttpResponseDto';
-import RefreshTokenNotFoundException from '@/utils/FetchBackend/RefreshTokenNotFoundException';
+import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 
-export default function ManagerItemEditorPage() {
+export default function ManagerItemBrandCreatePage() {
   const route = useRouter();
   const [modal, setModal] = useState(<></>);
   const [isAdmin, setIsAdmin] = useState(true);
@@ -45,7 +43,9 @@ export default function ManagerItemEditorPage() {
         }
 
         setIsAdmin(true);
-      } catch (exception) {}
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
+      }
     })();
   }, []);
 
@@ -83,16 +83,10 @@ export default function ManagerItemEditorPage() {
 
   async function create() {
     try {
-      const httpResponseDto = await FetchItemBrand.create(data);
+      await FetchItemBrand.create(data);
       route.push('/manager/item-brands');
     } catch (exception) {
-      if (await toModalHttpException(exception, setModal)) {
-        return;
-      }
-      if (exception instanceof RefreshTokenNotFoundException) {
-        route.push('/manager');
-        return;
-      }
+      await AsyncAlertExceptionHelper(exception);
     }
   }
 

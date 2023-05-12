@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
@@ -11,6 +10,7 @@ import ItemPosts from '@/components/ItemPosts/ItemCategoryPosts';
 import ItemCategoryDto from '@/dto/item-category/ItemCategoryDto';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 
 interface IProps {

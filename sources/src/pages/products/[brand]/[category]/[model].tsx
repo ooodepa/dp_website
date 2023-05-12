@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import Item from '@/components/Item/Item';
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
@@ -10,6 +9,7 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';

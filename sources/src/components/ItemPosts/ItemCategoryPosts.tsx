@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import styles from './ItemPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 
 interface IProps {
   brand: string;

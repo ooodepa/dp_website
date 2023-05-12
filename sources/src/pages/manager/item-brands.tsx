@@ -3,13 +3,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import AppModal from '@/components/AppModal/AppModal';
 import FetchUsers from '@/utils/FetchBackend/rest/api/users';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 import AppManagerTableView from '@/components/AppManagerTableView/AppManagerTableView';
-import toModalHttpException from '@/utils/FetchBackend/toModalHttpException';
-import RefreshTokenNotFoundException from '@/utils/FetchBackend/RefreshTokenNotFoundException';
-import AppModal from '@/components/AppModal/AppModal';
 
 export default function ManagerItemsPage() {
   const route = useRouter();
@@ -30,19 +29,23 @@ export default function ManagerItemsPage() {
 
   useEffect(() => {
     (async function () {
-      const isAdmin = await FetchUsers.isAdmin();
+      try {
+        const isAdmin = await FetchUsers.isAdmin();
 
-      if (!isAdmin) {
-        setIsAdmin(false);
-        return;
+        if (!isAdmin) {
+          setIsAdmin(false);
+          return;
+        }
+
+        setIsAdmin(true);
+
+        const itemBrands = (await FetchItemBrand.get()).sort(
+          (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
+        );
+        setBrands(itemBrands);
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
       }
-
-      setIsAdmin(true);
-
-      const itemBrands = (await FetchItemBrand.get()).sort(
-        (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
-      );
-      setBrands(itemBrands);
     })();
   }, []);
 
@@ -60,19 +63,15 @@ export default function ManagerItemsPage() {
   async function toDelete(id: number) {
     try {
       setModal(<></>);
+
       await FetchItemBrand.remove(id);
+
       const itemBrands = (await FetchItemBrand.get()).sort(
         (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
       );
       setBrands(itemBrands);
     } catch (exception) {
-      if (await toModalHttpException(exception, setModal)) {
-        return;
-      }
-      if (exception instanceof RefreshTokenNotFoundException) {
-        route.push('/manager');
-        return;
-      }
+      await AsyncAlertExceptionHelper(exception);
     }
   }
 

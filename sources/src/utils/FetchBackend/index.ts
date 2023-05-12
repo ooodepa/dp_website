@@ -26,7 +26,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      FetchSessions.update();
+      await FetchSessions.update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -55,7 +55,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      FetchSessions.update();
+      await FetchSessions.update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -86,7 +86,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      FetchSessions.update();
+      await FetchSessions.update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -117,7 +117,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      FetchSessions.update();
+      await FetchSessions.update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -145,7 +145,7 @@ export default async function FetchBackend(
   });
 
   if (response.status === 401) {
-    FetchSessions.update();
+    await FetchSessions.update();
     const token: string | undefined =
       type === 'access'
         ? `Bearer ${localStorage.getItem('access')}`

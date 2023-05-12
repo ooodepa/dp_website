@@ -1,18 +1,23 @@
 import * as xlsx from 'xlsx';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import AppModal from '@/components/AppModal/AppModal';
 import styles from '@/styles/ManagerItemsPage.module.css';
 import FetchUsers from '@/utils/FetchBackend/rest/api/users';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/ItemDto';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
-import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
+import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import BrowserDownloadFileController from '@/package/BrowserDownloadFileController';
 import AppManagerTableView from '@/components/AppManagerTableView/AppManagerTableView';
+import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 
 export default function ManagerItemsPage() {
+  const route = useRouter();
+  const [modal, setModal] = useState(<></>);
   const [isAdmin, setIsAdmin] = useState(true);
   const [sortType, setSortType] = useState('');
   const [isReverseSort, setIsReverseSort] = useState(false);
@@ -50,25 +55,28 @@ export default function ManagerItemsPage() {
 
   useEffect(() => {
     (async function () {
-      const isAdmin = await FetchUsers.isAdmin();
+      try {
+        const isAdmin = await FetchUsers.isAdmin();
 
-      if (!isAdmin) {
-        setIsAdmin(false);
-        return;
+        if (!isAdmin) {
+          setIsAdmin(false);
+          return;
+        }
+
+        setIsAdmin(true);
+
+        const itemsJson = await FetchItems.get();
+        setItems(itemsJson);
+        localStorage.setItem('DP_CTL_Items', JSON.stringify(itemsJson));
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
       }
-
-      setIsAdmin(true);
-
-      const itemsJson = await FetchItems.get();
-      setItems(itemsJson);
-      localStorage.setItem('DP_CTL_Items', JSON.stringify(itemsJson));
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const originalText = localStorage.getItem('DP_CTL_Items') || '[]';
-    const original: ItemDto[] = JSON.parse(originalText);
+    const original: GetItemDto[] = JSON.parse(originalText);
     let filteredItems = original;
 
     if (filterCategoryId !== 0) {
@@ -156,75 +164,104 @@ export default function ManagerItemsPage() {
   }
 
   async function saveItemsAsXlsx() {
-    const characteristics = await FetchItemCharacteristics.get();
+    try {
+      const characteristics = await FetchItemCharacteristics.get();
 
-    const headers = [
-      'id',
-      'Наименование',
-      'Модель',
-      'Цена',
-      'Картинка',
-      'Ключевые слова',
-      'Описание',
-      'Код категории',
-      'Скрыт',
-      'Галерея',
-      ...characteristics.map(e => e.dp_name),
-    ];
+      const headers = [
+        'id',
+        'Наименование',
+        'Модель',
+        'Цена',
+        'Картинка',
+        'Ключевые слова',
+        'Описание',
+        'Код категории',
+        'Скрыт',
+        'Галерея',
+        ...characteristics.map(e => e.dp_name),
+      ];
 
-    const setCategoriesId: Set<number> = new Set();
-    items.forEach(e => {
-      setCategoriesId.add(e.dp_itemCategoryId);
-    });
+      const setCategoriesId: Set<number> = new Set();
+      items.forEach(e => {
+        setCategoriesId.add(e.dp_itemCategoryId);
+      });
 
-    const arrayCategoriesId = Array.from(setCategoriesId).sort((a, b) => a - b);
+      const arrayCategoriesId = Array.from(setCategoriesId).sort(
+        (a, b) => a - b,
+      );
 
-    const workbook = xlsx.utils.book_new();
-    for (let i = 0; i < arrayCategoriesId.length; ++i) {
-      const categoryId = arrayCategoriesId[i];
+      const workbook = xlsx.utils.book_new();
+      for (let i = 0; i < arrayCategoriesId.length; ++i) {
+        const categoryId = arrayCategoriesId[i];
 
-      const arr = items
-        .filter(item => item.dp_itemCategoryId === categoryId)
-        .sort((a, b) => a.dp_model.localeCompare(b.dp_model));
+        const arr = items
+          .filter(item => item.dp_itemCategoryId === categoryId)
+          .sort((a, b) => a.dp_model.localeCompare(b.dp_model));
 
-      const data: string[][] = [];
+        const data: string[][] = [];
 
-      for (let j = 0; j < arr.length; ++j) {
-        const item = arr[j];
-        data.push([
-          item.dp_id,
-          item.dp_name,
-          item.dp_model,
-          `${item.dp_cost}`,
-          item.dp_photoUrl,
-          item.dp_seoKeywords,
-          item.dp_seoDescription,
-          `${item.dp_itemCategoryId}`,
-          item.dp_isHidden === '0' ? '0' : '1',
-          item.dp_itemGalery.map(e => e.dp_photoUrl).join(' '),
-          ...characteristics.map(
-            e =>
-              item.dp_itemCharacteristics.find(
-                j => e.dp_id === j.dp_characteristicId,
-              )?.dp_value || '',
-          ),
-        ]);
+        for (let j = 0; j < arr.length; ++j) {
+          const item = arr[j];
+          data.push([
+            item.dp_id,
+            item.dp_name,
+            item.dp_model,
+            `${item.dp_cost}`,
+            item.dp_photoUrl,
+            item.dp_seoKeywords,
+            item.dp_seoDescription,
+            `${item.dp_itemCategoryId}`,
+            item.dp_isHidden ? '1' : '0',
+            item.dp_itemGalery.map(e => e.dp_photoUrl).join(' '),
+            ...characteristics.map(
+              e =>
+                item.dp_itemCharacteristics.find(
+                  j => e.dp_id === j.dp_characteristicId,
+                )?.dp_value || '',
+            ),
+          ]);
+        }
+
+        const worksheet = xlsx.utils.aoa_to_sheet([headers, ...data]);
+        xlsx.utils.book_append_sheet(workbook, worksheet, `${categoryId}`);
       }
 
-      const worksheet = xlsx.utils.aoa_to_sheet([headers, ...data]);
-      xlsx.utils.book_append_sheet(workbook, worksheet, `${categoryId}`);
+      const excelBuffer = xlsx.write(workbook, {
+        bookType: 'xlsx',
+        type: 'array',
+      });
+
+      const filename = 'DP_CTL_Items.xlsx';
+      const blob = new Blob([excelBuffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      BrowserDownloadFileController.downloadFileByBlob(filename, blob);
+    } catch (exception) {
+      await AsyncAlertExceptionHelper(exception);
     }
+  }
 
-    const excelBuffer = xlsx.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array',
-    });
+  function preToDelete(id: string) {
+    setModal(
+      <AppModal
+        title="Удаление элемента"
+        message={`Вы уверены, что хотите удалить эелемент под id = ${id}?`}>
+        <button onClick={() => toDelete(id)}>Удалить</button>
+        <button onClick={() => setModal(<></>)}>Не удалять</button>
+      </AppModal>,
+    );
+  }
 
-    const filename = 'DP_CTL_Items.xlsx';
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    BrowserDownloadFileController.downloadFileByBlob(filename, blob);
+  async function toDelete(id: string) {
+    try {
+      setModal(<></>);
+      await FetchItems.remove(id);
+      const itemsJson = await FetchItems.get();
+      setItems(itemsJson);
+      localStorage.setItem('DP_CTL_Items', JSON.stringify(itemsJson));
+    } catch (exception) {
+      await AsyncAlertExceptionHelper(exception);
+    }
   }
 
   if (!isAdmin) {
@@ -235,6 +272,9 @@ export default function ManagerItemsPage() {
     <AppManagerTableView
       side={
         <div className={styles.filters_block}>
+          <button onClick={() => route.push('/manager/items/new/create')}>
+            Создать новый элемент
+          </button>
           <button onClick={saveAsJson}>Скачать как JSON</button>
           <button onClick={saveItemsAsXlsx}>Скачать как XLSX</button>
 
@@ -320,6 +360,7 @@ export default function ManagerItemsPage() {
         </div>
       }>
       <table>
+        {modal}
         <thead>
           <tr>
             <td>Картинка</td>
@@ -327,7 +368,8 @@ export default function ManagerItemsPage() {
             <td>Наименование</td>
             <td>Код категории</td>
             <td>Цена</td>
-            <td>edit</td>
+            <td>Обновить</td>
+            <td>Удалить</td>
           </tr>
         </thead>
         <tbody>
@@ -346,8 +388,9 @@ export default function ManagerItemsPage() {
                 <td>{e.dp_itemCategoryId}</td>
                 <td>{Number(e.dp_cost).toFixed(2)}</td>
                 <td>
-                  <Link href={`/manager/items/${e.dp_id}`}>edit</Link>
+                  <Link href={`/manager/items/${e.dp_id}`}>Обновить</Link>
                 </td>
+                <td onClick={() => preToDelete(e.dp_id)}>Удалить</td>
               </tr>
             );
           })}
