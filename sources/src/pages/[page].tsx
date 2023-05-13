@@ -8,7 +8,6 @@ import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
-import ContactTypeDto from '@/dto/contact-types/ContactTypeDto';
 import FetchHelpers from '@/utils/FetchBackend/rest/api/helpers';
 import ContactPosts from '@/components/ContactPosts/ContactPosts';
 import ArticlePosts from '@/components/ArticlePosts/ArticlePosts';
@@ -17,11 +16,12 @@ import BlogContainer from '@/components/BlogContainer/BlogContainer';
 import AppDescription from '@/components/AppDescription/AppDescription';
 import FetchContactTypes from '@/utils/FetchBackend/rest/api/contact-types';
 import GetArticleDto from '@/utils/FetchBackend/rest/api/article/dto/get-article.dto';
+import GetContactTypeDto from '@/utils/FetchBackend/rest/api/contact-types/dto/get-contact-type.dto';
 
 interface IProps {
   article: GetArticleDto;
   helpers: HelperDto[];
-  contactTypes: ContactTypeDto[];
+  contactTypes: GetContactTypeDto[];
 }
 
 interface IServerSideProps {
@@ -64,7 +64,7 @@ export async function getStaticProps(context: IServerSideProps) {
 
   const article = await FetchArticles.filterOneByUrl(page);
   let helpers: HelperDto[] = [];
-  let contactTypes: ContactTypeDto[] = [];
+  let contactTypes: GetContactTypeDto[] = [];
 
   if (page === 'contacts') {
     helpers = await FetchHelpers.get();

@@ -1,15 +1,17 @@
-import AppEnv from '@/AppEnv';
+import FetchBackend from '@/utils/FetchBackend';
+import GetContactTypeDto from './dto/get-contact-type.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
-import ContactTypeDto from '@/dto/contact-types/ContactTypeDto';
 
 export default class FetchContactTypes {
   static async get() {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/contact-types`;
-    const response = await fetch(URL);
+    const result = await FetchBackend('none', 'GET', 'contact-types');
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ContactTypeDto[] = await response.json();
+      const json: GetContactTypeDto[] = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 }
