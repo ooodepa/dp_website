@@ -16,6 +16,7 @@ import styles from '@/styles/ManagerItemEditorPage.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
 import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
+import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import CreateItemDto from '@/utils/FetchBackend/rest/api/items/dto/create-item.dto';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 
@@ -29,8 +30,20 @@ export default function ManagerItemCreatePage() {
       dp_name: '',
     },
   ]);
+  const [itemCategories, setItemCategories] = useState([
+    {
+      dp_id: 0,
+      dp_name: '',
+      // dp_sortingIndex: 0,
+      // dp_urlSegment: '',
+      // dp_photoUrl: '',
+      // dp_seoKeywords: '',
+      // dp_seoDescription: '',
+      // dp_isHidden: false,
+      // dp_itemBrandId: 0,
+    },
+  ]);
   const [data, setData] = useState({
-    dp_id: '',
     dp_name: '',
     dp_model: '',
     dp_cost: 0,
@@ -62,24 +75,23 @@ export default function ManagerItemCreatePage() {
         setIsAdmin(true);
 
         setItemCharacteristics(await FetchItemCharacteristics.get());
+        setItemCategories(await FetchItemCategories.get());
       } catch (exception) {
         await AsyncAlertExceptionHelper(exception);
       }
     })();
   }, []);
 
+  function handleOnChangeSelectElement(e: ChangeEvent<HTMLSelectElement>) {
+    setErrors({});
+    const { name, value } = e.target;
+    setData(prev => ({ ...prev, [name]: Number(value) }));
+  }
+
   function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
-    setErrors(prev => {});
+    setErrors({});
 
-    const { name } = e.target;
-
-    if (name === 'dp_isHidden') {
-      const { checked } = e.target;
-      setData(prev => ({ ...prev, [name]: !checked }));
-      return;
-    }
-
-    const { value, type } = e.target;
+    const { name, value, type } = e.target;
 
     if (type === 'number') {
       setData(prev => ({ ...prev, [name]: Number(value) }));
@@ -92,40 +104,32 @@ export default function ManagerItemCreatePage() {
       return;
     }
 
-    let arr = [...data.dp_itemCharacteristics];
     if (/^dp_itemCharacteristics\[\d+\]$/.test(name)) {
-      const characteristicId: number = Number(
-        name.replace('dp_itemCharacteristics[', '').replace(']', ''),
+      const characteristicId = Number(name.replace(/\D/g, ''));
+
+      const arr = data.dp_itemCharacteristics.filter(
+        e => e.dp_characteristicId !== characteristicId,
       );
-      let isAdded = false;
-      for (let i = 0; i < arr.length; ++i) {
-        if (arr[i].dp_characteristicId === characteristicId) {
-          arr[i].dp_value = value;
-          isAdded = true;
-          break;
-        }
-      }
+      arr.push({
+        dp_characteristicId: characteristicId,
+        dp_value: value,
+      });
 
-      if (!isAdded) {
-        arr.push({ dp_characteristicId: characteristicId, dp_value: value });
-      }
+      const resultArray = arr
+        .filter(e => e.dp_value.length)
+        .sort((a, b) => a.dp_characteristicId - b.dp_characteristicId);
 
-      setData(prev => ({
-        ...prev,
-        dp_itemCharacteristics: arr.filter(e => e.dp_value.length),
-      }));
-
+      setData(prev => ({ ...prev, dp_itemCharacteristics: resultArray }));
       return;
     }
 
     if (name === 'dp_itemGalery') {
-      setData(prev => ({
-        ...prev,
-        dp_itemGalery: value
-          .split(/\s+/)
-          .map(e => ({ dp_photoUrl: e }))
-          .filter(e => e.dp_photoUrl.length),
-      }));
+      const resultArray = value
+        .split(/\s+/)
+        .map(e => ({ dp_photoUrl: e }))
+        .filter(e => e.dp_photoUrl.length);
+
+      setData(prev => ({ ...prev, [name]: resultArray }));
       return;
     }
 
@@ -142,11 +146,15 @@ export default function ManagerItemCreatePage() {
     }
 
     if (data.dp_model.length === 0) {
-      formErrors.dp_model = 'Модель не указана (она обязательно)';
+      formErrors.dp_model = 'Модель не указана (она обязательна)';
     }
 
     if (data.dp_seoDescription.length === 0) {
       formErrors.dp_seoDescription = 'Описание не указано (оно обязательно)';
+    }
+
+    if (data.dp_itemCategoryId === 0) {
+      formErrors.dp_itemCategoryId = 'Категория не указана (она обязательна)';
     }
 
     setErrors(formErrors);
@@ -216,10 +224,6 @@ export default function ManagerItemCreatePage() {
               <td colSpan={2}>Основные характеристики</td>
             </tr>
             <tr>
-              <td>ID</td>
-              <td>{data.dp_id}</td>
-            </tr>
-            <tr>
               <td>Наименование</td>
               <td>
                 <MyInput
@@ -264,23 +268,53 @@ export default function ManagerItemCreatePage() {
                   id="isCheked"
                   type="checkbox"
                   name="dp_isHidden"
-                  checked={!data.dp_isHidden}
+                  checked={data.dp_isHidden}
                   onChange={handleOnChange}
                   errors={errors}
                 />
               </td>
             </tr>
             <tr>
-              <td>Код категории</td>
+              <td>Категория</td>
               <td>
-                <MyInput
-                  type="number"
-                  onChange={handleOnChange}
+                <select
                   name="dp_itemCategoryId"
-                  value={data.dp_itemCategoryId}
-                  min="0"
-                  errors={errors}
-                />
+                  onChange={handleOnChangeSelectElement}
+                  data-has-errors={
+                    (
+                      ((errors || {}) as Record<string, any>)[
+                        'dp_itemCategoryId'
+                      ] || ''
+                    ).length
+                      ? '1'
+                      : '0'
+                  }>
+                  <option value="0"> - - - Выберите категорию</option>
+                  {itemCategories.map(e => {
+                    return (
+                      <option
+                        key={e.dp_id}
+                        value={e.dp_id}
+                        selected={e.dp_id === data.dp_itemCategoryId}>
+                        {e.dp_id} - {e.dp_name}
+                      </option>
+                    );
+                  })}
+                </select>
+                <span
+                  data-has-errors={
+                    (
+                      ((errors || {}) as Record<string, any>)[
+                        'dp_itemCategoryId'
+                      ] || ''
+                    ).length
+                      ? '1'
+                      : '0'
+                  }>
+                  {((errors || {}) as Record<string, any>)[
+                    'dp_itemCategoryId'
+                  ] || 'нет ошибки'}
+                </span>
               </td>
             </tr>
             <tr>
@@ -292,6 +326,7 @@ export default function ManagerItemCreatePage() {
                   name="dp_photoUrl"
                   value={data.dp_photoUrl}
                   errors={errors}
+                  placeholder="https://example.com/image.png (укажите ссылку на изображение)"
                 />
               </td>
             </tr>
@@ -303,7 +338,7 @@ export default function ManagerItemCreatePage() {
                 ) : (
                   <Image
                     src={data.dp_photoUrl}
-                    alt="не рабочая ссылка"
+                    alt={`не рабочая ссылка ("${data.dp_photoUrl}")`}
                     width={100}
                     height={50}
                   />
@@ -354,21 +389,20 @@ export default function ManagerItemCreatePage() {
               <td></td>
               <td>
                 {!data.dp_itemGalery.length ? 'галерея пуста' : null}
-                {data.dp_itemGalery.map((e, index) => {
-                  if (!e.dp_photoUrl.length) {
-                    return <span key={index}>не указано изображение</span>;
-                  }
-
-                  return (
-                    <Image
-                      key={index}
-                      src={e.dp_photoUrl}
-                      alt="не рабочая ссылка"
-                      width={100}
-                      height={50}
-                    />
-                  );
-                })}
+                <ol>
+                  {data.dp_itemGalery.map((e, index) => {
+                    return (
+                      <li key={index}>
+                        <Image
+                          src={e.dp_photoUrl}
+                          alt={`не рабочая ссылка ("${e.dp_photoUrl}")`}
+                          width={100}
+                          height={50}
+                        />
+                      </li>
+                    );
+                  })}
+                </ol>
               </td>
             </tr>
             <tr>
@@ -397,11 +431,13 @@ export default function ManagerItemCreatePage() {
                 </tr>
               );
             })}
+            <tr>
+              <td colSpan={2}>
+                <input type="submit" value="Создать новый элемент" />
+              </td>
+            </tr>
           </tbody>
         </table>
-        <button type="submit" className={styles.form__button}>
-          Сохранить
-        </button>
       </form>
     </AppContainer>
   );
@@ -417,24 +453,17 @@ function MyInput(props: IMyInputProps<any>) {
   const currentError = errors[name] || '';
 
   return (
-    <div className={styles.form__input_block}>
+    <>
       {props.type !== 'checkbox' ? null : (
         <label
           htmlFor={props.id}
-          className={styles.form__checkbox}
-          custom-is-cheked={props.checked ? '0' : '1'}></label>
+          data-is-cheked={props.checked ? '1' : '0'}></label>
       )}
-      <input
-        className={styles.form__input}
-        custom-has-errors={!currentError.length ? '0' : '1'}
-        {...props}
-      />
-      <span
-        className={styles.input__error_block}
-        custom-has-errors={!currentError.length ? '0' : '1'}>
+      <input data-has-errors={currentError.length ? '1' : '0'} {...props} />
+      <span data-has-errors={currentError.length ? '1' : '0'}>
         {currentError}
       </span>
-    </div>
+    </>
   );
 }
 
@@ -448,19 +477,16 @@ function MyTextArea(props: IMyTextAreaProps<any>) {
   const currentError = errors[name] || '';
 
   return (
-    <div className={styles.form__textarea_block}>
+    <>
       <textarea
-        className={styles.form__textarea}
         name={props.name}
         onChange={props.onChange}
         value={props.value}
-        custom-has-errors={!currentError.length ? '0' : '1'}
+        data-has-errors={currentError.length ? '1' : '0'}
       />
-      <span
-        className={styles.textarea__error_block}
-        custom-has-errors={!currentError.length ? '0' : '1'}>
+      <span data-has-errors={currentError.length ? '1' : '0'}>
         {currentError}
       </span>
-    </div>
+    </>
   );
 }

@@ -1,10 +1,9 @@
 import FetchBackend from '@/utils/FetchBackend';
+import GetItemBrandDto from './dto/get-item-brand.dto';
+import CreateItemBrandDto from './dto/create-item-brand.dto';
 import UpdateItemBrandDto from './dto/update-item-brand.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 import HttpResponseDto from '@/utils/FetchBackend/dto/http-response.dto';
-import ItemBrandWithIdDto from '@/utils/FetchBackend/rest/api/item-brands/dto/item-brand-with-id.dto';
-import CreateItemBrandDto from './dto/create-item-brand.dto';
-import { Dispatch, SetStateAction } from 'react';
 
 export default class FetchItemBrand {
   static async get() {
@@ -12,7 +11,7 @@ export default class FetchItemBrand {
     const response = result.response;
 
     if (response.status === 200) {
-      const json: ItemBrandWithIdDto[] = await response.json();
+      const json: GetItemBrandDto[] = await response.json();
       return json;
     }
 
@@ -24,7 +23,7 @@ export default class FetchItemBrand {
     const response = result.response;
 
     if (response.status === 200) {
-      const json: ItemBrandWithIdDto = await response.json();
+      const json: GetItemBrandDto = await response.json();
       return json;
     }
 
@@ -40,7 +39,7 @@ export default class FetchItemBrand {
     const response = result.response;
 
     if (response.status === 200) {
-      const json: ItemBrandWithIdDto = await response.json();
+      const json: GetItemBrandDto = await response.json();
       return json;
     }
 

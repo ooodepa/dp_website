@@ -98,7 +98,7 @@ export default function ManagerItemsPage() {
     }
 
     setItems(filteredItems);
-  }, [filterCategoryId, filterModel, filterName]);
+  }, [filterCategoryId, filterModel, filterName, items]);
 
   useEffect(() => {
     if (!isReverseSort && sortType === 'name') {

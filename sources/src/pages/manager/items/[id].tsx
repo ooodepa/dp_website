@@ -17,6 +17,7 @@ import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import YouAreNotAdmin from '@/components/YouAreNotAdmin/YouAreNotAdmin';
 import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
+import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import UpdateItemDto from '@/utils/FetchBackend/rest/api/items/dto/update-item.dto';
 import BrowserDownloadFileController from '@/package/BrowserDownloadFileController';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
@@ -31,6 +32,19 @@ export default function ManagerItemUpdatePage() {
     {
       dp_id: 0,
       dp_name: '',
+    },
+  ]);
+  const [itemCategories, setItemCategories] = useState([
+    {
+      dp_id: 0,
+      dp_name: '',
+      // dp_sortingIndex: 0,
+      // dp_urlSegment: '',
+      // dp_photoUrl: '',
+      // dp_seoKeywords: '',
+      // dp_seoDescription: '',
+      // dp_isHidden: false,
+      // dp_itemBrandId: 0,
     },
   ]);
   const [original, setOriginal] = useState({
@@ -115,6 +129,7 @@ export default function ManagerItemUpdatePage() {
         setIs404(false);
 
         setItemCharacteristics(await FetchItemCharacteristics.get());
+        setItemCategories(await FetchItemCategories.get());
       } catch (exception) {
         if (exception instanceof HttpException) {
           if (exception.HTTP_STATUS === 404) {
@@ -127,6 +142,12 @@ export default function ManagerItemUpdatePage() {
       }
     })();
   }, [route.query?.id]);
+
+  function handleOnChangeSelectElement(e: ChangeEvent<HTMLSelectElement>) {
+    setErrors({});
+    const { name, value } = e.target;
+    setData(prev => ({ ...prev, [name]: Number(value) }));
+  }
 
   function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value, type } = e.target;
@@ -142,29 +163,22 @@ export default function ManagerItemUpdatePage() {
       return;
     }
 
-    let arr = [...data.dp_itemCharacteristics];
     if (/^dp_itemCharacteristics\[\d+\]$/.test(name)) {
-      const characteristicId: number = Number(
-        name.replace('dp_itemCharacteristics[', '').replace(']', ''),
+      const characteristicId = Number(name.replace(/\D/g, ''));
+
+      const arr = data.dp_itemCharacteristics.filter(
+        e => e.dp_characteristicId !== characteristicId,
       );
-      let isAdded = false;
-      for (let i = 0; i < arr.length; ++i) {
-        if (arr[i].dp_characteristicId === characteristicId) {
-          arr[i].dp_value = value;
-          isAdded = true;
-          break;
-        }
-      }
+      arr.push({
+        dp_characteristicId: characteristicId,
+        dp_value: value,
+      });
 
-      if (!isAdded) {
-        arr.push({ dp_characteristicId: characteristicId, dp_value: value });
-      }
+      const resultArray = arr
+        .filter(e => e.dp_value.length)
+        .sort((a, b) => a.dp_characteristicId - b.dp_characteristicId);
 
-      setData(prev => ({
-        ...prev,
-        dp_itemCharacteristics: arr.filter(e => e.dp_value.length),
-      }));
-
+      setData(prev => ({ ...prev, dp_itemCharacteristics: resultArray }));
       return;
     }
 
@@ -192,11 +206,15 @@ export default function ManagerItemUpdatePage() {
     }
 
     if (data.dp_model.length === 0) {
-      formErrors.dp_model = 'Модель не указана (она обязательно)';
+      formErrors.dp_model = 'Модель не указана (она обязательна)';
     }
 
     if (data.dp_seoDescription.length === 0) {
       formErrors.dp_seoDescription = 'Описание не указано (оно обязательно)';
+    }
+
+    if (data.dp_itemCategoryId === 0) {
+      formErrors.dp_itemCategoryId = 'Категория не указана (она обязательна)';
     }
 
     setErrors(formErrors);
@@ -275,7 +293,7 @@ export default function ManagerItemUpdatePage() {
 
     setModal(
       <AppModal
-        title="Сохранение элемента"
+        title="Обновление элемента"
         message="Вы отредактировали элемент, но не сохранили.">
         <button onClick={() => setModal(<></>)}>Вернуться к форме</button>
         <button onClick={() => route.push('/manager/items')}>
@@ -297,7 +315,7 @@ export default function ManagerItemUpdatePage() {
     <AppContainer>
       {modal}
       <h2>Редактор номенклатуры</h2>
-      <div className={styles.specialButtons}>
+      <div style={{ textAlign: 'right' }}>
         <button className={styles.form__button} onClick={saveAsJson}>
           Скачать как JSON
         </button>
@@ -367,16 +385,46 @@ export default function ManagerItemUpdatePage() {
               </td>
             </tr>
             <tr>
-              <td>Код категории</td>
+              <td>Категории</td>
               <td>
-                <MyInput
-                  type="number"
-                  onChange={handleOnChange}
+                <select
                   name="dp_itemCategoryId"
-                  value={data.dp_itemCategoryId}
-                  min="0"
-                  errors={errors}
-                />
+                  onChange={handleOnChangeSelectElement}
+                  data-has-errors={
+                    (
+                      ((errors || {}) as Record<string, any>)[
+                        'dp_itemCategoryId'
+                      ] || ''
+                    ).length
+                      ? '1'
+                      : '0'
+                  }>
+                  <option value="0"> - - - Выберите категорию</option>
+                  {itemCategories.map(e => {
+                    return (
+                      <option
+                        key={e.dp_id}
+                        value={e.dp_id}
+                        selected={e.dp_id === data.dp_itemCategoryId}>
+                        {e.dp_id} - {e.dp_name}
+                      </option>
+                    );
+                  })}
+                </select>
+                <span
+                  data-has-errors={
+                    (
+                      ((errors || {}) as Record<string, any>)[
+                        'dp_itemCategoryId'
+                      ] || ''
+                    ).length
+                      ? '1'
+                      : '0'
+                  }>
+                  {((errors || {}) as Record<string, any>)[
+                    'dp_itemCategoryId'
+                  ] || 'нет ошибки'}
+                </span>
               </td>
             </tr>
             <tr>
@@ -388,6 +436,7 @@ export default function ManagerItemUpdatePage() {
                   name="dp_photoUrl"
                   value={data.dp_photoUrl}
                   errors={errors}
+                  placeholder="https://example.com/image.png (укажите ссылку на изображение)"
                 />
               </td>
             </tr>
@@ -399,7 +448,7 @@ export default function ManagerItemUpdatePage() {
                 ) : (
                   <Image
                     src={data.dp_photoUrl}
-                    alt="не рабочая ссылка"
+                    alt={`не рабочая ссылка ("${data.dp_photoUrl}")`}
                     width={100}
                     height={50}
                   />
@@ -450,21 +499,20 @@ export default function ManagerItemUpdatePage() {
               <td></td>
               <td>
                 {!data.dp_itemGalery.length ? 'галерея пуста' : null}
-                {data.dp_itemGalery.map((e, index) => {
-                  if (!e.dp_photoUrl.length) {
-                    return <span key={index}>не указано изображение</span>;
-                  }
-
-                  return (
-                    <Image
-                      key={index}
-                      src={e.dp_photoUrl}
-                      alt="не рабочая ссылка"
-                      width={100}
-                      height={50}
-                    />
-                  );
-                })}
+                <ol>
+                  {data.dp_itemGalery.map((e, index) => {
+                    return (
+                      <li key={index}>
+                        <Image
+                          src={e.dp_photoUrl}
+                          alt={`не рабочая ссылка ("${e.dp_photoUrl}")`}
+                          width={100}
+                          height={50}
+                        />
+                      </li>
+                    );
+                  })}
+                </ol>
               </td>
             </tr>
             <tr>
@@ -493,11 +541,13 @@ export default function ManagerItemUpdatePage() {
                 </tr>
               );
             })}
+            <tr>
+              <td colSpan={2}>
+                <input type="submit" value="Обновить элемент" />
+              </td>
+            </tr>
           </tbody>
         </table>
-        <button type="submit" className={styles.form__button}>
-          Сохранить
-        </button>
       </form>
     </AppContainer>
   );
@@ -513,24 +563,17 @@ function MyInput(props: IMyInputProps<any>) {
   const currentError = errors[name] || '';
 
   return (
-    <div className={styles.form__input_block}>
+    <>
       {props.type !== 'checkbox' ? null : (
         <label
           htmlFor={props.id}
-          className={styles.form__checkbox}
-          custom-is-cheked={props.checked ? '1' : '0'}></label>
+          data-is-cheked={props.checked ? '1' : '0'}></label>
       )}
-      <input
-        className={styles.form__input}
-        custom-has-errors={!currentError.length ? '0' : '1'}
-        {...props}
-      />
-      <span
-        className={styles.input__error_block}
-        custom-has-errors={!currentError.length ? '0' : '1'}>
+      <input data-has-errors={!currentError.length ? '0' : '1'} {...props} />
+      <span data-has-errors={!currentError.length ? '0' : '1'}>
         {currentError}
       </span>
-    </div>
+    </>
   );
 }
 
@@ -544,19 +587,16 @@ function MyTextArea(props: IMyTextAreaProps<any>) {
   const currentError = errors[name] || '';
 
   return (
-    <div className={styles.form__textarea_block}>
+    <>
       <textarea
-        className={styles.form__textarea}
         name={props.name}
         onChange={props.onChange}
         value={props.value}
-        custom-has-errors={!currentError.length ? '0' : '1'}
+        data-has-errors={currentError.length ? '1' : '0'}
       />
-      <span
-        className={styles.textarea__error_block}
-        custom-has-errors={!currentError.length ? '0' : '1'}>
+      <span data-has-errors={currentError.length ? '1' : '0'}>
         {currentError}
       </span>
-    </div>
+    </>
   );
 }

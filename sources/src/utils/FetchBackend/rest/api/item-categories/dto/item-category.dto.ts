@@ -1,5 +1,4 @@
 export default interface ItemCategoryDto {
-  dp_id: number;
   dp_name: string;
   dp_sortingIndex: number;
   dp_urlSegment: string;

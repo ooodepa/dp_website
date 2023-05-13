@@ -5,16 +5,16 @@ import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
-import ItemCategoryDto from '@/dto/item-category/ItemCategoryDto';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import ItemCategoryPosts from '@/components/ItemCategoryPosts/ItemCategoryPosts';
-import ItemBrandWithIdDto from '@/utils/FetchBackend/rest/api/item-brands/dto/item-brand-with-id.dto';
+import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
+import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
 
 interface IProps {
-  itemCategories: ItemCategoryDto[];
-  itemBrand: ItemBrandWithIdDto;
+  itemCategories: GetItemCategoryDto[];
+  itemBrand: GetItemBrandDto;
 }
 
 export default function BrandPage(props: IProps) {

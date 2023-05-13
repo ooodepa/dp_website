@@ -3,11 +3,11 @@ import Image from 'next/image';
 
 import styles from './ItemCategoryPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
-import ItemCategoryDto from '@/dto/item-category/ItemCategoryDto';
+import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
 
 interface IProps {
   brand: string;
-  categories: ItemCategoryDto[];
+  categories: GetItemCategoryDto[];
 }
 
 export default function ItemCategoryPosts(props: IProps) {
