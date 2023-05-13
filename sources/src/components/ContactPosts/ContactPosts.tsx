@@ -7,12 +7,12 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './ContactPosts.module.css';
-import HelperDto from '@/dto/helpers/HelperDto';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import GetHelperDto from '@/utils/FetchBackend/rest/api/helpers/dto/get-helper.dto';
 import GetContactTypeDto from '@/utils/FetchBackend/rest/api/contact-types/dto/get-contact-type.dto';
 
 interface IProps {
-  helpers: HelperDto[];
+  helpers: GetHelperDto[];
   contactTypes: GetContactTypeDto[];
 }
 

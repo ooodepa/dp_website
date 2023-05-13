@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import AppMap from '@/components/AppMap/AppMap';
-import HelperDto from '@/dto/helpers/HelperDto';
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
@@ -15,12 +14,13 @@ import FetchArticles from '@/utils/FetchBackend/rest/api/article';
 import BlogContainer from '@/components/BlogContainer/BlogContainer';
 import AppDescription from '@/components/AppDescription/AppDescription';
 import FetchContactTypes from '@/utils/FetchBackend/rest/api/contact-types';
+import GetHelperDto from '@/utils/FetchBackend/rest/api/helpers/dto/get-helper.dto';
 import GetArticleDto from '@/utils/FetchBackend/rest/api/article/dto/get-article.dto';
 import GetContactTypeDto from '@/utils/FetchBackend/rest/api/contact-types/dto/get-contact-type.dto';
 
 interface IProps {
   article: GetArticleDto;
-  helpers: HelperDto[];
+  helpers: GetHelperDto[];
   contactTypes: GetContactTypeDto[];
 }
 
@@ -63,7 +63,7 @@ export async function getStaticProps(context: IServerSideProps) {
   const { page } = context.params;
 
   const article = await FetchArticles.filterOneByUrl(page);
-  let helpers: HelperDto[] = [];
+  let helpers: GetHelperDto[] = [];
   let contactTypes: GetContactTypeDto[] = [];
 
   if (page === 'contacts') {

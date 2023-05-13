@@ -1,3 +1,5 @@
+import HelperDto from './helper.dto';
+
 interface HelperContactTypes {
   dp_id: number;
   dp_helperId: string;
@@ -6,11 +8,7 @@ interface HelperContactTypes {
   dp_isHidden: boolean;
 }
 
-export default interface HelperDto {
+export default interface HelperWithIdDto extends HelperDto {
   dp_id: string;
-  dp_sortingIndex: number;
-  dp_name: string;
-  dp_description: string;
-  dp_isHidden: boolean;
   dp_helperContactTypes: HelperContactTypes[];
 }
