@@ -4,11 +4,11 @@ import Image from 'next/image';
 import styles from './Item.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
-import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
+import GetItemCharacteristicDto from '@/utils/FetchBackend/rest/api/item-characteristics/dto/get-item-characteristic.dto';
 
 interface IProps {
   item: ItemDto;
-  itemCharacteristics: ItemCharacteristicsDto[];
+  itemCharacteristics: GetItemCharacteristicDto[];
   brand: string;
   category: string;
 }

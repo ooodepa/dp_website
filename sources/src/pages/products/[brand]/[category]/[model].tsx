@@ -11,12 +11,12 @@ import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
-import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
+import GetItemCharacteristicDto from '@/utils/FetchBackend/rest/api/item-characteristics/dto/get-item-characteristic.dto';
 
 interface IProps {
   item: ItemDto;
-  itemCharacteristics: ItemCharacteristicsDto[];
+  itemCharacteristics: GetItemCharacteristicDto[];
 }
 
 export default function ModelPage(props: IProps) {

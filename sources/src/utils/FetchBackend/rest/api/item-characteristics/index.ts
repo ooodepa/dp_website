@@ -1,15 +1,17 @@
-import AppEnv from '@/AppEnv';
+import FetchBackend from '@/utils/FetchBackend';
 import HttpException from '@/utils/FetchBackend/HttpException';
-import ItemCharacteristicsDto from '@/dto/item-characteristics/ItemCharacteristicsDto';
+import GetItemCharacteristicDto from './dto/get-item-characteristic.dto';
 
 export default class FetchItemCharacteristics {
   static async get() {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/item-characteristics`;
-    const response = await fetch(URL);
+    const result = await FetchBackend('none', 'GET', 'item-characteristics');
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ItemCharacteristicsDto[] = await response.json();
+      const json: GetItemCharacteristicDto[] = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 }
