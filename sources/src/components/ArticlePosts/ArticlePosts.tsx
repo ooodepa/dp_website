@@ -3,11 +3,11 @@ import { faFile } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './ArticlePosts.module.css';
-import ArticleDto from '@/dto/article/ArticleDto';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import GetArticleDto from '@/utils/FetchBackend/rest/api/article/dto/get-article.dto';
 
 interface IProps {
-  article: ArticleDto;
+  article: GetArticleDto;
 }
 
 export default function ArticlePosts(props: IProps) {

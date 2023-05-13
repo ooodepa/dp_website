@@ -1,25 +1,33 @@
-import AppEnv from '@/AppEnv';
-import ArticleDto from '@/dto/article/ArticleDto';
+import FetchBackend from '@/utils/FetchBackend';
+import GetArticleDto from './dto/get-article.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 
 export default class FetchArticles {
   static async get() {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/articles`;
-    const response = await fetch(URL);
+    const result = await FetchBackend('none', 'GET', 'articles');
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ArticleDto[] = await response.json();
+      const json: GetArticleDto[] = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 
   static async filterOneByUrl(url: string) {
-    const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/articles/filter-one/url/${url}`;
-    const response = await fetch(URL);
+    const result = await FetchBackend(
+      'none',
+      'GET',
+      `articles/filter-one/url/${url}`,
+    );
+    const response = result.response;
+
     if (response.status === 200) {
-      const json: ArticleDto = await response.json();
+      const json: GetArticleDto = await response.json();
       return json;
     }
-    throw new HttpException('GET', response);
+
+    throw new HttpException(result.method, response);
   }
 }
