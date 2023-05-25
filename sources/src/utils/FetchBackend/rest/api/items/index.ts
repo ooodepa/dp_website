@@ -30,7 +30,7 @@ export default class FetchItems {
   }
 
   static async filterByCategory(category: string) {
-    const result = await FetchBackend('none', 'GET', 'items?category=');
+    const result = await FetchBackend('none', 'GET', `items?category=${category}`);
     const response = result.response;
 
     if (response.status === 200) {

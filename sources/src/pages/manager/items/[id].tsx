@@ -135,6 +135,9 @@ export default function ManagerItemUpdatePage() {
           if (exception.HTTP_STATUS === 404) {
             setIs404(true);
           }
+          if (exception.HTTP_STATUS === 401) {
+            route.push('/manager');
+          }
           return;
         }
 
@@ -390,6 +393,7 @@ export default function ManagerItemUpdatePage() {
                 <select
                   name="dp_itemCategoryId"
                   onChange={handleOnChangeSelectElement}
+                  defaultValue="0"
                   data-has-errors={
                     (
                       ((errors || {}) as Record<string, any>)[
@@ -503,12 +507,14 @@ export default function ManagerItemUpdatePage() {
                   {data.dp_itemGalery.map((e, index) => {
                     return (
                       <li key={index}>
-                        <Image
-                          src={e.dp_photoUrl}
-                          alt={`не рабочая ссылка ("${e.dp_photoUrl}")`}
-                          width={100}
-                          height={50}
-                        />
+                        {!e.dp_photoUrl.length ? 'не указано изображение' : (
+                          <Image
+                            src={e.dp_photoUrl}
+                            alt={`не рабочая ссылка ("${e.dp_photoUrl}")`}
+                            width={100}
+                            height={50}
+                          />
+                        )}
                       </li>
                     );
                   })}

@@ -27,16 +27,25 @@ export default function ManagerPage() {
 
   useEffect(() => {
     (async function () {
-      const isAdmin = await FetchUsers.isAdmin();
-
-      if (!isAdmin) {
+      try {
+        const isAdmin = await FetchUsers.isAdmin();
+  
+        if (!isAdmin) {
+          setIsAdmin(false);
+          route.push('/manager/login');
+        }
+  
+        setIsAdmin(true);
+      } catch(exception) {
         setIsAdmin(false);
         route.push('/manager/login');
       }
-
-      setIsAdmin(true);
     })();
   }, [route]);
+
+  if (!isAdmin) {
+    return <div>Вы не администратор</div>
+  }
 
   return (
     <nav className={styles.wrapper}>

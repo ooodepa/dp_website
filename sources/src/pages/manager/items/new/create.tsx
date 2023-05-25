@@ -280,6 +280,7 @@ export default function ManagerItemCreatePage() {
                 <select
                   name="dp_itemCategoryId"
                   onChange={handleOnChangeSelectElement}
+                  defaultValue="0"
                   data-has-errors={
                     (
                       ((errors || {}) as Record<string, any>)[

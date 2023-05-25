@@ -1,10 +1,10 @@
-import AppEnv from '@/AppEnv';
 import FetchBackend from '@/utils/FetchBackend';
-import HttpException from '@/utils/FetchBackend/HttpException';
 import { Dispatch, SetStateAction } from 'react';
-
-import HttpResponseDto from '@/utils/FetchBackend/dto/http-response.dto';
 import AppModal from '@/components/AppModal/AppModal';
+import HttpException from '@/utils/FetchBackend/HttpException';
+import HttpResponseDto from '@/utils/FetchBackend/dto/http-response.dto';
+import UpdateSessionResponseDto from './dto/update-session-response.dto';
+import CreateSessionResponseDto from './dto/create-session-response.dto';
 
 export default class FetchSessions {
   static async create(

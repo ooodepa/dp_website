@@ -1,5 +1,32 @@
 import AppEnv from '@/AppEnv';
 import FetchSessions from './rest/api/sessions';
+import HttpException from './HttpException';
+
+async function update() {
+  const refreshToken = localStorage.getItem('refresh');
+
+  if (!refreshToken) {
+    throw new Error('Войдите в аккаунт');
+  }
+
+  const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/sessions`;
+  const response = await fetch(URL, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `token`
+    }
+  });
+
+  if (response.status === 200) {
+    return true;
+  }
+
+  if (response.status === 401) {
+    throw new HttpException('PATCH', response);
+  }
+
+  throw new HttpException('PATCH', response);
+}
 
 interface FetchBackendResult {
   response: Response;
@@ -19,6 +46,9 @@ export default async function FetchBackend(
       ? `Bearer ${localStorage.getItem('refresh')}`
       : undefined;
 
+    // eslint-disable-next-line no-console
+    console.log(`${method} /api/v1/${uri}`);
+
   if (method === 'GET') {
     const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/${uri}`;
     const response = await fetch(URL, {
@@ -26,7 +56,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      await FetchSessions.update();
+      await update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -55,7 +85,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      await FetchSessions.update();
+      await update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -86,7 +116,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      await FetchSessions.update();
+      await update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -117,7 +147,7 @@ export default async function FetchBackend(
     });
 
     if (response.status === 401) {
-      await FetchSessions.update();
+      await update();
       const token: string | undefined =
         type === 'access'
           ? `Bearer ${localStorage.getItem('access')}`
@@ -145,7 +175,7 @@ export default async function FetchBackend(
   });
 
   if (response.status === 401) {
-    await FetchSessions.update();
+    await update();
     const token: string | undefined =
       type === 'access'
         ? `Bearer ${localStorage.getItem('access')}`

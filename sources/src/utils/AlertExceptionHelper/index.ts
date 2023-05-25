@@ -1,14 +1,8 @@
 import HttpException from '../FetchBackend/HttpException';
 import HttpResponseDto from '../FetchBackend/dto/http-response.dto';
-import RefreshTokenNotFoundException from '../FetchBackend/RefreshTokenNotFoundException';
 
 export default function AlertExceptionHelper(exception: any) {
   try {
-    if (exception instanceof RefreshTokenNotFoundException) {
-      window.location.replace('/manager');
-      return;
-    }
-
     if (
       exception instanceof TypeError &&
       exception.message === 'Network request failed'

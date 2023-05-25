@@ -1,7 +1,7 @@
 import AppEnv from '@/AppEnv';
-import styles from './AppMap.module.css';
+import styles from './GoogleMap.module.css';
 
-export default function AppMap() {
+export default function GoogleMap() {
   return (
     <div className={styles.map}>
       <iframe
