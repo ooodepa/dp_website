@@ -4,5 +4,5 @@ module.exports = {
   generateRobotsTxt: true,
   priority: 0.5,
   changefreq: 'weekly',
-  exclude: ['/manager', '/manager/*'],
+  exclude: [],
 };
