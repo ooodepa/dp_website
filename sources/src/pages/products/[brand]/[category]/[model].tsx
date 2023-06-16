@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 import Item from '@/components/Item/Item';
 import AppHead from '@/components/AppHead/AppHead';
@@ -9,19 +10,27 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
+import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
 import GetItemCharacteristicDto from '@/utils/FetchBackend/rest/api/item-characteristics/dto/get-item-characteristic.dto';
 
 interface IProps {
-  item: ItemDto;
+  item: GetItemDto;
   itemCharacteristics: GetItemCharacteristicDto[];
 }
 
 export default function ModelPage(props: IProps) {
   const route = useRouter();
   const { brand, category, model } = route.query;
+  const [data, setData] = useState<GetItemDto>(props.item);
+
+  useEffect(() => {
+    (async function() {
+      const dataItem = await FetchItems.filterOneByModel(`${model}`);
+      setData(dataItem);
+    })();
+  }, [model]);
 
   return (
     <AppWrapper>
@@ -31,7 +40,7 @@ export default function ModelPage(props: IProps) {
       <AppHead />
       <Breadcrumbs />
       <Item
-        item={props.item}
+        item={data}
         itemCharacteristics={props.itemCharacteristics}
         brand={`${brand}`}
         category={`${category}`}
@@ -44,7 +53,7 @@ export async function getStaticProps(context: any) {
   const { model } = context.params;
 
   const item = await FetchItems.filterOneByModel(model);
-  const itemCharacteristics = await FetchItemCharacteristics.get();
+  const itemCharacteristics = (await FetchItemCharacteristics.get());
 
   const props: IProps = { item, itemCharacteristics };
   return { props };
@@ -59,9 +68,13 @@ interface IServerSideProps {
 }
 
 export async function getStaticPaths() {
-  const itemBrand = await FetchItemBrand.get();
-  const itemsCategories = await FetchItemCategories.get();
-  const items = await FetchItems.get();
+  const itemBrand = (await FetchItemBrand.get()).filter(
+    obj => !obj.dp_isHidden,
+  );
+  const itemsCategories = (await FetchItemCategories.get()).filter(
+    obj => !obj.dp_isHidden,
+  );
+  const items = (await FetchItems.get());
 
   let paths: IServerSideProps[] = [];
 
@@ -85,13 +98,16 @@ export async function getStaticPaths() {
       }
     }
 
-    paths.push({
-      params: {
-        model: element.dp_model,
-        category,
-        brand,
-      },
-    });
+    if (category !== 'undefined' && brand !== 'undefined') {
+      paths.push({
+        params: {
+          model: element.dp_model,
+          category,
+          brand,
+        },
+      });
+    }
+
   });
 
   return {

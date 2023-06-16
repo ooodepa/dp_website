@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
@@ -20,6 +21,15 @@ interface IProps {
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { brand } = route.query;
+  const [arr,setArr] = useState<GetItemCategoryDto[]>(props.itemCategories);
+
+  useEffect(() => {
+    (async function() {
+      const arrCategories = await FetchItemCategories.filterByBrand(`${brand}`);
+      setArr(arrCategories);
+    })();
+  }, [brand]);
+
 
   return (
     <AppWrapper>
@@ -29,7 +39,7 @@ export default function BrandPage(props: IProps) {
       <AppHead />
       <Breadcrumbs />
       <h1>{props.itemBrand.dp_name}</h1>
-      <ItemCategoryPosts brand={`${brand}`} categories={props.itemCategories} />
+      <ItemCategoryPosts brand={`${brand}`} categories={arr} />
     </AppWrapper>
   );
 }
@@ -43,9 +53,9 @@ interface IServerSideProps {
 export async function getStaticProps(context: IServerSideProps) {
   const { brand } = context.params;
 
-  const itemCategories = (await FetchItemCategories.filterByBrand(brand)).sort(
-    (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
-  );
+  const itemCategories = (
+    await FetchItemCategories.filterByBrand(brand)
+  ).filter(obj => !obj.dp_isHidden);
   const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
   const props: IProps = { itemCategories, itemBrand };
@@ -53,7 +63,7 @@ export async function getStaticProps(context: IServerSideProps) {
 }
 
 export async function getStaticPaths() {
-  const brands = await FetchItemBrand.get();
+  const brands = (await FetchItemBrand.get()).filter(obj => !obj.dp_isHidden);
 
   let paths: IServerSideProps[] = [];
 

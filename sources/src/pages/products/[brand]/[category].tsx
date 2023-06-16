@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
@@ -9,18 +10,26 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import ItemPosts from '@/components/ItemPosts/ItemCategoryPosts';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
+import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
 
 interface IProps {
-  items: ItemDto[];
+  items: GetItemDto[];
   itemCategory: GetItemCategoryDto;
 }
 
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { brand, category } = route.query;
+  const [arr, setArr] = useState<GetItemDto[]>(props.items);
+
+  useEffect(() => {
+    (async function() {
+      const arrItems = await FetchItems.filterByCategory(`${category}`);
+      setArr(arrItems);
+    })();
+  }, [category]);
 
   return (
     <AppWrapper>
@@ -33,7 +42,7 @@ export default function BrandPage(props: IProps) {
       <ItemPosts
         brand={`${brand}`}
         category={`${category}`}
-        items={props.items}
+        items={arr}
       />
     </AppWrapper>
   );
@@ -42,7 +51,9 @@ export default function BrandPage(props: IProps) {
 export async function getStaticProps(context: any) {
   const { category } = context.params;
 
-  const items = await FetchItems.filterByCategory(category);
+  const items = (await FetchItems.filterByCategory(category)).filter(
+    obj => !obj.dp_isHidden,
+  );
   const itemCategory = await FetchItemCategories.filterOneByUrl(category);
 
   const props: IProps = { items, itemCategory };
@@ -57,8 +68,12 @@ interface IServerSideProps {
 }
 
 export async function getStaticPaths() {
-  const itemsCategories = await FetchItemCategories.get();
-  const itemBrand = await FetchItemBrand.get();
+  const itemsCategories = (await FetchItemCategories.get()).filter(
+    obj => !obj.dp_isHidden,
+  );
+  const itemBrand = (await FetchItemBrand.get()).filter(
+    obj => !obj.dp_isHidden,
+  );
 
   let paths: IServerSideProps[] = [];
 
@@ -71,12 +86,14 @@ export async function getStaticPaths() {
       }
     }
 
-    paths.push({
-      params: {
-        category: element.dp_urlSegment,
-        brand: brand,
-      },
-    });
+    if (brand !== 'undefined') {
+      paths.push({
+        params: {
+          category: element.dp_urlSegment,
+          brand: brand,
+        },
+      });
+    }
   });
 
   return {

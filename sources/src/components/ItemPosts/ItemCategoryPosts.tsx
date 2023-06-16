@@ -3,12 +3,12 @@ import Image from 'next/image';
 
 import styles from './ItemPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
-import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
+import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 
 interface IProps {
   brand: string;
   category: string;
-  items: ItemDto[];
+  items: GetItemDto[];
 }
 
 export default function ItemPosts(props: IProps) {

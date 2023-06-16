@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
@@ -12,6 +14,15 @@ interface IProps {
 }
 
 export default function BrandsPage(props: IProps) {
+  const [arr, setArr] = useState<GetItemBrandDto[]>(props.brands);
+
+  useEffect(() => {
+    (async function() {
+      const arrayBrands = await FetchItemBrand.get();
+      setArr(arrayBrands);
+    })();
+  }, []);
+
   return (
     <AppWrapper>
       <AppTitle title="Бренды" />
@@ -19,15 +30,13 @@ export default function BrandsPage(props: IProps) {
       <AppHead />
       <Breadcrumbs />
       <h1>Бренды</h1>
-      <BrandItemPosts brands={props.brands} />
+      <BrandItemPosts brands={arr} />
     </AppWrapper>
   );
 }
 
 export async function getStaticProps() {
-  const brands = (await FetchItemBrand.get()).sort(
-    (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
-  );
+  const brands = (await FetchItemBrand.get()).filter(obj => !obj.dp_isHidden);
 
   return {
     props: { brands },
