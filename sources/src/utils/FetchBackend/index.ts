@@ -13,8 +13,8 @@ async function update() {
   const response = await fetch(URL, {
     method: 'PATCH',
     headers: {
-      Authorization: `token`
-    }
+      Authorization: `token`,
+    },
   });
 
   if (response.status === 200) {
@@ -46,8 +46,8 @@ export default async function FetchBackend(
       ? `Bearer ${localStorage.getItem('refresh')}`
       : undefined;
 
-    // eslint-disable-next-line no-console
-    console.log(`${method} /api/v1/${uri}`);
+  // eslint-disable-next-line no-console
+  console.log(`${method} /api/v1/${uri}`);
 
   if (method === 'GET') {
     const URL = `${AppEnv.NEXT_PUBLIC__BACKEND_URL}/api/v1/${uri}`;

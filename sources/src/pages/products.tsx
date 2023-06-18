@@ -17,7 +17,7 @@ export default function BrandsPage(props: IProps) {
   const [arr, setArr] = useState<GetItemBrandDto[]>(props.brands);
 
   useEffect(() => {
-    (async function() {
+    (async function () {
       const arrayBrands = await FetchItemBrand.get();
       setArr(arrayBrands);
     })();

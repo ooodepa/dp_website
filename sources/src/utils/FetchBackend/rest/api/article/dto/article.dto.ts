@@ -11,5 +11,6 @@ export default interface ArticleDto {
   dp_text: string;
   dp_seoKeywords: string;
   dp_seoDescription: string;
+  dp_isHidden: boolean;
   dp_articleAttachedLinks: ArticleAttachedLinks[];
 }
