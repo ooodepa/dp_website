@@ -11,4 +11,3 @@ yarn add -D next-sitemap
 yarn add -D @next/env
 yarn add xlsx
 yarn add sharp
-yarn remove next-sitemap

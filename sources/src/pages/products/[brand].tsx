@@ -43,54 +43,64 @@ export default function BrandPage(props: IProps) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  try {
-    const { brand } = context.params;
+// export async function getServerSideProps(context: any) {
+//   try {
+//     const { brand } = context.params;
 
-    const itemCategories = (
-      await FetchItemCategories.filterByBrand(`${brand}`)
-    ).filter(obj => !obj.dp_isHidden);
+//     const itemCategories = (
+//       await FetchItemCategories.filterByBrand(`${brand}`)
+//     ).filter(obj => !obj.dp_isHidden);
 
-    const itemBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
+//     const itemBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
 
-    const props: IProps = { itemCategories, itemBrand };
-    return { props };
-  } catch (exception) {
-    return {
-      notFound: true, // Return a 404 status code
-    };
-  }
+//     const props: IProps = { itemCategories, itemBrand };
+//     return { props };
+//   } catch (exception) {
+//     return {
+//       notFound: true, // Return a 404 status code
+//     };
+//   }
+// }
+
+// export const dynamicParams = true;
+
+// export const revalidate = 10; 
+
+interface IServerSideProps {
+  params: {
+    brand: string;
+  };
 }
 
-// export async function getStaticProps(context: IServerSideProps) {
-//   const { brand } = context.params;
+export async function getStaticProps(context: IServerSideProps) {
+  const { brand } = context.params;
 
-//   const itemCategories = (
-//     await FetchItemCategories.filterByBrand(brand)
-//   ).filter(obj => !obj.dp_isHidden);
-//   const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
+  const itemCategories = (
+    await FetchItemCategories.filterByBrand(brand)
+  ).filter(obj => !obj.dp_isHidden);
+  const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
-//   const props: IProps = { itemCategories, itemBrand };
-//   return { props };
-// }
+  const props: IProps = { itemCategories, itemBrand };
+  return { props };
+}
 
-// export async function getStaticPaths() {
-//   const brands = (await FetchItemBrand.get()).filter(obj => !obj.dp_isHidden);
+export async function getStaticPaths() {
+  const brands = (await FetchItemBrand.get()).filter(obj => !obj.dp_isHidden);
 
-//   let paths: IServerSideProps[] = [];
+  let paths: IServerSideProps[] = [];
 
-//   brands.forEach(element => {
-//     if (!element.dp_isHidden) {
-//       paths.push({
-//         params: {
-//           brand: element.dp_urlSegment,
-//         },
-//       });
-//     }
-//   });
+  brands.forEach(element => {
+    if (!element.dp_isHidden) {
+      paths.push({
+        params: {
+          brand: element.dp_urlSegment,
+        },
+      });
+    }
+  });
 
-//   return {
-//     paths,
-//     fallback: false,
-//   };
-// }
+  return {
+    paths,
+    fallback: false,
+  };
+}

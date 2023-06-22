@@ -49,85 +49,98 @@ export default function ModelPage(props: IProps) {
   );
 }
 
-export async function getServerSideProps(context: any) {
-  try {
-    const { model } = context.params;
+// export async function getServerSideProps(context: any) {
+//   try {
+//     const { model } = context.params;
 
-    const item = await FetchItems.filterOneByModel(model);
-    const itemCharacteristics = await FetchItemCharacteristics.get();
+//     const item = await FetchItems.filterOneByModel(model);
+//     const itemCharacteristics = await FetchItemCharacteristics.get();
 
-    const props: IProps = { item, itemCharacteristics };
-    return { props };
-  } catch (exception) {
-    return {
-      notFound: true, // Return a 404 status code
-    };
+//     const props: IProps = { item, itemCharacteristics };
+//     return { props };
+//   } catch (exception) {
+//     return {
+//       notFound: true, // Return a 404 status code
+//     };
+//   }
+// }
+
+// export const dynamicParams = true;
+
+// export const revalidate = 10; 
+
+const itemCharacteristicsCache: { [model: string]: GetItemCharacteristicDto[] } = {};
+
+export async function getStaticProps(context: any) {
+  const { model } = context.params;
+
+  const item = await FetchItems.filterOneByModel(model);
+  let itemCharacteristics: GetItemCharacteristicDto[];
+
+  if (itemCharacteristicsCache[model]) {
+    itemCharacteristics = itemCharacteristicsCache[model];
+  } else {
+    itemCharacteristics = await FetchItemCharacteristics.get();
+    itemCharacteristicsCache[model] = itemCharacteristics;
   }
+
+  const props: IProps = { item, itemCharacteristics };
+  return { props };
 }
 
-// export async function getStaticProps(context: any) {
-//   const { model } = context.params;
+interface IServerSideProps {
+  params: {
+    category: string;
+    brand: string;
+    model: string;
+  };
+}
 
-//   const item = await FetchItems.filterOneByModel(model);
-//   const itemCharacteristics = (await FetchItemCharacteristics.get());
+export async function getStaticPaths() {
+  const itemBrand = (await FetchItemBrand.get()).filter(
+    obj => !obj.dp_isHidden,
+  );
+  const itemsCategories = (await FetchItemCategories.get()).filter(
+    obj => !obj.dp_isHidden,
+  );
+  const items = (await FetchItems.get());
 
-//   const props: IProps = { item, itemCharacteristics };
-//   return { props };
-// }
+  let paths: IServerSideProps[] = [];
 
-// interface IServerSideProps {
-//   params: {
-//     category: string;
-//     brand: string;
-//     model: string;
-//   };
-// }
+  items.forEach(element => {
+    let category = 'undefined';
+    let categoryBrandId = 0;
+    for (let i = 0; i < itemsCategories.length; ++i) {
+      if (element.dp_itemCategoryId == itemsCategories[i].dp_id) {
+        category = itemsCategories[i].dp_urlSegment;
+        categoryBrandId = itemsCategories[i].dp_itemBrandId;
+        break;
+      }
+    }
 
-// export async function getStaticPaths() {
-//   const itemBrand = (await FetchItemBrand.get()).filter(
-//     obj => !obj.dp_isHidden,
-//   );
-//   const itemsCategories = (await FetchItemCategories.get()).filter(
-//     obj => !obj.dp_isHidden,
-//   );
-//   const items = (await FetchItems.get());
+    let brand = 'undefined';
 
-//   let paths: IServerSideProps[] = [];
+    for (let i = 0; i < itemBrand.length; ++i) {
+      if (categoryBrandId == itemBrand[i].dp_id) {
+        brand = itemBrand[i].dp_urlSegment;
+        break;
+      }
+    }
 
-//   items.forEach(element => {
-//     let category = 'undefined';
-//     let categoryBrandId = 0;
-//     for (let i = 0; i < itemsCategories.length; ++i) {
-//       if (element.dp_itemCategoryId == itemsCategories[i].dp_id) {
-//         category = itemsCategories[i].dp_urlSegment;
-//         categoryBrandId = itemsCategories[i].dp_itemBrandId;
-//         break;
-//       }
-//     }
+    if (category !== 'undefined' && brand !== 'undefined') {
+      paths.push({
+        params: {
+          model: element.dp_model,
+          category,
+          brand,
+        },
+      });
+    }
 
-//     let brand = 'undefined';
+  });
 
-//     for (let i = 0; i < itemBrand.length; ++i) {
-//       if (categoryBrandId == itemBrand[i].dp_id) {
-//         brand = itemBrand[i].dp_urlSegment;
-//         break;
-//       }
-//     }
-
-//     if (category !== 'undefined' && brand !== 'undefined') {
-//       paths.push({
-//         params: {
-//           model: element.dp_model,
-//           category,
-//           brand,
-//         },
-//       });
-//     }
-
-//   });
-
-//   return {
-//     paths,
-//     fallback: false,
-//   };
-// }
+  return {
+    paths,
+    fallback: false,
+  };
+}

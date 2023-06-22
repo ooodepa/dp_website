@@ -24,12 +24,6 @@ interface IProps {
   contactTypes: GetContactTypeDto[];
 }
 
-interface IServerSideProps {
-  params: {
-    page: string;
-  };
-}
-
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { page } = route.query;
@@ -57,6 +51,12 @@ export default function BrandPage(props: IProps) {
       </BlogContainer>
     </AppWrapper>
   );
+}
+
+interface IServerSideProps {
+  params: {
+    page: string;
+  };
 }
 
 export async function getStaticProps(context: IServerSideProps) {
