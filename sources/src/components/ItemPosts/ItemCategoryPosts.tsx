@@ -16,6 +16,10 @@ export default function ItemPosts(props: IProps) {
     <AppContainer>
       <ul className={styles.posts}>
         {props.items.map(element => {
+          const costIsView = Number(element.dp_cost) === 0 ? false : true;
+          const costNoNds = Number(element.dp_cost).toFixed(2);
+          const costNds = Number(element.dp_cost * 0.2 + element.dp_cost).toFixed(2);
+
           return (
             <li key={element.dp_id}>
               <Link
@@ -43,9 +47,16 @@ export default function ItemPosts(props: IProps) {
                     <div className={styles.post__title}>{element.dp_name}</div>
                   </div>
                   <div className={styles.post__footer}>
-                    <div className={styles.post__cost}>
-                      Br {Number(element.dp_cost).toFixed(2)}
-                    </div>
+                    {costIsView ? (
+                      <>
+                        <div className={styles.post__costNoNds}>
+                          (без НДС) BYN {costNoNds}
+                        </div>
+                        <div className={styles.post__costNds}>
+                          (с НДС) BYN {costNds}
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </div>
               </Link>

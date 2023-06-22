@@ -14,6 +14,11 @@ interface IProps {
 }
 
 export default function Item(props: IProps) {
+  const costIsView = Number(props.item.dp_cost) === 0 ? false : true;
+  const costNoNds = Number(props.item.dp_cost).toFixed(2);
+  const costNds = Number(props.item.dp_cost * 0.2).toFixed(2);
+  const costTotal = Number(Number(costNoNds) + Number(costNds)).toFixed(2);
+
   return (
     <AppContainer>
       <h1>{props.item.dp_name}</h1>
@@ -72,10 +77,35 @@ export default function Item(props: IProps) {
               </Link>
             </td>
           </tr>
-          <tr>
-            <td>Цена за одну штуку без НДС</td>
-            <td>Br {Number(props.item.dp_cost).toFixed(2)}</td>
-          </tr>
+          {costIsView ? (
+            <>
+              <tr>
+                <td>Цена за одну штуку без НДС</td>
+                <td>BYN {costNoNds}</td>
+              </tr>
+              <tr>
+                <td>НДС</td>
+                <td>BYN {costNds}</td>
+              </tr>
+              <tr>
+                <td>Цена за одну штуку c НДС</td>
+                <td>BYN {costTotal}</td>
+              </tr>
+            </>
+          ) : (
+            <>
+              <tr>
+                <td>Цена за одну штуку без НДС</td>
+                <td rowSpan={3}>цена не задана</td>
+              </tr>
+              <tr>
+                <td>НДС</td>
+              </tr>
+              <tr>
+                <td>Цена за одну штуку c НДС</td>
+              </tr>
+            </>
+          )}
           <tr>
             <td colSpan={2} style={{ border: 'none' }}></td>
           </tr>

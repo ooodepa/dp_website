@@ -55,10 +55,20 @@
   text-align: center;
 }
 
-.post__cost {
+.posts li a:hover .post__costNoNds {
+  color: black;
+}
+
+.post__costNoNds {
+  color: lightgray;
+  text-align: right;
+  /* font-weight: bolder; */
+}
+
+.post__costNds {
   color: black;
   text-align: right;
-  font-weight: bolder;
+  /* font-weight: bolder; */
 }
 
 .post__wrapper {
