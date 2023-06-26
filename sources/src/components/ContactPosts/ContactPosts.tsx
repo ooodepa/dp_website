@@ -3,11 +3,17 @@ import {
   faWhatsapp,
   faViber,
   faTelegram,
+  faLinkedin,
 } from '@fortawesome/free-brands-svg-icons';
+import { useEffect, useState } from 'react';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './ContactPosts.module.css';
+import FetchHelpers from '@/utils/FetchBackend/rest/api/helpers';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
+import FetchContactTypes from '@/utils/FetchBackend/rest/api/contact-types';
 import GetHelperDto from '@/utils/FetchBackend/rest/api/helpers/dto/get-helper.dto';
 import GetContactTypeDto from '@/utils/FetchBackend/rest/api/contact-types/dto/get-contact-type.dto';
 
@@ -17,10 +23,31 @@ interface IProps {
 }
 
 export default function ContactPosts(props: IProps) {
+  const [arr, setArr] = useState<GetHelperDto[]>(props.helpers);
+  const [arrTypes, setArrTypes] = useState<GetContactTypeDto[]>(
+    props.contactTypes,
+  );
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const jArrTypes = await FetchContactTypes.get();
+        const jArrHelpers = await FetchHelpers.get();
+
+        setArrTypes(jArrTypes);
+        setArr(jArrHelpers);
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
+        setArrTypes(props.contactTypes);
+        setArr(props.helpers);
+      }
+    })();
+  }, [props.contactTypes, props.helpers]);
+
   return (
     <AppContainer>
       <ul className={styles.helpers}>
-        {props.helpers.map(element => {
+        {arr.map(element => {
           if (element.dp_isHidden) {
             return null;
           }
@@ -77,62 +104,53 @@ export default function ContactPosts(props: IProps) {
                   }
 
                   let contactType = '';
-                  for (let i = 0; i < props.contactTypes.length; ++i) {
-                    if (j.dp_contactTypeId === props.contactTypes[i].dp_id) {
-                      contactType = props.contactTypes[i].dp_name;
+                  for (let i = 0; i < arrTypes.length; ++i) {
+                    if (j.dp_contactTypeId === arrTypes[i].dp_id) {
+                      contactType = arrTypes[i].dp_name;
                       break;
                     }
                   }
 
-                  if (contactType === 'skype') {
-                    return (
-                      <li key={j.dp_id}>
-                        <a
-                          href={`skype:${j.dp_value}`}
-                          className={`${styles.contactType} ${styles.social__skype}`}>
-                          <FontAwesomeIcon icon={faSkype} />
-                        </a>
-                      </li>
-                    );
+                  switch (contactType) {
+                    case 'skype':
+                      return (
+                        <li key={j.dp_id}>
+                          <ContactSkype value={j.dp_value} />
+                        </li>
+                      );
+                    case 'whatsapp':
+                      return (
+                        <li key={j.dp_id}>
+                          <ContactWhatsapp value={j.dp_value} />
+                        </li>
+                      );
+                    case 'viber':
+                      return (
+                        <li key={j.dp_id}>
+                          <ContactViber value={j.dp_value} />
+                        </li>
+                      );
+                    case 'telegram':
+                      return (
+                        <li key={j.dp_id}>
+                          <ContactTelegram value={j.dp_value} />
+                        </li>
+                      );
+                    case 'linkedin':
+                      return (
+                        <li key={j.dp_id}>
+                          <ContactLinedIn value={j.dp_value} />
+                        </li>
+                      );
+                    case 'link':
+                      return (
+                        <li key={j.dp_id}>
+                          <ContactLink value={j.dp_value} />
+                        </li>
+                      );
+                    default:
+                      return null;
                   }
-
-                  if (contactType === 'whatsapp') {
-                    return (
-                      <li key={j.dp_id}>
-                        <a
-                          href={`https://api.whatsapp.com/send?phone=${j.dp_value}`}
-                          className={`${styles.contactType} ${styles.social__whatsapp}`}>
-                          <FontAwesomeIcon icon={faWhatsapp} />
-                        </a>
-                      </li>
-                    );
-                  }
-
-                  if (contactType === 'viber') {
-                    return (
-                      <li key={j.dp_id}>
-                        <a
-                          href={`viber://add?number=${j.dp_value}`}
-                          className={`${styles.contactType} ${styles.social__viber}`}>
-                          <FontAwesomeIcon icon={faViber} />
-                        </a>
-                      </li>
-                    );
-                  }
-
-                  if (contactType === 'telegram') {
-                    return (
-                      <li key={j.dp_id}>
-                        <a
-                          href={`https://t.me/${j.dp_value}`}
-                          className={`${styles.contactType} ${styles.social__viber}`}>
-                          <FontAwesomeIcon icon={faTelegram} />
-                        </a>
-                      </li>
-                    );
-                  }
-
-                  return null;
                 })}
               </ul>
             </li>
@@ -140,5 +158,67 @@ export default function ContactPosts(props: IProps) {
         })}
       </ul>
     </AppContainer>
+  );
+}
+
+interface IContactProps {
+  value: string;
+}
+
+function ContactSkype(props: IContactProps) {
+  return (
+    <a
+      href={`skype:${props.value}`}
+      className={`${styles.contactType} ${styles.social__skype}`}>
+      <FontAwesomeIcon icon={faSkype} />
+    </a>
+  );
+}
+
+function ContactWhatsapp(props: IContactProps) {
+  return (
+    <a
+      href={`https://api.whatsapp.com/send?phone=${props.value}`}
+      className={`${styles.contactType} ${styles.social__whatsapp}`}>
+      <FontAwesomeIcon icon={faWhatsapp} />
+    </a>
+  );
+}
+
+function ContactViber(props: IContactProps) {
+  return (
+    <a
+      href={`viber://add?number=${props.value}`}
+      className={`${styles.contactType} ${styles.social__viber}`}>
+      <FontAwesomeIcon icon={faViber} />
+    </a>
+  );
+}
+
+function ContactTelegram(props: IContactProps) {
+  return (
+    <a
+      href={`https://t.me/${props.value}`}
+      className={`${styles.contactType} ${styles.social__telegram}`}>
+      <FontAwesomeIcon icon={faTelegram} />
+    </a>
+  );
+}
+
+function ContactLinedIn(props: IContactProps) {
+  return (
+    <a
+      href={`https://www.linkedin.com/in/${props.value}`}
+      className={`${styles.contactType} ${styles.social__linkedin}`}>
+      <FontAwesomeIcon icon={faLinkedin} />
+    </a>
+  );
+}
+
+function ContactLink(props: IContactProps) {
+  return (
+    <a href={props.value} className={styles.contactType}>
+      <FontAwesomeIcon icon={faLink} />
+    </a>
   );
 }

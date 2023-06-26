@@ -5,6 +5,8 @@
 
 .helpers > li {
   list-style-type: none;
+  border-top: 1px solid #dbdcdc;
+  padding: 8px 0;
 }
 
 .helper__title {
@@ -118,4 +120,14 @@
 .social__telegram:hover {
   background-color: white !important;
   color: #23a0dd !important;
+}
+
+.social__linkedin {
+  background-color: #0077b5 !important;
+  border-color: #0077b5 !important;
+}
+
+.social__linkedin:hover {
+  background-color: white !important;
+  color: #0077b5 !important;
 }
