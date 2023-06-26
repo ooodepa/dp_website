@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { faFile } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilePdf, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './ArticlePosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
@@ -11,6 +11,10 @@ interface IProps {
 }
 
 export default function ArticlePosts(props: IProps) {
+  function isPdf(path: string): boolean {
+    return path.endsWith('.pdf');
+  }
+
   return (
     <AppContainer>
       <ul className={styles.posts}>
@@ -19,7 +23,9 @@ export default function ArticlePosts(props: IProps) {
             <li key={element.dp_id}>
               <Link href={element.dp_url}>
                 <div className={styles.post__image_block}>
-                  <FontAwesomeIcon icon={faFile} />
+                  <FontAwesomeIcon
+                    icon={isPdf(element.dp_url) ? faFilePdf : faFileDownload}
+                  />
                 </div>
                 <div className={styles.post__title}>{element.dp_name}</div>
               </Link>
