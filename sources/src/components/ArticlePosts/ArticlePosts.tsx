@@ -1,6 +1,16 @@
 import Link from 'next/link';
+import {
+  faFilePdf,
+  faFileDownload,
+  faFileExcel,
+  faFileCsv,
+  faFileWord,
+  faFilePowerpoint,
+  faFileImage,
+  faFileZipper,
+  faFileText,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilePdf, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './ArticlePosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
@@ -11,8 +21,56 @@ interface IProps {
 }
 
 export default function ArticlePosts(props: IProps) {
-  function isPdf(path: string): boolean {
-    return path.endsWith('.pdf');
+  function getIcon(path: string) {
+    if (path.endsWith('.pdf')) {
+      return faFilePdf;
+    }
+
+    if (
+      path.endsWith('.xlsx') ||
+      path.endsWith('.xls') ||
+      path.endsWith('.ods')
+    ) {
+      return faFileExcel;
+    }
+
+    if (path.endsWith('.csv')) {
+      return faFileCsv;
+    }
+
+    if (
+      path.endsWith('.doc') ||
+      path.endsWith('.docx') ||
+      path.endsWith('.ods')
+    ) {
+      return faFileWord;
+    }
+
+    if (path.endsWith('.ppt') || path.endsWith('.odp')) {
+      return faFilePowerpoint;
+    }
+
+    if (
+      path.endsWith('.jpg') ||
+      path.endsWith('.png') ||
+      path.endsWith('.webp')
+    ) {
+      return faFileImage;
+    }
+
+    if (
+      path.endsWith('.zip') ||
+      path.endsWith('.7zip') ||
+      path.endsWith('.rar')
+    ) {
+      return faFileZipper;
+    }
+
+    if (path.endsWith('.txt')) {
+      return faFileText;
+    }
+
+    return faFileDownload;
   }
 
   return (
@@ -23,9 +81,7 @@ export default function ArticlePosts(props: IProps) {
             <li key={element.dp_id}>
               <Link href={element.dp_url}>
                 <div className={styles.post__image_block}>
-                  <FontAwesomeIcon
-                    icon={isPdf(element.dp_url) ? faFilePdf : faFileDownload}
-                  />
+                  <FontAwesomeIcon icon={getIcon(element.dp_url)} />
                 </div>
                 <div className={styles.post__title}>{element.dp_name}</div>
               </Link>
