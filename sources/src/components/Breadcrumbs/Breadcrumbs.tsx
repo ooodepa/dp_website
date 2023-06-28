@@ -5,10 +5,6 @@ import React, { useEffect, useState } from 'react';
 import styles from './Breadcrumbs.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
 
-const convertBreadcrumb = (string: string) => {
-  return string;
-};
-
 const Breadcrumbs = () => {
   const router = useRouter();
   const [breadcrumbs, setBreadcrumbs] = useState([
@@ -45,14 +41,12 @@ const Breadcrumbs = () => {
           <li>
             <Link href="/">home</Link>
           </li>
-          {breadcrumbs.map((breadcrumb, i) => {
-            return (
+          {breadcrumbs.map(breadcrumb => {
+            return breadcrumb.breadcrumb ? (
               <li key={breadcrumb.href}>
-                <Link href={breadcrumb.href}>
-                  {convertBreadcrumb(breadcrumb.breadcrumb)}
-                </Link>
+                <Link href={breadcrumb.href}>{breadcrumb.breadcrumb}</Link>
               </li>
-            );
+            ) : null;
           })}
         </ol>
       </AppContainer>

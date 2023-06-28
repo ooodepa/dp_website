@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 
 import Item from '@/components/Item/Item';
 import AppHead from '@/components/AppHead/AppHead';
@@ -22,15 +21,7 @@ interface IProps {
 
 export default function ModelPage(props: IProps) {
   const route = useRouter();
-  const { brand, category, model } = route.query;
-  // const [data, setData] = useState<GetItemDto>(props.item);
-
-  // useEffect(() => {
-  //   (async function() {
-  //     const dataItem = await FetchItems.filterOneByModel(`${model}`);
-  //     setData(dataItem);
-  //   })();
-  // }, [model]);
+  const { brand, category } = route.query;
 
   return (
     <AppWrapper>
@@ -49,27 +40,9 @@ export default function ModelPage(props: IProps) {
   );
 }
 
-// export async function getServerSideProps(context: any) {
-//   try {
-//     const { model } = context.params;
-
-//     const item = await FetchItems.filterOneByModel(model);
-//     const itemCharacteristics = await FetchItemCharacteristics.get();
-
-//     const props: IProps = { item, itemCharacteristics };
-//     return { props };
-//   } catch (exception) {
-//     return {
-//       notFound: true, // Return a 404 status code
-//     };
-//   }
-// }
-
-// export const dynamicParams = true;
-
-// export const revalidate = 10; 
-
-const itemCharacteristicsCache: { [model: string]: GetItemCharacteristicDto[] } = {};
+const itemCharacteristicsCache: {
+  [model: string]: GetItemCharacteristicDto[];
+} = {};
 
 export async function getStaticProps(context: any) {
   const { model } = context.params;
@@ -85,7 +58,10 @@ export async function getStaticProps(context: any) {
   }
 
   const props: IProps = { item, itemCharacteristics };
-  return { props };
+  return {
+    props,
+    revalidate: 60, // Перегенерация страницы каждые 60 секунд
+  };
 }
 
 interface IServerSideProps {
@@ -103,7 +79,7 @@ export async function getStaticPaths() {
   const itemsCategories = (await FetchItemCategories.get()).filter(
     obj => !obj.dp_isHidden,
   );
-  const items = (await FetchItems.get());
+  const items = await FetchItems.get();
 
   let paths: IServerSideProps[] = [];
 
@@ -136,11 +112,10 @@ export async function getStaticPaths() {
         },
       });
     }
-
   });
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking', // Используйте обработку ошибок 404 и ISR
   };
 }

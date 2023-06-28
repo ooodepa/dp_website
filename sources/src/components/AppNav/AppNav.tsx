@@ -56,11 +56,11 @@ export default function AppNav() {
         <header className={styles.nav__wrapper_inner}>
           <div className={styles.nav__menu_no_icon}></div>
           <Link href="/" title="На главную" className={styles.nav__image_block}>
-            <Image src={logo} alt="" />
+            <Image src={logo} alt="logo" />
           </Link>
           <div
             className={styles.nav__menu_icon}
-            onClick={event => setIsOpen(!isOpen)}>
+            onClick={() => setIsOpen(!isOpen)}>
             <FontAwesomeIcon icon={faBars} />
           </div>
         </header>
@@ -69,7 +69,7 @@ export default function AppNav() {
           {menu.map(element => {
             return (
               <li key={element.url}>
-                <Link href={element.url} onClick={event => setIsOpen(!isOpen)}>
+                <Link href={element.url} onClick={() => setIsOpen(!isOpen)}>
                   {element.title}
                 </Link>
               </li>

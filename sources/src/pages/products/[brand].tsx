@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
@@ -21,14 +20,6 @@ interface IProps {
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { brand } = route.query;
-  // const [arr,setArr] = useState<GetItemCategoryDto[]>(props.itemCategories);
-
-  // useEffect(() => {
-  //   (async function() {
-  //     const arrCategories = await FetchItemCategories.filterByBrand(`${brand}`);
-  //     setArr(arrCategories);
-  //   })();
-  // }, [brand]);
 
   return (
     <AppWrapper>
@@ -42,29 +33,6 @@ export default function BrandPage(props: IProps) {
     </AppWrapper>
   );
 }
-
-// export async function getServerSideProps(context: any) {
-//   try {
-//     const { brand } = context.params;
-
-//     const itemCategories = (
-//       await FetchItemCategories.filterByBrand(`${brand}`)
-//     ).filter(obj => !obj.dp_isHidden);
-
-//     const itemBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
-
-//     const props: IProps = { itemCategories, itemBrand };
-//     return { props };
-//   } catch (exception) {
-//     return {
-//       notFound: true, // Return a 404 status code
-//     };
-//   }
-// }
-
-// export const dynamicParams = true;
-
-// export const revalidate = 10; 
 
 interface IServerSideProps {
   params: {
@@ -81,7 +49,10 @@ export async function getStaticProps(context: IServerSideProps) {
   const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
   const props: IProps = { itemCategories, itemBrand };
-  return { props };
+  return {
+    props,
+    revalidate: 60, // Перегенерация страницы каждые 60 секунд
+  };
 }
 
 export async function getStaticPaths() {
@@ -101,6 +72,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking', // Используйте обработку ошибок 404 и ISR
   };
 }

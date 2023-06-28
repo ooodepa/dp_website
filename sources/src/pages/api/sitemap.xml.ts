@@ -16,7 +16,7 @@ const generateSitemap = (pages: string[]): string => {
     sitemap += `<loc>${page}</loc>`;
     // sitemap += `<lastmod>${d}</lastmod>`;
     sitemap += '<changefreq>weekly</changefreq>';
-    sitemap += '<priority>0.3</priority>';
+    sitemap += '<priority>0.5</priority>';
     sitemap += `</url>`;
   });
 

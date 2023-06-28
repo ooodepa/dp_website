@@ -4,11 +4,11 @@
     "dev": "next dev",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "build": "next build",
-    "postbuild": "next-sitemap",
+    "old-postbuild": "next-sitemap",
     "export": "next export",
     "serve": "npx serve out -p 80",
     "start": "next start",
-    "cpanel-start": "node server.js",
+    "start-on-cpanel": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {

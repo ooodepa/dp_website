@@ -86,7 +86,10 @@ export async function getStaticProps(context: IServerSideProps) {
   }
 
   const props: IProps = { article, helpers, contactTypes };
-  return { props };
+  return {
+    props,
+    revalidate: 60, // Перегенерация страницы каждые 60 секунд
+  };
 }
 
 export async function getStaticPaths() {
@@ -106,6 +109,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking', // Используйте обработку ошибок 404 и ISR
   };
 }

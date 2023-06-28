@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Перенаправление www.example.com на example.com
+RewriteCond %{HTTP_HOST} ^www\.de-pa\.by$ [NC]
+RewriteRule ^(.*)$ http://de-pa.by/$1 [L,R=301]
+
+# Перенаправление http://example.com на https://example.com
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://de-pa.by/$1 [L,R=301]

@@ -5,15 +5,15 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  output: 'export',
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/sitemap.xml',
-  //       destination: '/api/sitemap.xml',
-  //     },
-  //   ];
-  // },
+  // output: 'export',
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap.xml',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

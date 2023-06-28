@@ -28,11 +28,12 @@ export default function ItemCategoryPosts(props: IProps) {
                   ) : (
                     <Image
                       src={element.dp_photoUrl}
-                      alt=" "
-                      height={100}
-                      width={100}
+                      alt="x"
+                      width={280}
+                      height={72}
                       style={{
-                        height: 'auto',
+                        width: 'auto',
+                        height: '72px',
                         objectFit: 'contain',
                         position: 'relative',
                       }}

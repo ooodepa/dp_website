@@ -18,7 +18,9 @@ export default function ItemPosts(props: IProps) {
         {props.items.map(element => {
           const costIsView = Number(element.dp_cost) === 0 ? false : true;
           const costNoNds = Number(element.dp_cost).toFixed(2);
-          const costNds = Number(element.dp_cost * 0.2 + element.dp_cost).toFixed(2);
+          const costNds = Number(
+            element.dp_cost * 0.2 + element.dp_cost,
+          ).toFixed(2);
 
           return (
             <li key={element.dp_id}>
@@ -32,11 +34,12 @@ export default function ItemPosts(props: IProps) {
                       ) : (
                         <Image
                           src={element.dp_photoUrl}
-                          alt=" "
-                          height={100}
-                          width={100}
+                          alt="x"
+                          width={280}
+                          height={72}
                           style={{
-                            height: 'auto',
+                            width: 'auto',
+                            height: '72px',
                             objectFit: 'contain',
                             position: 'relative',
                           }}
