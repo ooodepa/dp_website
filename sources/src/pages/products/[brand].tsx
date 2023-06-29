@@ -11,6 +11,8 @@ import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import ItemCategoryPosts from '@/components/ItemCategoryPosts/ItemCategoryPosts';
 import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
 import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
+import { useEffect, useState } from 'react';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 
 interface IProps {
   itemCategories: GetItemCategoryDto[];
@@ -20,16 +22,36 @@ interface IProps {
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { brand } = route.query;
+  const [dataBrand, setDataBrand] = useState<GetItemBrandDto>(props.itemBrand);
+  const [arrCategories, setArrCategories] = useState<GetItemCategoryDto[]>(
+    props.itemCategories,
+  );
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const jBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
+        setDataBrand(jBrand);
+
+        const jCategories = await FetchItemCategories.filterByBrand(`${brand}`);
+        setArrCategories(jCategories);
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
+        setDataBrand(props.itemBrand);
+        setArrCategories(props.itemCategories);
+      }
+    })();
+  }, [brand, props.itemBrand, props.itemCategories]);
 
   return (
     <AppWrapper>
-      <AppTitle title={props.itemBrand.dp_name} />
-      <AppDescription description={props.itemBrand.dp_seoDescription} />
-      <AppKeywords keywords={props.itemBrand.dp_seoKeywords} />
+      <AppTitle title={dataBrand.dp_name} />
+      <AppDescription description={dataBrand.dp_seoDescription} />
+      <AppKeywords keywords={dataBrand.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
-      <h1>{props.itemBrand.dp_name}</h1>
-      <ItemCategoryPosts brand={`${brand}`} categories={props.itemCategories} />
+      <h1>{dataBrand.dp_name}</h1>
+      <ItemCategoryPosts brand={`${brand}`} categories={arrCategories} />
     </AppWrapper>
   );
 }

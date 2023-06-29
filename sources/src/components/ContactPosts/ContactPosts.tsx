@@ -23,23 +23,23 @@ interface IProps {
 }
 
 export default function ContactPosts(props: IProps) {
-  const [arr, setArr] = useState<GetHelperDto[]>(props.helpers);
-  const [arrTypes, setArrTypes] = useState<GetContactTypeDto[]>(
+  const [arrHelpers, setArrHelpers] = useState<GetHelperDto[]>(props.helpers);
+  const [arrContactTypes, setArrContactTypes] = useState<GetContactTypeDto[]>(
     props.contactTypes,
   );
 
   useEffect(() => {
     (async function () {
       try {
-        const jArrTypes = await FetchContactTypes.get();
-        const jArrHelpers = await FetchHelpers.get();
+        const jContactTypes = await FetchContactTypes.get();
+        setArrContactTypes(jContactTypes);
 
-        setArrTypes(jArrTypes);
-        setArr(jArrHelpers);
+        const jHelpers = await FetchHelpers.get();
+        setArrHelpers(jHelpers);
       } catch (exception) {
         await AsyncAlertExceptionHelper(exception);
-        setArrTypes(props.contactTypes);
-        setArr(props.helpers);
+        setArrContactTypes(props.contactTypes);
+        setArrHelpers(props.helpers);
       }
     })();
   }, [props.contactTypes, props.helpers]);
@@ -47,7 +47,7 @@ export default function ContactPosts(props: IProps) {
   return (
     <AppContainer>
       <ul className={styles.helpers}>
-        {arr.map(element => {
+        {arrHelpers.map(element => {
           if (element.dp_isHidden) {
             return null;
           }
@@ -104,9 +104,9 @@ export default function ContactPosts(props: IProps) {
                   }
 
                   let contactType = '';
-                  for (let i = 0; i < arrTypes.length; ++i) {
-                    if (j.dp_contactTypeId === arrTypes[i].dp_id) {
-                      contactType = arrTypes[i].dp_name;
+                  for (let i = 0; i < arrContactTypes.length; ++i) {
+                    if (j.dp_contactTypeId === arrContactTypes[i].dp_id) {
+                      contactType = arrContactTypes[i].dp_name;
                       break;
                     }
                   }

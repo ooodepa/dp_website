@@ -42,6 +42,7 @@ export default function ItemPosts(props: IProps) {
                             height: '72px',
                             objectFit: 'contain',
                             position: 'relative',
+                            textAlign: 'center',
                           }}
                         />
                       )}

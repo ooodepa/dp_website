@@ -4,6 +4,7 @@ interface ArticleAttachedLinks {
   dp_id: number;
   dp_name: string;
   dp_url: string;
+  dp_photoUrl: string;
   dp_articleId: string;
 }
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   faFilePdf,
   faFileDownload,
@@ -81,7 +82,21 @@ export default function ArticlePosts(props: IProps) {
             <li key={element.dp_id}>
               <Link href={element.dp_url}>
                 <div className={styles.post__image_block}>
-                  <FontAwesomeIcon icon={getIcon(element.dp_url)} />
+                  {element.dp_photoUrl === '' ? (
+                    <FontAwesomeIcon icon={getIcon(element.dp_url)} />
+                  ) : (
+                    <Image
+                      src={element.dp_photoUrl}
+                      alt="x"
+                      width={180}
+                      height={72}
+                      style={{
+                        width: 'auto',
+                        height: '72px',
+                        textAlign: 'center',
+                      }}
+                    />
+                  )}
                 </div>
                 <div className={styles.post__title}>{element.dp_name}</div>
               </Link>

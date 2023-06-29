@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
@@ -9,6 +10,7 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import ItemPosts from '@/components/ItemPosts/ItemCategoryPosts';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
@@ -21,20 +23,38 @@ interface IProps {
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { brand, category } = route.query;
+  const [dataCatagory, setDataCategory] = useState<GetItemCategoryDto>(
+    props.itemCategory,
+  );
+  const [arrItems, setArrItems] = useState<GetItemDto[]>(props.items);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const jCategory = await FetchItemCategories.filterOneByUrl(
+          `${category}`,
+        );
+        setDataCategory(jCategory);
+
+        const jItems = await FetchItems.filterByCategory(`${category}`);
+        setArrItems(jItems);
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
+        setDataCategory(props.itemCategory);
+        setArrItems(props.items);
+      }
+    })();
+  }, [category, props.itemCategory, props.items]);
 
   return (
     <AppWrapper>
-      <AppTitle title={props.itemCategory.dp_name} />
-      <AppDescription description={props.itemCategory.dp_seoDescription} />
-      <AppKeywords keywords={props.itemCategory.dp_seoKeywords} />
+      <AppTitle title={dataCatagory.dp_name} />
+      <AppDescription description={dataCatagory.dp_seoDescription} />
+      <AppKeywords keywords={dataCatagory.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
-      <h1>{props.itemCategory.dp_name}</h1>
-      <ItemPosts
-        brand={`${brand}`}
-        category={`${category}`}
-        items={props.items}
-      />
+      <h1>{dataCatagory.dp_name}</h1>
+      <ItemPosts brand={`${brand}`} category={`${category}`} items={arrItems} />
     </AppWrapper>
   );
 }

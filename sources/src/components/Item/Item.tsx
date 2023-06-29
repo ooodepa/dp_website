@@ -4,11 +4,15 @@ import Image from 'next/image';
 import styles from './Item.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
+import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
+import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
 import GetItemCharacteristicDto from '@/utils/FetchBackend/rest/api/item-characteristics/dto/get-item-characteristic.dto';
 
 interface IProps {
   item: ItemDto;
   itemCharacteristics: GetItemCharacteristicDto[];
+  itemBrand: GetItemBrandDto;
+  itemCategory: GetItemCategoryDto;
   brand: string;
   category: string;
 }
@@ -22,21 +26,24 @@ export default function Item(props: IProps) {
   return (
     <AppContainer>
       <h1>{props.item.dp_name}</h1>
-      {!props.item.dp_photoUrl ? null : (
-        <Image
-          src={props.item.dp_photoUrl}
-          alt="x"
-          width={280}
-          height={72}
-          style={{
-            width: 'auto',
-            height: '72px',
-            objectFit: 'contain',
-            position: 'relative',
-          }}
-          className={styles.item__image}
-        />
-      )}
+      <p style={{ textAlign: 'center' }}>
+        {!props.item.dp_photoUrl ? null : (
+          <Image
+            src={props.item.dp_photoUrl}
+            alt="x"
+            width={280}
+            height={72}
+            style={{
+              width: 'auto',
+              height: '72px',
+              objectFit: 'contain',
+              position: 'relative',
+              textAlign: 'center',
+            }}
+            className={styles.item__image}
+          />
+        )}
+      </p>
       <table className={styles.item__table}>
         <tbody>
           <tr>
@@ -51,20 +58,24 @@ export default function Item(props: IProps) {
           <tr>
             <td>Бренд</td>
             <td>
+              {props.itemBrand.dp_name}
+              <br />
               <Link
                 href={`/products/${props.brand}`}
                 title="Перейти на страницу с номенлатурой этого бренда">
-                {props.brand}
+                ({props.brand})
               </Link>
             </td>
           </tr>
           <tr>
             <td>Категория</td>
             <td>
+              {props.itemCategory.dp_name}
+              <br />
               <Link
                 href={`/products/${props.brand}/${props.category}`}
                 title="Перейти на страницу с номенлатурой этой категории">
-                {props.category}
+                ({props.category})
               </Link>
             </td>
           </tr>

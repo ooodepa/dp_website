@@ -29,37 +29,38 @@ interface IProps {
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { page } = route.query;
-  const [data, setData] = useState<GetArticleDto>(props.article);
+  const [dataArticle, setDataArticle] = useState<GetArticleDto>(props.article);
 
   useEffect(() => {
     (async function () {
       try {
         const jArticle = await FetchArticles.filterOneByUrl(`${page}`);
-        setData(jArticle);
+        setDataArticle(jArticle);
       } catch (exception) {
         await AsyncAlertExceptionHelper(exception);
+        setDataArticle(props.article);
       }
     })();
-  }, [page]);
+  }, [page, props.article]);
 
   return (
     <AppWrapper>
-      <AppTitle title={data.dp_name} />
-      <AppDescription description={data.dp_seoDescription} />
-      <AppKeywords keywords={data.dp_seoKeywords} />
+      <AppTitle title={dataArticle.dp_name} />
+      <AppDescription description={dataArticle.dp_seoDescription} />
+      <AppKeywords keywords={dataArticle.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
       {page !== 'contacts' ? null : <YandexMap />}
-      <h1>{data.dp_name}</h1>
+      <h1>{dataArticle.dp_name}</h1>
       {page !== 'contacts' ? null : (
         <ContactPosts
           helpers={props.helpers}
           contactTypes={props.contactTypes}
         />
       )}
-      <ArticlePosts article={data} />
+      <ArticlePosts article={dataArticle} />
       <BlogContainer>
-        {data?.dp_text.split(/\\n+/).map((element, index) => {
+        {dataArticle?.dp_text.split(/\\n+/).map((element, index) => {
           return <ReactMarkdown key={index}>{element}</ReactMarkdown>;
         })}
       </BlogContainer>

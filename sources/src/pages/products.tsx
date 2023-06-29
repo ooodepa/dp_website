@@ -4,9 +4,10 @@ import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
+import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import BrandItemPosts from '@/components/BrandItemPosts/BrandItemPosts';
 import AppDescription from '@/components/AppDescription/AppDescription';
-import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
 
 interface IProps {
@@ -14,14 +15,19 @@ interface IProps {
 }
 
 export default function BrandsPage(props: IProps) {
-  const [arr, setArr] = useState<GetItemBrandDto[]>(props.brands);
+  const [arrBrands, setArrBrands] = useState<GetItemBrandDto[]>(props.brands);
 
   useEffect(() => {
     (async function () {
-      const arrayBrands = await FetchItemBrand.get();
-      setArr(arrayBrands);
+      try {
+        const jBrands = await FetchItemBrand.get();
+        setArrBrands(jBrands);
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
+        setArrBrands(props.brands);
+      }
     })();
-  }, []);
+  }, [props.brands]);
 
   return (
     <AppWrapper>
@@ -30,7 +36,7 @@ export default function BrandsPage(props: IProps) {
       <AppHead />
       <Breadcrumbs />
       <h1>Бренды</h1>
-      <BrandItemPosts brands={arr} />
+      <BrandItemPosts brands={arrBrands} />
     </AppWrapper>
   );
 }

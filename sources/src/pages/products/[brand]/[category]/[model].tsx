@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 import Item from '@/components/Item/Item';
 import AppHead from '@/components/AppHead/AppHead';
@@ -9,30 +10,79 @@ import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
+import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 import FetchItemCharacteristics from '@/utils/FetchBackend/rest/api/item-characteristics';
+import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
+import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
 import GetItemCharacteristicDto from '@/utils/FetchBackend/rest/api/item-characteristics/dto/get-item-characteristic.dto';
 
 interface IProps {
   item: GetItemDto;
   itemCharacteristics: GetItemCharacteristicDto[];
+  itemBrand: GetItemBrandDto;
+  itemCategory: GetItemCategoryDto;
 }
 
 export default function ModelPage(props: IProps) {
   const route = useRouter();
-  const { brand, category } = route.query;
+  const { brand, category, model } = route.query;
+  const [dataItem, setDataItem] = useState<GetItemDto>(props.item);
+  const [arrCharacteristics, setArrCharacteristics] = useState<
+    GetItemCharacteristicDto[]
+  >(props.itemCharacteristics);
+  const [dataCategory, setDataCategory] = useState<GetItemCategoryDto>(
+    props.itemCategory,
+  );
+  const [dataBrand, setDataBrand] = useState<GetItemBrandDto>(props.itemBrand);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const jItem = await FetchItems.filterOneByModel(`${model}`);
+        setDataItem(jItem);
+
+        const jCharacteristics = await FetchItemCharacteristics.get();
+        setArrCharacteristics(jCharacteristics);
+
+        const jBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
+        setDataBrand(jBrand);
+
+        const jCategories = await FetchItemCategories.filterOneByUrl(
+          `${category}`,
+        );
+        setDataCategory(jCategories);
+      } catch (exception) {
+        await AsyncAlertExceptionHelper(exception);
+        setDataItem(props.item);
+        setArrCharacteristics(props.itemCharacteristics);
+        setDataBrand(props.itemBrand);
+        setDataCategory(props.itemCategory);
+      }
+    })();
+  }, [
+    brand,
+    category,
+    model,
+    props.item,
+    props.itemBrand,
+    props.itemCategory,
+    props.itemCharacteristics,
+  ]);
 
   return (
     <AppWrapper>
-      <AppTitle title={props.item.dp_name} />
-      <AppDescription description={props.item.dp_seoDescription} />
-      <AppKeywords keywords={props.item.dp_seoKeywords} />
+      <AppTitle title={dataItem.dp_name} />
+      <AppDescription description={dataItem.dp_seoDescription} />
+      <AppKeywords keywords={dataItem.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
       <Item
-        item={props.item}
-        itemCharacteristics={props.itemCharacteristics}
+        item={dataItem}
+        itemCharacteristics={arrCharacteristics}
+        itemBrand={dataBrand}
+        itemCategory={dataCategory}
         brand={`${brand}`}
         category={`${category}`}
       />
@@ -44,20 +94,49 @@ const itemCharacteristicsCache: {
   [model: string]: GetItemCharacteristicDto[];
 } = {};
 
+const itemBrandCache: {
+  [brand: string]: GetItemBrandDto;
+} = {};
+
+const itemCategoryCache: {
+  [category: string]: GetItemCategoryDto;
+} = {};
+
 export async function getStaticProps(context: any) {
-  const { model } = context.params;
+  const { brand, category, model } = context.params;
 
-  const item = await FetchItems.filterOneByModel(model);
-  let itemCharacteristics: GetItemCharacteristicDto[];
+  const jItem = await FetchItems.filterOneByModel(model);
 
-  if (itemCharacteristicsCache[model]) {
-    itemCharacteristics = itemCharacteristicsCache[model];
+  let jCharacteristics: GetItemCharacteristicDto[];
+  if (itemCharacteristicsCache['ch']) {
+    jCharacteristics = itemCharacteristicsCache['ch'];
   } else {
-    itemCharacteristics = await FetchItemCharacteristics.get();
-    itemCharacteristicsCache[model] = itemCharacteristics;
+    jCharacteristics = await FetchItemCharacteristics.get();
+    itemCharacteristicsCache['ch'] = jCharacteristics;
   }
 
-  const props: IProps = { item, itemCharacteristics };
+  let jbrand: GetItemBrandDto;
+  if (itemBrandCache[`${brand}`]) {
+    jbrand = itemBrandCache[`${brand}`];
+  } else {
+    jbrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
+    itemBrandCache[`${brand}`] = jbrand;
+  }
+
+  let jCategory: GetItemCategoryDto;
+  if (itemCategoryCache[`${category}`]) {
+    jCategory = itemCategoryCache[`${category}`];
+  } else {
+    jCategory = await FetchItemCategories.filterOneByUrl(`${category}`);
+    itemCategoryCache[`${category}`] = jCategory;
+  }
+
+  const props: IProps = {
+    item: jItem,
+    itemCharacteristics: jCharacteristics,
+    itemBrand: jbrand,
+    itemCategory: jCategory,
+  };
   return {
     props,
     revalidate: 60, // Перегенерация страницы каждые 60 секунд
