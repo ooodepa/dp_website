@@ -1,0 +1,60 @@
+.agent {
+  font-weight: bold;
+}
+
+.ip {
+  color: grey;
+}
+
+.time {
+  color: grey;
+}
+
+.timeAgo {
+  color: grey;
+  text-align: right;
+}
+
+.sessions {
+  margin: 0;
+  padding: 0;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.sessions li {
+  list-style-type: none;
+  border: 1px solid lightgray;
+  margin: 8px;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.button_close_all,
+.button_close_one {
+  color: white;
+  width: 100%;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 8px 0 0 0;
+}
+
+.button_close_all {
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.button_close_one {
+  background-color: var(--site-color);
+  border: 1px solid var(--site-color);
+}
+
+.button_close_all:hover {
+  color: #dc3545;
+  background-color: transparent;
+}
+
+.button_close_one:hover {
+  color: var(--site-color);
+  background-color: transparent;
+}

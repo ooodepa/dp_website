@@ -1,5 +1,11 @@
 :root {
   --site-color: #06c;
+  --scrollbarBgColor: rgba(0, 102, 204, 0.4);
+  --scrollbarThumbColor: #06c;
+  --scrollbarThumbColorSecond: red;
+  --scrollbarWidth: 2rem;
+  --scrollbarBorder: 0 solid var(--scrollbarBgColor);
+  --scrollbarBorderRadius: calc(var(--scrollbarWidth) / 4);
 }
 
 html {

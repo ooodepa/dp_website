@@ -1,0 +1,36 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.wrapper li {
+  width: 300px;
+
+  list-style-type: none;
+  margin: 8px;
+}
+
+.wrapper li a {
+  display: block;
+  width: calc(100% - 8px * 2);
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid lightgray;
+}
+
+.wrapper li a:hover {
+  background-color: lightgray;
+}
+
+.timeAgo {
+  text-align: right;
+  color: black;
+}
+
+.positions {
+  text-align: center;
+  color: black;
+}

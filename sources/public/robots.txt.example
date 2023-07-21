@@ -1,0 +1,12 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /basket
+Disallow: /user-profile
+Disallow: /user-profile/*
+
+# Host
+Host: https://example.com
+
+# Sitemaps
+Sitemap: https://example.com/sitemap.xml

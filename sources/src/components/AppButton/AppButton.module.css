@@ -1,0 +1,12 @@
+.button {
+  background-color: var(--site-color);
+  color: white;
+  border: 1px solid var(--site-color);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.button:hover {
+  background-color: transparent;
+  color: var(--site-color);
+}

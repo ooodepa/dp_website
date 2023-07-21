@@ -6,6 +6,7 @@ import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import YandexMap from '@/components/YandexMap/YandexMap';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
+import HttpException from '@/utils/FetchBackend/HttpException';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import FetchHelpers from '@/utils/FetchBackend/rest/api/helpers';
@@ -77,20 +78,30 @@ interface IServerSideProps {
 export async function getStaticProps(context: IServerSideProps) {
   const { page } = context.params;
 
-  const article = await FetchArticles.filterOneByUrl(page);
-  let helpers: GetHelperDto[] = [];
-  let contactTypes: GetContactTypeDto[] = [];
+  try {
+    const article = await FetchArticles.filterOneByUrl(page);
+    let helpers: GetHelperDto[] = [];
+    let contactTypes: GetContactTypeDto[] = [];
 
-  if (page === 'contacts') {
-    helpers = await FetchHelpers.get();
-    contactTypes = await FetchContactTypes.get();
+    if (page === 'contacts') {
+      helpers = await FetchHelpers.get();
+      contactTypes = await FetchContactTypes.get();
+    }
+
+    const props: IProps = { article, helpers, contactTypes };
+    return {
+      props,
+      revalidate: 60, // Перегенерация страницы каждые 60 секунд
+    };
+  } catch (exception) {
+    if (exception instanceof HttpException && exception.HTTP_STATUS === 404) {
+      return {
+        notFound: true, // Возвращаем статус 404
+      };
+    }
+
+    throw exception;
   }
-
-  const props: IProps = { article, helpers, contactTypes };
-  return {
-    props,
-    revalidate: 60, // Перегенерация страницы каждые 60 секунд
-  };
 }
 
 export async function getStaticPaths() {

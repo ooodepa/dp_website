@@ -6,11 +6,12 @@ import AppFooter from '@/components/AppFooter/AppFooter';
 
 interface IProps {
   children: ReactNode;
+  style?: object;
 }
 
 export default function AppWrapper(props: IProps) {
   return (
-    <div className={styles.app__wrapper}>
+    <div className={styles.app__wrapper} style={props.style}>
       <div className={styles.app__content}>
         <AppNav />
         {props.children}

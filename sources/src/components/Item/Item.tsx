@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 import styles from './Item.module.css';
+import BasketHelper from '@/utils/BasketHelper';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
@@ -18,32 +20,59 @@ interface IProps {
 }
 
 export default function Item(props: IProps) {
+  const [count, setCount] = useState<number>(0);
+
+  const model = props.item.dp_model;
   const costIsView = Number(props.item.dp_cost) === 0 ? false : true;
   const costNoNds = Number(props.item.dp_cost).toFixed(2);
   const costNds = Number(props.item.dp_cost * 0.2).toFixed(2);
   const costTotal = Number(Number(costNoNds) + Number(costNds)).toFixed(2);
 
+  useEffect(() => {
+    const c = BasketHelper.getCount(model);
+    setCount(c);
+  }, [model]);
+
+  function plus() {
+    BasketHelper.plus(model);
+    const c = BasketHelper.getCount(model);
+    setCount(c);
+  }
+
+  function minus() {
+    BasketHelper.minus(model);
+    const c = BasketHelper.getCount(model);
+    setCount(c);
+  }
+
+  function changeCount(strCount: string) {
+    BasketHelper.setCount(model, Number(strCount));
+    const c = BasketHelper.getCount(model);
+    setCount(c);
+  }
+
   return (
     <AppContainer>
       <h1>{props.item.dp_name}</h1>
-      <p style={{ textAlign: 'center' }}>
+      <div className={styles.item__image}>
         {!props.item.dp_photoUrl ? null : (
-          <Image
-            src={props.item.dp_photoUrl}
-            alt="x"
-            width={280}
-            height={72}
-            style={{
-              width: 'auto',
-              height: '72px',
-              objectFit: 'contain',
-              position: 'relative',
-              textAlign: 'center',
-            }}
-            className={styles.item__image}
-          />
+          <Image src={props.item.dp_photoUrl} alt="x" width={280} height={72} />
         )}
-      </p>
+      </div>
+      <div className={styles.counter_block}>
+        <button onClick={minus} title="Убрать одну позицию">
+          -
+        </button>
+        <input
+          type="number"
+          title="Тут можно указать определенное количество для заказа"
+          value={count}
+          onChange={event => changeCount(event.target.value)}
+        />
+        <button onClick={plus} title="Добавить одну позицию">
+          +
+        </button>
+      </div>
       <table className={styles.item__table}>
         <tbody>
           <tr>

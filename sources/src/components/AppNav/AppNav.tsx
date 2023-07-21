@@ -42,8 +42,12 @@ const menu: IMenuItem[] = [
     url: '/contacts',
   },
   {
-    title: 'Приложение',
-    url: 'https://de-pa.by/docs/ooodepa-app.apk',
+    title: 'Мой аккаунт',
+    url: '/user-profile',
+  },
+  {
+    title: 'Корзина',
+    url: '/basket',
   },
 ];
 

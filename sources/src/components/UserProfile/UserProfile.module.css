@@ -1,0 +1,47 @@
+.ul {
+  margin: 0;
+  padding: 0;
+}
+
+.ul li {
+  list-style-type: none;
+  text-align: center;
+}
+
+.buttons {
+  margin: 0 0 16px 0;
+  padding: 0;
+}
+
+.buttons li {
+  list-style-type: none;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.buttons li button,
+.buttons li a {
+  all: unset;
+  background-color: var(--site-color);
+  border: 1px solid var(--site-color);
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.buttons li button:hover,
+.buttons li a:hover {
+  background-color: white;
+  color: var(--site-color);
+}
+
+.buttons li a {
+  display: block;
+}
+
+.buttons li {
+  display: flex;
+  justify-content: center;
+}

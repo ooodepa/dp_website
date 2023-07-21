@@ -11,3 +11,6 @@ yarn add -D next-sitemap
 yarn add -D @next/env
 yarn add xlsx
 yarn add sharp
+yarn add toastr
+yarn add -D @types/toastr
+yarn add number-to-words-ru

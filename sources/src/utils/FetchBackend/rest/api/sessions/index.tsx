@@ -1,6 +1,8 @@
-import FetchBackend from '@/utils/FetchBackend';
 import { Dispatch, SetStateAction } from 'react';
+
+import FetchBackend from '@/utils/FetchBackend';
 import AppModal from '@/components/AppModal/AppModal';
+import CreateSessionDto from './dto/create-session.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 import HttpResponseDto from '@/utils/FetchBackend/dto/http-response.dto';
 import UpdateSessionResponseDto from './dto/update-session-response.dto';
@@ -9,12 +11,11 @@ import CreateSessionResponseDto from './dto/create-session-response.dto';
 export default class FetchSessions {
   static async create(
     setModal: Dispatch<SetStateAction<JSX.Element>>,
-    login: string,
-    password: string,
+    data: CreateSessionDto,
   ) {
     const result = await FetchBackend('none', 'POST', 'sessions', {
-      emailOrLogin: login,
-      dp_password: password,
+      emailOrLogin: data.emailOrLogin,
+      dp_password: data.dp_password,
     });
     const response = result.response;
 
@@ -60,6 +61,57 @@ export default class FetchSessions {
       // localStorage.removeItem('access');
       // localStorage.removeItem('refresh');
       throw new HttpException(result.method, response);
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async logout() {
+    const result = await FetchBackend('access', 'POST', 'sessions/logout');
+    const response = result.response;
+
+    if (response.status === 200) {
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      return true;
+    }
+
+    if (response.status === 401) {
+      throw new HttpException(result.method, response);
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async get() {
+    const result = await FetchBackend('access', 'GET', 'sessions');
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetSessionsDto = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async closeOne(id: number) {
+    const result = await FetchBackend('access', 'DELETE', `sessions/${id}`);
+    const response = result.response;
+
+    if (response.status === 200) {
+      return true;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async closeAll() {
+    const result = await FetchBackend('access', 'DELETE', 'sessions');
+    const response = result.response;
+
+    if (response.status === 200) {
+      return true;
     }
 
     throw new HttpException(result.method, response);

@@ -1,3 +1,4 @@
+import ToastController from '@/packages/ToastController';
 import HttpException from '../FetchBackend/HttpException';
 import HttpResponseDto from '../FetchBackend/dto/http-response.dto';
 
@@ -7,17 +8,26 @@ export default function AlertExceptionHelper(exception: any) {
       exception instanceof TypeError &&
       exception.message === 'Network request failed'
     ) {
-      const message = `
-Нет интернета (TypeError, message = 'Network request failed')
-
-${exception}
-        `;
-
-      alert(message);
+      const message = `${exception}`;
+      const title = `Нет интернета (TypeError, message = 'Network request failed')`;
+      ToastController.warning(message, title);
       return;
     }
 
-    alert(exception);
+    if (exception instanceof HttpException) {
+      const title = 'Исключение при запросе на сервер (HttpException)';
+      const message =
+        `<pre style="overflow-x: scroll;">` +
+        `Method: ${exception.HTTP_METHOD} \n` +
+        `URL: ${exception.HTTP_URL} \n` +
+        `HTTP status: ${exception.HTTP_STATUS} \n` +
+        `</pre>`;
+
+      ToastController.warning(message, title);
+      return;
+    }
+
+    ToastController.warning(`${exception}`, 'Вызвано исключение');
   } catch (err) {
     alert(err);
   }
@@ -25,40 +35,32 @@ ${exception}
 
 export async function AsyncAlertExceptionHelper(exception: any) {
   try {
+    if (
+      exception instanceof Error &&
+      exception.message === 'Войдите в аккаунт'
+    ) {
+      ToastController.warning('Войдите в аккаунт', 'Войдите в аккаунт');
+      return;
+    }
+
     if (exception instanceof HttpException) {
       const json: HttpResponseDto = await exception.RESPONSE.json();
 
-      const message = `
-Запрос на сервер (HttpException)
+      const title = 'Исключение при запросе на сервер (HttpException)';
+      const message =
+        `<pre style="overflow-x: scroll;">` +
+        `${json.message} \n` +
+        `Method: ${exception.HTTP_METHOD} \n` +
+        `URL: ${exception.HTTP_URL} \n` +
+        `HTTP status: ${exception.HTTP_STATUS} \n` +
+        `</pre>`;
 
-${json.message}
-
-Дополнительная информация:
-- Method: ${exception.HTTP_METHOD}
-- URL: ${exception.HTTP_URL}
-- HTTP status: ${exception.HTTP_STATUS}
-        `;
-
-      alert(message);
+      ToastController.warning(message, title);
       return;
     }
 
     AlertExceptionHelper(exception);
   } catch (err) {
-    if (exception instanceof HttpException) {
-      const message = `
-Запрос на сервер (HttpException)
-
-Дополнительная информация:
-- Method: ${exception.HTTP_METHOD}
-- URL: ${exception.HTTP_URL}
-- HTTP status: ${exception.HTTP_STATUS}
-        `;
-
-      alert(message);
-      return;
-    }
-
-    alert(err);
+    AlertExceptionHelper(exception);
   }
 }

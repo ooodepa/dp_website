@@ -3,6 +3,34 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+}
+
+@media (min-width: 801px) {
+  .app__wrapper {
+    scrollbar-width: var(--scrollbarWidth);
+    scrollbar-color: var(--scrollbarThumbColor) var(--scrollbarBgColor);
+  }
+
+  .app__wrapper::-webkit-scrollbar {
+    width: var(--scrollbarWidth);
+  }
+
+  .app__wrapper::-webkit-scrollbar-track {
+    background: var(--scrollbarBgColor);
+    border-radius: var(--scrollbarBorderRadius);
+  }
+
+  .app__wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbarThumbColor);
+    border-radius: var(--scrollbarBorderRadius);
+    border: var(--scrollbarBorder);
+    background-image: linear-gradient(
+      180deg,
+      var(--scrollbarThumbColor) 0%,
+      var(--scrollbarThumbColorSecond) 90%
+    );
+  }
 }
 
 .app__content {

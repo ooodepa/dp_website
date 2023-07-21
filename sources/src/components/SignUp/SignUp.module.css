@@ -1,0 +1,81 @@
+.wrapper {
+  /* text-align: center; */
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.wrapper form {
+  max-width: 300px;
+  /* border: 1px solid black; */
+}
+
+.wrapper form a {
+  display: block;
+}
+
+.wrapper form input,
+.wrapper form a,
+.wrapper form button {
+  margin-bottom: 8px;
+}
+
+.wrapper form input {
+  width: calc(100% - 8px * 2 - 1px * 2);
+  border: 1px solid var(--site-color);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.wrapper form label {
+  color: var(--site-color);
+  font-weight: bold;
+  padding-bottom: 4px;
+  display: block;
+}
+
+.wrapper form span {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.wrapper form button {
+  width: 100%;
+  border: 1px solid var(--site-color);
+  padding: 8px;
+  background-color: var(--site-color);
+  color: white;
+  border-radius: 4px;
+}
+
+.wrapper form button:disabled {
+  border: 1px solid #b2d1f0;
+  background-color: #b2d1f0;
+  color: white;
+}
+
+.wrapper form button:disabled:hover {
+  background-color: #b2d1f0;
+  color: white;
+}
+
+.wrapper form button:hover {
+  color: var(--site-color);
+  background-color: white;
+}
+
+.many_buttons {
+  display: flex;
+}
+
+.many_buttons button {
+  margin: 0 8px;
+}
+
+.many_buttons button:first-child {
+  margin-left: 0;
+}
+
+.many_buttons button:last-child {
+  margin-right: 0;
+}

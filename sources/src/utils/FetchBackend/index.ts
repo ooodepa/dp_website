@@ -1,6 +1,6 @@
 import AppEnv from '@/AppEnv';
-import FetchSessions from './rest/api/sessions';
 import HttpException from './HttpException';
+import UpdateSessionResponseDto from './rest/api/sessions/dto/update-session-response.dto';
 
 async function update() {
   const refreshToken = localStorage.getItem('refresh');
@@ -13,15 +13,20 @@ async function update() {
   const response = await fetch(URL, {
     method: 'PATCH',
     headers: {
-      Authorization: `token`,
+      Authorization: `Bearer ${refreshToken}`,
     },
   });
 
   if (response.status === 200) {
+    const json: UpdateSessionResponseDto = await response.json();
+    const accessToken = json.dp_accessToken;
+    localStorage.setItem('access', accessToken);
     return true;
   }
 
   if (response.status === 401) {
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
     throw new HttpException('PATCH', response);
   }
 
@@ -39,12 +44,17 @@ export default async function FetchBackend(
   uri: string,
   body: any | undefined = {},
 ): Promise<FetchBackendResult> {
-  const token: string | undefined =
-    type === 'access'
-      ? `Bearer ${localStorage.getItem('access')}`
-      : type === 'refresh'
-      ? `Bearer ${localStorage.getItem('refresh')}`
-      : undefined;
+  let token: string | undefined = undefined;
+
+  if (type === 'access') {
+    const t = localStorage.getItem('access');
+    token = `Bearer ${t}`;
+  }
+
+  if (type === 'refresh') {
+    const t = localStorage.getItem('refresh');
+    token = `Bearer ${t}`;
+  }
 
   // eslint-disable-next-line no-console
   console.log(`${method} /api/v1/${uri}`);
