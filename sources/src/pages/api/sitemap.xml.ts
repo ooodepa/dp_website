@@ -27,7 +27,7 @@ const generateSitemap = (pages: string[]): string => {
 async function generatePages() {
   const arr: string[] = [];
 
-  arr.push(`${process.env.SITE_URL}/`);
+  arr.push(`${process.env.NEXT_PUBLIC__SITE_URL}/`);
 
   const pages = await FetchArticles.get();
   for (let i = 0; i < pages.length; ++i) {
@@ -35,10 +35,10 @@ async function generatePages() {
       continue;
     }
 
-    arr.push(`${process.env.SITE_URL}/${pages[i].dp_urlSegment}`);
+    arr.push(`${process.env.NEXT_PUBLIC__SITE_URL}/${pages[i].dp_urlSegment}`);
   }
 
-  arr.push(`${process.env.SITE_URL}/products`);
+  arr.push(`${process.env.NEXT_PUBLIC__SITE_URL}/products`);
 
   const brands = await FetchItemBrand.get();
   for (let i = 0; i < brands.length; ++i) {
@@ -46,7 +46,9 @@ async function generatePages() {
       continue;
     }
 
-    arr.push(`${process.env.SITE_URL}/products/${brands[i].dp_urlSegment}`);
+    arr.push(
+      `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[i].dp_urlSegment}`,
+    );
   }
 
   const categories = await FetchItemCategories.get();
@@ -62,7 +64,7 @@ async function generatePages() {
 
       if (brands[j].dp_id === categories[i].dp_itemBrandId) {
         arr.push(
-          `${process.env.SITE_URL}/products/${brands[j].dp_urlSegment}/${categories[i].dp_urlSegment}`,
+          `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[j].dp_urlSegment}/${categories[i].dp_urlSegment}`,
         );
         break;
       }
@@ -88,7 +90,7 @@ async function generatePages() {
 
           if (brands[k].dp_id === categories[j].dp_itemBrandId) {
             arr.push(
-              `${process.env.SITE_URL}/products/${brands[k].dp_urlSegment}/${categories[j].dp_urlSegment}/${items[i].dp_model}`,
+              `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[k].dp_urlSegment}/${categories[j].dp_urlSegment}/${items[i].dp_model}`,
             );
 
             break;
