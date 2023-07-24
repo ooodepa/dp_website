@@ -25,11 +25,6 @@
     background-color: var(--scrollbarThumbColor);
     border-radius: var(--scrollbarBorderRadius);
     border: var(--scrollbarBorder);
-    background-image: linear-gradient(
-      180deg,
-      var(--scrollbarThumbColor) 0%,
-      var(--scrollbarThumbColorSecond) 90%
-    );
   }
 }
 
