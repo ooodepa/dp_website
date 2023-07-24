@@ -19,7 +19,8 @@ export default async function SitemapXml(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  res.setHeader('Content-Type', 'text/text');
+  res.setHeader('Content-Disposition', 'inline');
+  res.setHeader('Content-Type', 'text/plain');
   res.write(robotsTxtFile);
   res.end();
 }
