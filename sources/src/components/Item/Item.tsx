@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import styles from './Item.module.css';
+import AppLink from '../AppLink/AppLink';
 import BasketHelper from '@/utils/BasketHelper';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
@@ -59,20 +60,27 @@ export default function Item(props: IProps) {
           <Image src={props.item.dp_photoUrl} alt="x" width={280} height={72} />
         )}
       </div>
-      <div className={styles.counter_block}>
-        <button onClick={minus} title="Убрать одну позицию">
-          -
-        </button>
-        <input
-          type="number"
-          title="Тут можно указать определенное количество для заказа"
-          value={count}
-          onChange={event => changeCount(event.target.value)}
-        />
-        <button onClick={plus} title="Добавить одну позицию">
-          +
-        </button>
-      </div>
+      {props.item.dp_cost === 0 ? null : (
+        <>
+          <div className={styles.counter_block}>
+            <button onClick={minus} title="Убрать одну позицию">
+              -
+            </button>
+            <input
+              type="text"
+              title="Тут можно указать определенное количество для заказа"
+              value={count}
+              onChange={event => changeCount(event.target.value)}
+            />
+            <button onClick={plus} title="Добавить одну позицию">
+              +
+            </button>
+          </div>
+          <div className={styles.counter_bottom_button}>
+            <AppLink href="/basket">Посмотреть корзину</AppLink>
+          </div>
+        </>
+      )}
       <table className={styles.item__table}>
         <tbody>
           <tr>

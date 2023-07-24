@@ -1,5 +1,5 @@
 .button {
-  all: unset;
+  display: inline-block;
   background-color: var(--site-color);
   color: white;
   border: 1px solid var(--site-color);

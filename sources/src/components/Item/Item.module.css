@@ -35,7 +35,7 @@
 
 .counter_block {
   text-align: center;
-  padding: 32px;
+  margin: 8px 0;
 }
 
 .counter_block button {
@@ -53,6 +53,18 @@
   margin: 0 8px;
   font-weight: bold;
   color: black;
-  width: 64px;
+  width: 80px;
+  text-align: center;
+}
+
+.counter_block::after {
+  display: block;
+  text-align: center;
+  content: 'шт.';
+  width: 100%;
+}
+
+.counter_bottom_button {
+  margin: 24px 0;
   text-align: center;
 }
