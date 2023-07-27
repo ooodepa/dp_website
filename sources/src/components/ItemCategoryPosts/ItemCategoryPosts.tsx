@@ -32,8 +32,6 @@ export default function ItemCategoryPosts(props: IProps) {
                       width={280}
                       height={72}
                       style={{
-                        width: 'auto',
-                        height: '72px',
                         objectFit: 'contain',
                         position: 'relative',
                         textAlign: 'center',
