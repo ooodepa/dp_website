@@ -1,3 +1,32 @@
+/* scroll images */
+
+.img_scroll_block {
+  margin: 0;
+  padding: 0 0 8px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.img_scroll_block li {
+  list-style-type: none;
+  border: 1px solid var(--site-color);
+  margin: 8px;
+  padding: 2px;
+  border-radius: 4px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img_scroll_block li:hover {
+  background-color: var(--site-color);
+}
+/* end scroll images */
+
 .item__image {
   text-align: center;
   margin-bottom: 16px;

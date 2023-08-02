@@ -22,12 +22,17 @@ interface IProps {
 
 export default function Item(props: IProps) {
   const [count, setCount] = useState<number>(0);
+  const [imgHref, setImgHref] = useState('');
 
   const model = props.item.dp_model;
   const costIsView = Number(props.item.dp_cost) === 0 ? false : true;
   const costNoNds = Number(props.item.dp_cost).toFixed(2);
   const costNds = Number(props.item.dp_cost * 0.2).toFixed(2);
   const costTotal = Number(Number(costNoNds) + Number(costNds)).toFixed(2);
+
+  useEffect(() => {
+    setImgHref(props.item.dp_photoUrl);
+  }, [props]);
 
   useEffect(() => {
     const c = BasketHelper.getCount(model);
@@ -56,10 +61,49 @@ export default function Item(props: IProps) {
     <AppContainer>
       <h1>{props.item.dp_name}</h1>
       <div className={styles.item__image}>
-        {!props.item.dp_photoUrl ? null : (
-          <Image src={props.item.dp_photoUrl} alt="x" width={280} height={72} />
+        {!imgHref ? null : (
+          <Image src={imgHref} alt="x" width={280} height={72} />
         )}
       </div>
+      <ul className={styles.img_scroll_block}>
+        <li
+          onClick={() => setImgHref(props.item.dp_photoUrl)}
+          title="Посмотреть эту картинку">
+          <Image
+            width={64}
+            height={64}
+            style={{
+              maxWidth: '64px',
+              maxHeight: '64px',
+              width: 'auto',
+              height: 'auto',
+            }}
+            src={props.item.dp_photoUrl}
+            alt="x"
+          />
+        </li>
+        {props.item.dp_itemGalery.map(e => {
+          return (
+            <li
+              key={e.dp_id}
+              onClick={() => setImgHref(e.dp_photoUrl)}
+              title="Посмотреть эту картинку">
+              <Image
+                width={64}
+                height={64}
+                style={{
+                  maxWidth: '64px',
+                  maxHeight: '64px',
+                  width: 'auto',
+                  height: 'auto',
+                }}
+                src={e.dp_photoUrl}
+                alt="x"
+              />
+            </li>
+          );
+        })}
+      </ul>
       {props.item.dp_cost === 0 ? null : (
         <>
           <div className={styles.counter_block}>
