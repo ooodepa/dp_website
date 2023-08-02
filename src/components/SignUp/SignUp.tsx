@@ -103,25 +103,55 @@ export default function SignUp() {
             dp_shortNameLegalEntity: json?.row?.vnaimk ? json.row.vnaimk : '',
           });
         } catch (exception) {
-          if (
-            exception instanceof HttpException &&
-            exception.HTTP_STATUS === 404
-          ) {
-            setModal(
-              <AppModal
-                title="Регистрация (ошибка ввода)"
-                message="Такой УНП не найден">
-                <button onClick={() => setModal(<></>)}>Закрыть</button>
-              </AppModal>,
-            );
-            setStep(1);
-            return;
-          }
-          await AsyncAlertExceptionHelper(exception);
+          setData({
+            ...data,
+            dp_address: '',
+            dp_nameLegalEntity: '',
+            dp_shortNameLegalEntity: '',
+          });
         }
 
         return;
       }
+
+      if (step === 3) {
+        if (data.dp_nameLegalEntity.length === 0) {
+          setModal(
+            <AppModal
+              title="Регистрация (ошибка ввода)"
+              message="Наименование организации не указано">
+              <button onClick={() => setModal(<></>)}>Закрыть</button>
+            </AppModal>,
+          );
+          setStep(2);
+          return;
+        }
+
+        if (data.dp_shortNameLegalEntity.length === 0) {
+          setModal(
+            <AppModal
+              title="Регистрация (ошибка ввода)"
+              message="Краткое наименование организации не указано">
+              <button onClick={() => setModal(<></>)}>Закрыть</button>
+            </AppModal>,
+          );
+          setStep(2);
+          return;
+        }
+
+        if (data.dp_address.length === 0) {
+          setModal(
+            <AppModal
+              title="Регистрация (ошибка ввода)"
+              message="Адрес организации не указан">
+              <button onClick={() => setModal(<></>)}>Закрыть</button>
+            </AppModal>,
+          );
+          setStep(2);
+          return;
+        }
+      }
+
       if (step === 4) {
         if (data.dp_receptionPhone.length !== 13) {
           setModal(
