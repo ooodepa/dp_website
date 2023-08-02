@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { convert as numberToWordsRu } from 'number-to-words-ru';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Image from 'next/image';
 import styles from './Basket.module.css';
@@ -173,6 +175,11 @@ export default function Basket() {
     );
   }
 
+  function removePositionFromBasket(model: string) {
+    BasketHelper.removeModel(model);
+    updateBasket();
+  }
+
   return (
     <AppWrapper>
       {modal}
@@ -291,6 +298,7 @@ export default function Basket() {
                     <th>Сумма, руб. коп.</th>
                     <th>Сумма НДС, руб. коп.</th>
                     <th>Всего с НДС, руб. коп.</th>
+                    <th>Удалить</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -325,12 +333,35 @@ export default function Basket() {
                         <td>
                           {dp_name}, {dp_model}
                         </td>
-                        <td className={styles.tdRight}>{cost}</td>
-                        <td className={styles.tdRight}>{nds}</td>
+                        {cost === '0.00' ? (
+                          <td className={styles.tdCenter} colSpan={2}>
+                            нет цены в БД
+                          </td>
+                        ) : (
+                          <>
+                            <td className={styles.tdRight}>{cost}</td>
+                            <td className={styles.tdRight}>{nds}</td>
+                          </>
+                        )}
                         <td className={styles.tdCenter}>{dp_count}</td>
-                        <td className={styles.tdRight}>{sumNoNds}</td>
-                        <td className={styles.tdRight}>{sumNds}</td>
-                        <td className={styles.tdRight}>{totalSum}</td>
+                        {cost === '0.00' ? (
+                          <td className={styles.tdCenter} colSpan={3}>
+                            нет цены в БД
+                          </td>
+                        ) : (
+                          <>
+                            <td className={styles.tdRight}>{sumNoNds}</td>
+                            <td className={styles.tdRight}>{sumNds}</td>
+                            <td className={styles.tdRight}>{totalSum}</td>
+                          </>
+                        )}
+                        <td className={styles.table__td_remove_button}>
+                          <button
+                            title="Удалить позицию из корзины"
+                            onClick={() => removePositionFromBasket(dp_model)}>
+                            <FontAwesomeIcon icon={faXmark} />
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
@@ -342,6 +373,7 @@ export default function Basket() {
                     <th>{totalBasketCounter.totalNoNds}</th>
                     <th>{totalBasketCounter.totalNds}</th>
                     <th>{totalBasketCounter.totalSum}</th>
+                    <th>x</th>
                   </tr>
                 </tbody>
               </table>

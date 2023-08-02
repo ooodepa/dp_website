@@ -176,3 +176,28 @@
 .table caption {
   font-weight: bold;
 }
+
+.table__td_remove_button {
+  text-align: center;
+}
+
+.table__td_remove_button button {
+  border: 1px solid #dc3545;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+}
+
+.table__td_remove_button button:hover {
+  background-color: transparent;
+}
+
+.table__td_remove_button button:hover svg {
+  color: #dc3545;
+}
+
+.table__td_remove_button svg {
+  width: 1em;
+}

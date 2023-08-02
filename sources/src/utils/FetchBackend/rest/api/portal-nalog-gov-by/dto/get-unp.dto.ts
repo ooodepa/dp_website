@@ -1,17 +1,17 @@
 interface UnpDataDto {
-  VUNP: string;
-  VNAIMP: string;
-  VNAIMK: string;
-  VPADRES: string;
-  DREG: string;
-  NMNS: string;
-  VMNS: string;
-  CKODSOST: string;
-  VKODS: string;
-  DLIKV: string | null;
-  VLIKV: string | null;
+  vunp: string;
+  vnaimp: string;
+  vnaimk: string;
+  vpadres: string | null;
+  dreg: string;
+  nmns: string;
+  vmns: string;
+  ckodsost: string;
+  vkods: string;
+  dlikv: string | null;
+  vlikv: string | null;
 }
 
 export default interface GetUnpDto {
-  ROW: UnpDataDto;
+  row: UnpDataDto;
 }

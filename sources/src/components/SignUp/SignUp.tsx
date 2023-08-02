@@ -98,9 +98,9 @@ export default function SignUp() {
           const json = await FetchUnp.get(data.dp_unp);
           setData({
             ...data,
-            dp_address: json.ROW.VPADRES,
-            dp_nameLegalEntity: json.ROW.VNAIMP,
-            dp_shortNameLegalEntity: json.ROW.VNAIMK,
+            dp_address: json?.row?.vpadres ? json.row.vpadres : '',
+            dp_nameLegalEntity: json?.row?.vnaimp ? json.row.vnaimp : '',
+            dp_shortNameLegalEntity: json?.row?.vnaimk ? json.row.vnaimk : '',
           });
         } catch (exception) {
           if (
@@ -183,6 +183,18 @@ export default function SignUp() {
     return;
   }
 
+  function handleChangeShortName(shortName: string) {
+    setData({ ...data, dp_shortNameLegalEntity: shortName });
+  }
+
+  function handleChangeName(name: string) {
+    setData({ ...data, dp_nameLegalEntity: name });
+  }
+
+  function handleChangeAddress(address: string) {
+    setData({ ...data, dp_address: address });
+  }
+
   function handleChangeLastname(lastname: string) {
     setData({ ...data, dp_lastName: lastname });
   }
@@ -259,15 +271,21 @@ export default function SignUp() {
               </>
             ) : step === 2 ? (
               <>
-                <FormInputView
+                <FormInput
                   label="Краткое наименование"
                   value={data.dp_shortNameLegalEntity}
+                  onChange={event => handleChangeShortName(event.target.value)}
                 />
-                <FormInputView
+                <FormInput
                   label="Наименование"
                   value={data.dp_nameLegalEntity}
+                  onChange={event => handleChangeName(event.target.value)}
                 />
-                <FormInputView label="Адрес" value={data.dp_address} />
+                <FormInput
+                  label="Адрес"
+                  value={data.dp_address}
+                  onChange={event => handleChangeAddress(event.target.value)}
+                />
               </>
             ) : step === 3 ? (
               <>

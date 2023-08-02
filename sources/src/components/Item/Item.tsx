@@ -104,27 +104,23 @@ export default function Item(props: IProps) {
           );
         })}
       </ul>
-      {props.item.dp_cost === 0 ? null : (
-        <>
-          <div className={styles.counter_block}>
-            <button onClick={minus} title="Убрать одну позицию">
-              -
-            </button>
-            <input
-              type="text"
-              title="Тут можно указать определенное количество для заказа"
-              value={count}
-              onChange={event => changeCount(event.target.value)}
-            />
-            <button onClick={plus} title="Добавить одну позицию">
-              +
-            </button>
-          </div>
-          <div className={styles.counter_bottom_button}>
-            <AppLink href="/basket">Посмотреть корзину</AppLink>
-          </div>
-        </>
-      )}
+      <div className={styles.counter_block}>
+        <button onClick={minus} title="Убрать одну позицию">
+          -
+        </button>
+        <input
+          type="text"
+          title="Тут можно указать определенное количество для заказа"
+          value={count}
+          onChange={event => changeCount(event.target.value)}
+        />
+        <button onClick={plus} title="Добавить одну позицию">
+          +
+        </button>
+      </div>
+      <div className={styles.counter_bottom_button}>
+        <AppLink href="/basket">Посмотреть корзину</AppLink>
+      </div>
       <table className={styles.item__table}>
         <tbody>
           <tr>

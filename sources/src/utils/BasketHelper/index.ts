@@ -1,6 +1,10 @@
 import IBasketItem from './dto/IBasketItem.dto';
 import GetItemDto from '../FetchBackend/rest/api/items/dto/get-item.dto';
 
+interface BasketDto {
+  [key: string]: number;
+}
+
 class BasketHelper {
   static getBasket() {
     let stringBasket = localStorage.getItem('dp_basket');
@@ -10,7 +14,7 @@ class BasketHelper {
       stringBasket = localStorage.getItem('dp_basket');
     }
 
-    const basket = JSON.parse(stringBasket as string);
+    const basket: BasketDto = JSON.parse(stringBasket as string);
 
     return basket;
   }
@@ -68,6 +72,13 @@ class BasketHelper {
 
     const basket = BasketHelper.getBasket();
     basket[model] = count;
+
+    localStorage.setItem('dp_basket', JSON.stringify(basket));
+  }
+
+  static removeModel(model: string) {
+    const basket = BasketHelper.getBasket();
+    delete basket[model];
 
     localStorage.setItem('dp_basket', JSON.stringify(basket));
   }

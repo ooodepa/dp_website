@@ -2,6 +2,7 @@ import GetItemDto from './dto/get-item.dto';
 import FetchBackend from '@/utils/FetchBackend';
 import UpdateItemDto from './dto/update-item.dto';
 import CreateItemDto from './dto/create-item.dto';
+import SearchItemDto from './dto/search-item.dto';
 import FilterItemsByModelsDto from './dto/filter-models.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 
@@ -107,6 +108,18 @@ export default class FetchItems {
 
     if (response.status === 200) {
       return true;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async search(dto: SearchItemDto) {
+    const result = await FetchBackend('none', 'POST', `items/search`, dto);
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetItemDto[] = await response.json();
+      return json;
     }
 
     throw new HttpException(result.method, response);
