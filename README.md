@@ -1,7 +1,6 @@
 ## Build
 
 ```
-cd sources
 cp .env.example .env
 yarn
 yarn build
@@ -10,12 +9,11 @@ yarn serve
 
 Open: http://localhost
 
-Result: `sources/out`
+Result: `/out`
 
 ## Development
 
 ```
-cd sources
 cp .env.example .env
 yarn
 yarn dev
