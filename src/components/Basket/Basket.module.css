@@ -10,27 +10,18 @@
   list-style-type: none;
   width: 300px;
   margin: 16px;
-}
-
-.posts li a {
   border: 1px solid lightgray;
   border-radius: 8px;
-  display: block;
-  height: calc(100% - 2 * 8px);
   padding: 8px;
 }
 
-.posts li a:hover {
-  border: 1px solid var(--site-color);
-}
-
-.posts li a .post__image_block {
+.posts li .post__image_block {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.posts li a .post__image_block {
+.posts li .post__image_block {
   height: 72px;
   border: 1px solid lightgrey;
 }
@@ -50,22 +41,14 @@
   text-align: center;
 }
 
-.posts li a:hover .post__costNoNds,
-.posts li a:hover .post__costNds {
-  color: black;
-}
-
 .post__costNoNds {
   color: lightgray;
   text-align: right;
-  /* font-weight: bolder; */
 }
 
 .post__costNds {
   color: lightgray;
-  /* color: black; */
   text-align: right;
-  /* font-weight: bolder; */
 }
 
 .post__wrapper {
@@ -95,9 +78,11 @@
   color: black;
 }
 
+/* conter */
+
 .counter_block {
   text-align: center;
-  padding: 32px 0;
+  padding: 24px 0;
 }
 
 .counter_block button {
@@ -118,6 +103,8 @@
   width: 64px;
   text-align: center;
 }
+
+/* end counter */
 
 .center_block {
   display: flex;
@@ -144,6 +131,8 @@
   background-color: transparent;
   color: var(--site-color);
 }
+
+/* table */
 
 .table_wrapper {
   overflow-x: auto;
@@ -201,3 +190,15 @@
 .table__td_remove_button svg {
   width: 1em;
 }
+
+/* end table */
+
+/* footer buttons */
+
+.footer__button a {
+  /* width: 100%; */
+  display: flex;
+  justify-content: center;
+}
+
+/* end footer buttons */

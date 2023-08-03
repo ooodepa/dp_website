@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import styles from './Basket.module.css';
 import AppHead from '../AppHead/AppHead';
+import AppLink from '../AppLink/AppLink';
 import AppModal from '../AppModal/AppModal';
 import AppTitle from '../AppTitle/AppTitle';
 import BasketHelper from '@/utils/BasketHelper';
@@ -208,75 +209,74 @@ export default function Basket() {
 
             return (
               <li key={element.dp_id}>
-                <Link href="#">
-                  <div className={styles.post__wrapper}>
-                    <div className={styles.post__content}>
-                      <div className={styles.post__image_block}>
-                        {!element.dp_img ? (
-                          'нет картинки'
-                        ) : (
-                          <Image
-                            src={element.dp_img}
-                            alt="x"
-                            width={280}
-                            height={72}
-                            style={{
-                              width: 'auto',
-                              height: '72px',
-                              objectFit: 'contain',
-                              position: 'relative',
-                              textAlign: 'center',
-                            }}
-                          />
-                        )}
-                      </div>
-                      <div className={styles.post__model}>
-                        {element.dp_model}
-                      </div>
-                      <div className={styles.post__title}>
-                        {element.dp_name}
-                      </div>
-                    </div>
-                    <div className={styles.post__footer}>
-                      <div className={styles.counter_block}>
-                        <button
-                          onClick={() => minus(element.dp_model)}
-                          title="Убрать одну позицию">
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          title="Тут можно указать определенное количество для заказа"
-                          value={element.dp_count}
-                          onChange={event =>
-                            changeCount(element.dp_model, event.target.value)
-                          }
+                <div className={styles.post__wrapper}>
+                  <div className={styles.post__content}>
+                    <div className={styles.post__image_block}>
+                      {!element.dp_img ? (
+                        'нет картинки'
+                      ) : (
+                        <Image
+                          src={element.dp_img}
+                          alt="x"
+                          width={280}
+                          height={72}
+                          style={{
+                            width: 'auto',
+                            height: '72px',
+                            objectFit: 'contain',
+                            position: 'relative',
+                            textAlign: 'center',
+                          }}
                         />
-                        <button
-                          onClick={() => plus(element.dp_model)}
-                          title="Добавить одну позицию">
-                          +
-                        </button>
-                      </div>
-                      {costIsView ? (
-                        <>
-                          <div className={styles.post__costNoNds}>
-                            (без НДС) BYN {costNoNds}
-                          </div>
-                          <div className={styles.post__costNds}>
-                            (с НДС) BYN {costNds}
-                          </div>
-                          <div className={styles.post__count}>
-                            {element.dp_count} шт. по цене BYN {costNds}
-                          </div>
-                          <div className={styles.post__total}>
-                            (итого) BYN {costTotal}
-                          </div>
-                        </>
-                      ) : null}
+                      )}
+                    </div>
+                    <div className={styles.post__model}>{element.dp_model}</div>
+                    <div className={styles.post__title}>{element.dp_name}</div>
+                  </div>
+                  <div className={styles.post__footer}>
+                    {costIsView ? (
+                      <>
+                        <div className={styles.post__costNoNds}>
+                          (без НДС) BYN {costNoNds}
+                        </div>
+                        <div className={styles.post__costNds}>
+                          (с НДС) BYN {costNds}
+                        </div>
+                        <div className={styles.post__count}>
+                          {element.dp_count} шт. по цене BYN {costNds}
+                        </div>
+                        <div className={styles.post__total}>
+                          (итого) BYN {costTotal}
+                        </div>
+                      </>
+                    ) : null}
+                    <div className={styles.counter_block}>
+                      <button
+                        onClick={() => minus(element.dp_model)}
+                        title="Убрать одну позицию">
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        title="Тут можно указать определенное количество для заказа"
+                        value={element.dp_count}
+                        onChange={event =>
+                          changeCount(element.dp_model, event.target.value)
+                        }
+                      />
+                      <button
+                        onClick={() => plus(element.dp_model)}
+                        title="Добавить одну позицию">
+                        +
+                      </button>
+                    </div>
+                    <div className={styles.footer__button}>
+                      <AppLink href={`/redirect/items/${element.dp_id}`}>
+                        Открыть страницу
+                      </AppLink>
                     </div>
                   </div>
-                </Link>
+                </div>
               </li>
             );
           })}

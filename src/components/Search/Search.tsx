@@ -1,7 +1,12 @@
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import {
+  faBasketShopping,
+  faXmark,
+  faLink,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBasketShopping, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './Search.module.css';
 import BasketHelper from '@/utils/BasketHelper';
@@ -82,16 +87,12 @@ export default function Search() {
     setItems(customItems);
   }
 
-  function openSearchResult(id: string) {
-    route.push(`/items-search/${id}`);
-  }
-
   return (
     <AppContainer>
       <div className={styles.search_block}>
         <input
           type="text"
-          placeholder="Поиск по модели или наименованию"
+          placeholder="Поиск по модели, наименованию"
           value={search}
           onChange={event => getResults(event.target.value)}
         />
@@ -106,13 +107,16 @@ export default function Search() {
             return (
               <li
                 key={e.dp_id}
-                // onClick={() => openSearchResult(e.dp_id)}
-                // title={`Открыть страницу продукта "${e.dp_model}"`}
-              >
+                title={`Открыть страницу об этой номенклатуре (${e.dp_model})`}>
                 <div className={styles.results__text}>
                   <div className={styles.model}>{e.dp_model}</div>
                   <div>{e.dp_name}</div>
                 </div>
+                <Link
+                  href={`/redirect/items/${e.dp_id}`}
+                  className={styles.search__button}>
+                  <FontAwesomeIcon icon={faLink} />
+                </Link>
                 {e.isInBasket ? (
                   <button
                     className={`${styles.search__button} ${styles.search__button_remove}`}
