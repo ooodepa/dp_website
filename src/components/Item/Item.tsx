@@ -195,7 +195,7 @@ export default function Item(props: IProps) {
             <>
               <tr>
                 <td>Цена за одну штуку без НДС</td>
-                <td rowSpan={3}>цена не задана</td>
+                <td rowSpan={3}>цену уточняйте у поставщика</td>
               </tr>
               <tr>
                 <td>НДС</td>

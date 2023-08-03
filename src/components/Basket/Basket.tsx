@@ -281,7 +281,6 @@ export default function Basket() {
             );
           })}
         </ul>
-
         {basketArray.length === 0 ? null : (
           <>
             <div className={styles.table_wrapper}>
@@ -292,9 +291,9 @@ export default function Basket() {
                     <th>№</th>
                     <th>Картинка</th>
                     <th>Наименование</th>
+                    <th>Количество</th>
                     <th>Цена, руб. коп.</th>
                     <th>НДС</th>
-                    <th>Количество</th>
                     <th>Сумма, руб. коп.</th>
                     <th>Сумма НДС, руб. коп.</th>
                     <th>Всего с НДС, руб. коп.</th>
@@ -331,25 +330,30 @@ export default function Basket() {
                           />
                         </td>
                         <td>
-                          {dp_name}, {dp_model}
+                          <Link
+                            href={`/redirect/items/${element.dp_id}`}
+                            className={styles.tdLinkName}
+                            title={`Открыть страницу номенклатуры (${dp_model})`}>
+                            {dp_model} <br /> {dp_name}
+                          </Link>
+                        </td>
+                        <td className={styles.tdCenter}>
+                          <input
+                            type="number"
+                            value={dp_count}
+                            onChange={event =>
+                              changeCount(dp_model, event.target.value)
+                            }
+                          />
                         </td>
                         {cost === '0.00' ? (
-                          <td className={styles.tdCenter} colSpan={2}>
-                            нет цены в БД
+                          <td className={styles.tdCenter} colSpan={5}>
+                            цену уточняйте у поставщика
                           </td>
                         ) : (
                           <>
                             <td className={styles.tdRight}>{cost}</td>
                             <td className={styles.tdRight}>{nds}</td>
-                          </>
-                        )}
-                        <td className={styles.tdCenter}>{dp_count}</td>
-                        {cost === '0.00' ? (
-                          <td className={styles.tdCenter} colSpan={3}>
-                            нет цены в БД
-                          </td>
-                        ) : (
-                          <>
                             <td className={styles.tdRight}>{sumNoNds}</td>
                             <td className={styles.tdRight}>{sumNds}</td>
                             <td className={styles.tdRight}>{totalSum}</td>
@@ -366,10 +370,12 @@ export default function Basket() {
                     );
                   })}
                   <tr>
-                    <th colSpan={5} className={styles.tdRight}>
-                      Итого
+                    <th colSpan={3} className={styles.tdRight}>
+                      Итого:
                     </th>
                     <th>{totalBasketCounter.positions}</th>
+                    <th>x</th>
+                    <th>x</th>
                     <th>{totalBasketCounter.totalNoNds}</th>
                     <th>{totalBasketCounter.totalNds}</th>
                     <th>{totalBasketCounter.totalSum}</th>
