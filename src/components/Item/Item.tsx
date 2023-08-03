@@ -61,27 +61,29 @@ export default function Item(props: IProps) {
     <AppContainer>
       <h1>{props.item.dp_name}</h1>
       <div className={styles.item__image}>
-        {!imgHref ? null : (
+        {imgHref.length === 0 ? null : (
           <Image src={imgHref} alt="x" width={280} height={72} />
         )}
       </div>
       <ul className={styles.img_scroll_block}>
-        <li
-          onClick={() => setImgHref(props.item.dp_photoUrl)}
-          title="Посмотреть эту картинку">
-          <Image
-            width={64}
-            height={64}
-            style={{
-              maxWidth: '64px',
-              maxHeight: '64px',
-              width: 'auto',
-              height: 'auto',
-            }}
-            src={props.item.dp_photoUrl}
-            alt="x"
-          />
-        </li>
+        {props.item.dp_photoUrl.length === 0 ? null : (
+          <li
+            onClick={() => setImgHref(props.item.dp_photoUrl)}
+            title="Посмотреть эту картинку">
+            <Image
+              width={64}
+              height={64}
+              style={{
+                maxWidth: '64px',
+                maxHeight: '64px',
+                width: 'auto',
+                height: 'auto',
+              }}
+              src={props.item.dp_photoUrl}
+              alt="x"
+            />
+          </li>
+        )}
         {props.item.dp_itemGalery.map(e => {
           return (
             <li
@@ -164,6 +166,14 @@ export default function Item(props: IProps) {
                 title="Перейти на страницу с номенлатурой (вы уже на ней)">
                 {props.item.dp_model}
               </Link>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={2} style={{ border: 'none' }}></td>
+          </tr>
+          <tr>
+            <td colSpan={2} style={{ textAlign: 'center' }}>
+              Стоимость:
             </td>
           </tr>
           {costIsView ? (
