@@ -55,7 +55,13 @@ export default function ContactPosts(props: IProps) {
           return (
             <li key={element.dp_id}>
               <p className={styles.helper__title}>{element.dp_name}</p>
-              <p className={styles.helper__description}>{element.dp_text}</p>
+              {element.dp_text.split('\n').map((e, ei) => {
+                return (
+                  <p key={ei} className={styles.helper__description}>
+                    {e}
+                  </p>
+                );
+              })}
               <ul className={styles.phonesEmails}>
                 {element.dp_helperContactTypes.map(j => {
                   if (j.dp_isHidden) {
