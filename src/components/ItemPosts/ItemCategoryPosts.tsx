@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { faFileImage } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './ItemPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
@@ -25,21 +27,24 @@ export default function ItemPosts(props: IProps) {
           return (
             <li key={element.dp_id}>
               <Link
-                href={`/products/${props.brand}/${props.category}/${element.dp_model}`}>
+                href={`/products/${props.brand}/${props.category}/${element.dp_model}`}
+                title="Открыть страницу этой номенклатуры">
                 <div className={styles.post__wrapper}>
                   <div className={styles.post__content}>
                     <div className={styles.post__image_block}>
                       {!element.dp_photoUrl ? (
-                        'нет картинки'
+                        <FontAwesomeIcon icon={faFileImage} />
                       ) : (
                         <Image
                           src={element.dp_photoUrl}
                           alt="x"
-                          width={280}
-                          height={72}
+                          width={160}
+                          height={100}
                           style={{
                             width: 'auto',
-                            height: '72px',
+                            height: 'auto',
+                            maxWidth: '240px',
+                            maxHeight: '100px',
                             objectFit: 'contain',
                             position: 'relative',
                             textAlign: 'center',

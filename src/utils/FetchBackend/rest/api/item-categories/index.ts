@@ -9,7 +9,7 @@ export default class FetchItemCategories {
 
     if (response.status === 200) {
       const json: GetItemCategoryDto[] = await response.json();
-      return json;
+      return json.sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex);
     }
 
     throw new HttpException(result.method, response);
@@ -37,7 +37,7 @@ export default class FetchItemCategories {
 
     if (response.status === 200) {
       const json: GetItemCategoryDto[] = await response.json();
-      return json;
+      return json.sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex);
     }
 
     throw new HttpException(result.method, response);

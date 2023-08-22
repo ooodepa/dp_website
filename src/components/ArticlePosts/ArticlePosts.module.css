@@ -28,7 +28,15 @@
 .post__image_block {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 8px 0;
+  height: 200px;
+}
+
+.post__image_block img {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .post__image_block svg {

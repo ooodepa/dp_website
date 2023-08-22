@@ -62,7 +62,16 @@ export default function Item(props: IProps) {
       <h1>{props.item.dp_name}</h1>
       <div className={styles.item__image}>
         {imgHref.length === 0 ? null : (
-          <Image src={imgHref} alt="x" width={280} height={72} />
+          <Image
+            src={imgHref}
+            alt="x"
+            width={500}
+            height={500}
+            style={{
+              maxHeight: '500px',
+              maxWidth: '800px',
+            }}
+          />
         )}
       </div>
       <ul className={styles.img_scroll_block}>

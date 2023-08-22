@@ -31,12 +31,23 @@
 }
 
 .posts li a .post__image_block {
-  height: 72px;
+  height: 100px;
+  padding: 4px;
   border: 1px solid lightgrey;
 }
 
 .posts li a:hover .post__image_block {
   border: 1px solid white;
+}
+
+.post__image_block svg {
+  max-width: 64px;
+  max-height: 64px;
+  color: lightgrey;
+}
+
+.posts li a:hover .post__image_block svg {
+  color: #fafafa;
 }
 
 .post__image_block img {

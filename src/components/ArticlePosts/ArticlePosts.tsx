@@ -80,7 +80,7 @@ export default function ArticlePosts(props: IProps) {
         {props.article.dp_articleAttachedLinks.map(element => {
           return (
             <li key={element.dp_id}>
-              <Link href={element.dp_url}>
+              <Link href={element.dp_url} title="Просмотреть">
                 <div className={styles.post__image_block}>
                   {element.dp_photoUrl === '' ? (
                     <FontAwesomeIcon icon={getIcon(element.dp_url)} />
@@ -89,11 +89,13 @@ export default function ArticlePosts(props: IProps) {
                       src={element.dp_photoUrl}
                       alt="x"
                       width={180}
-                      height={72}
+                      height={200}
                       style={{
                         width: 'auto',
-                        height: '72px',
+                        height: 'auto',
                         textAlign: 'center',
+                        maxWidth: '180px',
+                        maxHeight: '200px',
                       }}
                     />
                   )}

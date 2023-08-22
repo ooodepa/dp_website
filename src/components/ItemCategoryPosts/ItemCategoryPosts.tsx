@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { faFileImage } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './ItemCategoryPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
@@ -21,17 +23,21 @@ export default function ItemCategoryPosts(props: IProps) {
 
           return (
             <li key={element.dp_id}>
-              <Link href={`/products/${props.brand}/${element.dp_urlSegment}`}>
+              <Link
+                href={`/products/${props.brand}/${element.dp_urlSegment}`}
+                title="Просмотреть номенклатуру этой категории">
                 <div className={styles.post__image_block}>
                   {!element.dp_photoUrl ? (
-                    'нет картинки'
+                    <FontAwesomeIcon icon={faFileImage} />
                   ) : (
                     <Image
                       src={element.dp_photoUrl}
                       alt="x"
-                      width={280}
-                      height={72}
+                      width={160}
+                      height={80}
                       style={{
+                        maxWidth: '160px',
+                        maxHeight: '80px',
                         objectFit: 'contain',
                         position: 'relative',
                         textAlign: 'center',

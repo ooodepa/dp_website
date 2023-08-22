@@ -12,7 +12,7 @@ export default class FetchItemBrand {
 
     if (response.status === 200) {
       const json: GetItemBrandDto[] = await response.json();
-      return json;
+      return json.sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex);
     }
 
     throw new HttpException(result.method, response);

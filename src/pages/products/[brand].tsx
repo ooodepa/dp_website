@@ -32,10 +32,7 @@ export default function BrandPage(props: IProps) {
       try {
         const jBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
         setDataBrand(jBrand);
-
-        const jCategories = (
-          await FetchItemCategories.filterByBrand(`${brand}`)
-        ).sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex);
+        const jCategories = await FetchItemCategories.filterByBrand(`${brand}`);
         setArrCategories(jCategories);
       } catch (exception) {
         await AsyncAlertExceptionHelper(exception);
@@ -67,9 +64,9 @@ interface IServerSideProps {
 export async function getStaticProps(context: IServerSideProps) {
   const { brand } = context.params;
 
-  const itemCategories = (await FetchItemCategories.filterByBrand(brand))
-    .filter(obj => !obj.dp_isHidden)
-    .sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex);
+  const itemCategories = (
+    await FetchItemCategories.filterByBrand(brand)
+  ).filter(obj => !obj.dp_isHidden);
   const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
   const props: IProps = { itemCategories, itemBrand };
@@ -80,9 +77,7 @@ export async function getStaticProps(context: IServerSideProps) {
 }
 
 export async function getStaticPaths() {
-  const brands = (await FetchItemBrand.get())
-    .filter(obj => !obj.dp_isHidden)
-    .sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex);
+  const brands = (await FetchItemBrand.get()).filter(obj => !obj.dp_isHidden);
 
   let paths: IServerSideProps[] = [];
 

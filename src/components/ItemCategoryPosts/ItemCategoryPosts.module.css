@@ -26,7 +26,8 @@
 
 .post__image_block {
   border: 1px solid lightgray;
-  height: 72px;
+  height: 80px;
+  padding: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,9 +37,14 @@ a:hover .post__image_block {
   border: 1px solid white;
 }
 
-.post__image_block img {
-  max-height: 72px;
-  max-width: calc(200px - 8px * 2 - 2px * 2);
+.post__image_block svg {
+  max-width: 64px;
+  max-height: 64px;
+  color: lightgrey;
+}
+
+.posts li a:hover .post__image_block svg {
+  color: #fafafa;
 }
 
 .post__title {
