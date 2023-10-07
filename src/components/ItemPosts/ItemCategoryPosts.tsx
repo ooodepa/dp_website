@@ -24,6 +24,13 @@ export default function ItemPosts(props: IProps) {
             element.dp_cost * 0.2 + element.dp_cost,
           ).toFixed(2);
 
+          const code = element.dp_itemCharacteristics.find(
+            e => e.dp_characteristicId === 21,
+          )?.dp_value;
+          const oldCode = element.dp_itemCharacteristics.find(
+            e => e.dp_characteristicId === 17,
+          )?.dp_value;
+
           return (
             <li key={element.dp_id}>
               <Link
@@ -52,7 +59,18 @@ export default function ItemPosts(props: IProps) {
                         />
                       )}
                     </div>
-                    <div className={styles.post__model}>{element.dp_model}</div>
+                    {code ? (
+                      <div className={styles.post__model}>(артикул) {code}</div>
+                    ) : (
+                      <div className={styles.post__model}>
+                        {element.dp_model}
+                      </div>
+                    )}
+                    {oldCode ? (
+                      <div className={styles.post__model}>
+                        (старый артикул) {oldCode}
+                      </div>
+                    ) : null}
                     <div className={styles.post__title}>{element.dp_name}</div>
                   </div>
                   <div className={styles.post__footer}>

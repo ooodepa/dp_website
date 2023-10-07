@@ -234,11 +234,32 @@ export default function Item(props: IProps) {
           {props.item?.dp_itemCharacteristics?.map(element => {
             let characteristicName = '';
             for (let i = 0; i < props.itemCharacteristics.length; ++i) {
-              if (
-                element.dp_characteristicId ==
-                props.itemCharacteristics[i].dp_id
-              ) {
-                characteristicName = props.itemCharacteristics[i].dp_name;
+              const characteristic = props.itemCharacteristics[i];
+
+              if (element.dp_characteristicId == characteristic.dp_id) {
+                characteristicName = characteristic.dp_name;
+
+                if (characteristic.dp_isHidden) return null;
+
+                if (element.dp_characteristicId === 22) {
+                  return (
+                    <tr key={element.dp_id}>
+                      <td>{characteristicName}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span
+                          style={{
+                            fontFamily: "'Libre Barcode 128'",
+                            fontSize: '32px',
+                          }}>
+                          *{element.dp_value}*
+                        </span>
+                        <br />
+                        {element.dp_value}
+                      </td>
+                    </tr>
+                  );
+                }
+
                 break;
               }
             }
