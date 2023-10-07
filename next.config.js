@@ -3,6 +3,18 @@ const nextConfig = {
   reactStrictMode: false,
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ms.yandex.ru',
+        port: '',
+      },
+    ],
   },
   trailingSlash: true,
   // output: 'export',
