@@ -6,11 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './ItemPosts.module.css';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
+import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/get-item-category.dto';
 
 interface IProps {
   brand: string;
   category: string;
   items: GetItemDto[];
+  itemCategory: GetItemCategoryDto;
 }
 
 export default function ItemPosts(props: IProps) {
@@ -46,12 +48,12 @@ export default function ItemPosts(props: IProps) {
                           src={element.dp_photoUrl}
                           alt="x"
                           width={160}
-                          height={100}
+                          height={160}
                           style={{
                             width: 'auto',
                             height: 'auto',
-                            maxWidth: '240px',
-                            maxHeight: '100px',
+                            maxWidth: '160px',
+                            maxHeight: '160px',
                             objectFit: 'contain',
                             position: 'relative',
                             textAlign: 'center',
@@ -60,7 +62,7 @@ export default function ItemPosts(props: IProps) {
                       )}
                     </div>
                     {code ? (
-                      <div className={styles.post__model}>(артикул) {code}</div>
+                      <div className={styles.post__model}>Артикул - {code}</div>
                     ) : (
                       <div className={styles.post__model}>
                         {element.dp_model}
@@ -68,7 +70,7 @@ export default function ItemPosts(props: IProps) {
                     )}
                     {oldCode ? (
                       <div className={styles.post__model}>
-                        (старый артикул) {oldCode}
+                        Старый артикул - {oldCode}
                       </div>
                     ) : null}
                     <div className={styles.post__title}>{element.dp_name}</div>
@@ -77,10 +79,10 @@ export default function ItemPosts(props: IProps) {
                     {costIsView ? (
                       <>
                         <div className={styles.post__costNoNds}>
-                          (без НДС) BYN {costNoNds}
+                          Цена без НДС: BYN {costNoNds}
                         </div>
                         <div className={styles.post__costNds}>
-                          (с НДС) BYN {costNds}
+                          Цена с НДС: BYN {costNds}
                         </div>
                       </>
                     ) : null}
@@ -91,6 +93,40 @@ export default function ItemPosts(props: IProps) {
           );
         })}
       </ul>
+      <table className={styles.item__table}>
+        <tbody>
+          <tr>
+            <td colSpan={2} style={{ textAlign: 'center' }}>
+              Данные категории номенклатуры:
+            </td>
+          </tr>
+          <tr>
+            <td rowSpan={2}>Наименование</td>
+            <td>{props.itemCategory.dp_name}</td>
+          </tr>
+          <tr>
+            <td>
+              <Link href={`/products/${props.brand}/${props.category}`}>
+                ({props.category})
+              </Link>
+            </td>
+          </tr>
+          <tr>
+            <td>Описание</td>
+            <td style={{ whiteSpace: 'pre-line' }}>
+              {props.itemCategory.dp_seoDescription}
+            </td>
+          </tr>
+          <tr>
+            <td>Ключевые слова</td>
+            <td style={{ whiteSpace: 'pre-line' }}>
+              {props.itemCategory.dp_seoKeywords.length === 0
+                ? 'нет'
+                : props.itemCategory.dp_seoKeywords}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </AppContainer>
   );
 }

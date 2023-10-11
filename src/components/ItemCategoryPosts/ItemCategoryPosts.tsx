@@ -34,10 +34,10 @@ export default function ItemCategoryPosts(props: IProps) {
                       src={element.dp_photoUrl}
                       alt="x"
                       width={160}
-                      height={80}
+                      height={160}
                       style={{
                         maxWidth: '160px',
-                        maxHeight: '80px',
+                        maxHeight: '160px',
                         objectFit: 'contain',
                         position: 'relative',
                         textAlign: 'center',

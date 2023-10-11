@@ -54,7 +54,12 @@ export default function BrandPage(props: IProps) {
       <AppHead />
       <Breadcrumbs />
       <h1>{dataCatagory.dp_name}</h1>
-      <ItemPosts brand={`${brand}`} category={`${category}`} items={arrItems} />
+      <ItemPosts
+        brand={`${brand}`}
+        category={`${category}`}
+        items={arrItems}
+        itemCategory={props.itemCategory}
+      />
     </AppWrapper>
   );
 }

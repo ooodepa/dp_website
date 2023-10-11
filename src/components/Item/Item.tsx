@@ -178,6 +178,12 @@ export default function Item(props: IProps) {
             </td>
           </tr>
           <tr>
+            <td>Описание</td>
+            <td style={{ whiteSpace: 'pre-line' }}>
+              {props.item.dp_seoDescription}
+            </td>
+          </tr>
+          <tr>
             <td colSpan={2} style={{ border: 'none' }}></td>
           </tr>
           <tr>

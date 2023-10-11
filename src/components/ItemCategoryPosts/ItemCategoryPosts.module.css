@@ -26,11 +26,18 @@
 
 .post__image_block {
   border: 1px solid lightgray;
-  height: 80px;
+  height: 160px;
   padding: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.post__image_block img {
+  width: auto;
+  height: auto;
+  max-width: 160px;
+  max-height: 160px;
 }
 
 a:hover .post__image_block {

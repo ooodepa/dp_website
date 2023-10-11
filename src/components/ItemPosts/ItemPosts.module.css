@@ -31,7 +31,7 @@
 }
 
 .posts li a .post__image_block {
-  height: 100px;
+  height: 160px;
   padding: 4px;
   border: 1px solid lightgrey;
 }
@@ -41,9 +41,16 @@
 }
 
 .post__image_block svg {
-  max-width: 64px;
-  max-height: 64px;
+  max-width: 120px;
+  max-height: 120px;
   color: lightgrey;
+}
+
+.post__image_block img {
+  width: auto;
+  height: auto;
+  max-width: 160px;
+  max-height: 160px;
 }
 
 .posts li a:hover .post__image_block svg {
@@ -98,3 +105,22 @@
   width: 100%;
   flex: 0 0 auto;
 }
+
+/* table */
+
+.item__table {
+  margin-bottom: 16px;
+  border-collapse: collapse;
+  margin: 0 auto;
+  margin-bottom: 16px;
+}
+
+.item__table td:first-child {
+  font-weight: bolder;
+}
+
+.item__table td {
+  border: 1px solid black;
+  padding: 4px;
+}
+/* end table*/
