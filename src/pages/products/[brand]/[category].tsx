@@ -8,6 +8,7 @@ import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import ItemPosts from '@/components/ItemPosts/ItemCategoryPosts';
+import AppContainer from '@/components/AppContainer/AppContainer';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
 import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
@@ -53,7 +54,9 @@ export default function BrandPage(props: IProps) {
       <AppKeywords keywords={dataCatagory.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
-      <h1>{dataCatagory.dp_name}</h1>
+      <AppContainer>
+        <h1>{dataCatagory.dp_name}</h1>
+      </AppContainer>
       <ItemPosts
         brand={`${brand}`}
         category={`${category}`}
