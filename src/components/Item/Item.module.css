@@ -26,6 +26,7 @@
 .img_scroll_block li:hover {
   background-color: var(--site-color);
 }
+
 /* end scroll images */
 
 .item__image {
@@ -97,4 +98,21 @@
 .counter_bottom_button {
   margin: 24px 0;
   text-align: center;
+}
+
+.yt__ul {
+  margin: 8px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  padding: 0;
+}
+
+.yt__ul li {
+  list-style: none;
+  margin: 8px;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
 }

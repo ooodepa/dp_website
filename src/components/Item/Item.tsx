@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import styles from './Item.module.css';
 import AppLink from '../AppLink/AppLink';
 import BasketHelper from '@/utils/BasketHelper';
+import YouTubeIframe from '../YouTubeIframe/YouTubeIframe';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item-with-id.dto';
 import GetItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/get-item-brand.dto';
@@ -23,6 +24,7 @@ interface IProps {
 export default function Item(props: IProps) {
   const [count, setCount] = useState<number>(0);
   const [imgHref, setImgHref] = useState('');
+  const [ytVideoIds, setYtVideoIds] = useState<string[]>([]);
 
   const model = props.item.dp_model;
   const costIsView = Number(props.item.dp_cost) === 0 ? false : true;
@@ -32,12 +34,26 @@ export default function Item(props: IProps) {
 
   useEffect(() => {
     setImgHref(props.item.dp_photoUrl);
-  }, [props]);
+    const arr = props.item.dp_itemGalery.map(e => e.dp_photoUrl);
+    const youtubeIds = arr
+      .map(extractYouTubeId)
+      .filter(e => e != null)
+      .map(e => `${e}`);
+    setYtVideoIds(youtubeIds);
+  }, [props.item]);
 
   useEffect(() => {
     const c = BasketHelper.getCount(model);
     setCount(c);
   }, [model]);
+
+  function extractYouTubeId(input: string): string | null {
+    const match = input.match(/\/youtube_(\w+)\.png/);
+    if (match) {
+      return match[1];
+    }
+    return null;
+  }
 
   function plus() {
     BasketHelper.plus(model);
@@ -132,6 +148,15 @@ export default function Item(props: IProps) {
       <div className={styles.counter_bottom_button}>
         <AppLink href="/basket">Посмотреть корзину</AppLink>
       </div>
+      <ul className={styles.yt__ul}>
+        {ytVideoIds.map((e, i) => {
+          return (
+            <li key={`${e}-${i}`}>
+              <YouTubeIframe id={e} />
+            </li>
+          );
+        })}
+      </ul>
       <table className={styles.item__table}>
         <tbody>
           <tr>
