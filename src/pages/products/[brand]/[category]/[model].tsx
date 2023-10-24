@@ -104,43 +104,51 @@ const itemCategoryCache: {
 
 export async function getStaticProps(context: any) {
   const { brand, category, model } = context.params;
+  try {
+    const jItem = await FetchItems.filterOneByModel(model);
 
-  const jItem = await FetchItems.filterOneByModel(model);
+    let jCharacteristics: GetItemCharacteristicDto[];
+    if (itemCharacteristicsCache['ch']) {
+      jCharacteristics = itemCharacteristicsCache['ch'];
+    } else {
+      jCharacteristics = await FetchItemCharacteristics.get();
+      itemCharacteristicsCache['ch'] = jCharacteristics;
+    }
 
-  let jCharacteristics: GetItemCharacteristicDto[];
-  if (itemCharacteristicsCache['ch']) {
-    jCharacteristics = itemCharacteristicsCache['ch'];
-  } else {
-    jCharacteristics = await FetchItemCharacteristics.get();
-    itemCharacteristicsCache['ch'] = jCharacteristics;
+    let jbrand: GetItemBrandDto;
+    if (itemBrandCache[`${brand}`]) {
+      jbrand = itemBrandCache[`${brand}`];
+    } else {
+      jbrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
+      itemBrandCache[`${brand}`] = jbrand;
+    }
+
+    let jCategory: GetItemCategoryDto;
+    if (itemCategoryCache[`${category}`]) {
+      jCategory = itemCategoryCache[`${category}`];
+    } else {
+      jCategory = await FetchItemCategories.filterOneByUrl(`${category}`);
+      itemCategoryCache[`${category}`] = jCategory;
+    }
+
+    const props: IProps = {
+      item: jItem,
+      itemCharacteristics: jCharacteristics,
+      itemBrand: jbrand,
+      itemCategory: jCategory,
+    };
+    return {
+      props,
+      revalidate: 60, // Перегенерация страницы каждые 60 секунд
+    };
+  } catch (exception) {
+    return {
+      redirect: {
+        destination: `/products/${brand}/${category}`, // Replace with the destination URL
+        permanent: false, // Set to true for permanent redirect, false for temporary
+      },
+    };
   }
-
-  let jbrand: GetItemBrandDto;
-  if (itemBrandCache[`${brand}`]) {
-    jbrand = itemBrandCache[`${brand}`];
-  } else {
-    jbrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
-    itemBrandCache[`${brand}`] = jbrand;
-  }
-
-  let jCategory: GetItemCategoryDto;
-  if (itemCategoryCache[`${category}`]) {
-    jCategory = itemCategoryCache[`${category}`];
-  } else {
-    jCategory = await FetchItemCategories.filterOneByUrl(`${category}`);
-    itemCategoryCache[`${category}`] = jCategory;
-  }
-
-  const props: IProps = {
-    item: jItem,
-    itemCharacteristics: jCharacteristics,
-    itemBrand: jbrand,
-    itemCategory: jCategory,
-  };
-  return {
-    props,
-    revalidate: 60, // Перегенерация страницы каждые 60 секунд
-  };
 }
 
 interface IServerSideProps {

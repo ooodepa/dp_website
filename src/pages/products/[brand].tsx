@@ -67,16 +67,25 @@ interface IServerSideProps {
 export async function getStaticProps(context: IServerSideProps) {
   const { brand } = context.params;
 
-  const itemCategories = (
-    await FetchItemCategories.filterByBrand(brand)
-  ).filter(obj => !obj.dp_isHidden);
-  const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
+  try {
+    const itemCategories = (
+      await FetchItemCategories.filterByBrand(brand)
+    ).filter(obj => !obj.dp_isHidden);
+    const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
-  const props: IProps = { itemCategories, itemBrand };
-  return {
-    props,
-    revalidate: 60, // Перегенерация страницы каждые 60 секунд
-  };
+    const props: IProps = { itemCategories, itemBrand };
+    return {
+      props,
+      revalidate: 60, // Перегенерация страницы каждые 60 секунд
+    };
+  } catch (exception) {
+    return {
+      redirect: {
+        destination: `/products`, // Replace with the destination URL
+        permanent: false, // Set to true for permanent redirect, false for temporary
+      },
+    };
+  }
 }
 
 export async function getStaticPaths() {
