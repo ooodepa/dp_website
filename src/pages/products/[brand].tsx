@@ -6,6 +6,7 @@ import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
+import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
@@ -68,10 +69,10 @@ export async function getStaticProps(context: IServerSideProps) {
   const { brand } = context.params;
 
   try {
+    const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
     const itemCategories = (
       await FetchItemCategories.filterByBrand(brand)
     ).filter(obj => !obj.dp_isHidden);
-    const itemBrand = await FetchItemBrand.filterOneByUrl(brand);
 
     const props: IProps = { itemCategories, itemBrand };
     return {
@@ -79,12 +80,35 @@ export async function getStaticProps(context: IServerSideProps) {
       revalidate: 60, // Перегенерация страницы каждые 60 секунд
     };
   } catch (exception) {
-    return {
-      redirect: {
-        destination: `/products`, // Replace with the destination URL
-        permanent: false, // Set to true for permanent redirect, false for temporary
+    if (exception instanceof HttpException && exception.HTTP_STATUS === 404) {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
+    }
+
+    const props: IProps = {
+      itemCategories: [],
+      itemBrand: {
+        dp_id: 0,
+        dp_isHidden: false,
+        dp_name: '',
+        dp_photoUrl: '',
+        dp_seoDescription: '',
+        dp_seoKeywords: '',
+        dp_sortingIndex: 0,
+        dp_urlSegment: '',
       },
     };
+    return {
+      props,
+      revalidate: 60, // Перегенерация страницы каждые 60 секунд
+    };
+    // return {
+    //   redirect: {
+    //     destination: `/products`, // Replace with the destination URL
+    //     permanent: false, // Set to true for permanent redirect, false for temporary
+    //   },
+    // };
   }
 }
 

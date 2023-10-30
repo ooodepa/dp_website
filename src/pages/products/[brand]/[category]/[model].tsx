@@ -8,6 +8,7 @@ import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import Breadcrumbs from '@/components/Breadcrumbs/Breadcrumbs';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
+import HttpException from '@/utils/FetchBackend/HttpException';
 import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
 import AppDescription from '@/components/AppDescription/AppDescription';
 import { AsyncAlertExceptionHelper } from '@/utils/AlertExceptionHelper';
@@ -106,13 +107,30 @@ export async function getStaticProps(context: any) {
   const { brand, category, model } = context.params;
   try {
     const jItem = await FetchItems.filterOneByModel(model);
+    if (jItem.dp_isHidden === '1') {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
+    }
 
-    let jCharacteristics: GetItemCharacteristicDto[];
-    if (itemCharacteristicsCache['ch']) {
-      jCharacteristics = itemCharacteristicsCache['ch'];
+    let jCategory: GetItemCategoryDto;
+    if (itemCategoryCache[`${category}`]) {
+      jCategory = itemCategoryCache[`${category}`];
     } else {
-      jCharacteristics = await FetchItemCharacteristics.get();
-      itemCharacteristicsCache['ch'] = jCharacteristics;
+      jCategory = await FetchItemCategories.filterOneByUrl(`${category}`);
+      itemCategoryCache[`${category}`] = jCategory;
+    }
+
+    if (jCategory.dp_isHidden) {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
+    }
+
+    if (jCategory.dp_urlSegment !== category) {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
     }
 
     let jbrand: GetItemBrandDto;
@@ -123,12 +141,24 @@ export async function getStaticProps(context: any) {
       itemBrandCache[`${brand}`] = jbrand;
     }
 
-    let jCategory: GetItemCategoryDto;
-    if (itemCategoryCache[`${category}`]) {
-      jCategory = itemCategoryCache[`${category}`];
+    if (jbrand.dp_isHidden) {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
+    }
+
+    if (jbrand.dp_urlSegment !== brand) {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
+    }
+
+    let jCharacteristics: GetItemCharacteristicDto[];
+    if (itemCharacteristicsCache['ch']) {
+      jCharacteristics = itemCharacteristicsCache['ch'];
     } else {
-      jCategory = await FetchItemCategories.filterOneByUrl(`${category}`);
-      itemCategoryCache[`${category}`] = jCategory;
+      jCharacteristics = await FetchItemCharacteristics.get();
+      itemCharacteristicsCache['ch'] = jCharacteristics;
     }
 
     const props: IProps = {
@@ -142,12 +172,59 @@ export async function getStaticProps(context: any) {
       revalidate: 60, // Перегенерация страницы каждые 60 секунд
     };
   } catch (exception) {
-    return {
-      redirect: {
-        destination: `/products/${brand}/${category}`, // Replace with the destination URL
-        permanent: false, // Set to true for permanent redirect, false for temporary
+    if (exception instanceof HttpException && exception.HTTP_STATUS === 404) {
+      return {
+        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
+      };
+    }
+
+    const props: IProps = {
+      item: {
+        dp_cost: 0,
+        dp_id: '',
+        dp_isHidden: '0',
+        dp_itemCategoryId: 0,
+        dp_itemCharacteristics: [],
+        dp_itemGalery: [],
+        dp_model: '',
+        dp_name: '',
+        dp_photoUrl: '',
+        dp_seoDescription: '',
+        dp_seoKeywords: '',
+      }, // You can set default values or handle null data accordingly
+      itemCharacteristics: [],
+      itemBrand: {
+        dp_id: 0,
+        dp_isHidden: true,
+        dp_name: '',
+        dp_photoUrl: '',
+        dp_seoDescription: '',
+        dp_seoKeywords: '',
+        dp_sortingIndex: 0,
+        dp_urlSegment: '',
+      },
+      itemCategory: {
+        dp_id: 0,
+        dp_isHidden: true,
+        dp_itemBrandId: 0,
+        dp_name: '',
+        dp_photoUrl: '',
+        dp_seoDescription: '',
+        dp_seoKeywords: '',
+        dp_sortingIndex: 0,
+        dp_urlSegment: '',
       },
     };
+    return {
+      props,
+      revalidate: 60, // Перегенерация страницы каждые 60 секунд
+    };
+    // return {
+    //   redirect: {
+    //     destination: `/products/${brand}/${category}`, // Replace with the destination URL
+    //     permanent: false, // Set to true for permanent redirect, false for temporary
+    //   },
+    // };
   }
 }
 
