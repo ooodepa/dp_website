@@ -1,0 +1,15 @@
+.wrapper {
+  width: 100%;
+  margin: 1em 0;
+}
+
+.buttons {
+  text-align: center;
+}
+
+.buttons button,
+.buttons a {
+  max-width: 200px;
+  margin: 8px;
+  width: calc(100% - 8px * 2);
+}

@@ -1,0 +1,8 @@
+(2023.11.03)
+
+- barcode added for item page
+- basket buttons added for item page
+- characteristics table added for item page
+- youtube videos added for item page
+- galery added for item page
+- function added that get params by id from characteristic array

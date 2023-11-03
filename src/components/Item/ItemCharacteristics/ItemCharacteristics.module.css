@@ -1,0 +1,21 @@
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.wrapper table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.wrapper table tr td {
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.description_block {
+  white-space: pre-line;
+  border: 1px solid black;
+  padding: 8px;
+}

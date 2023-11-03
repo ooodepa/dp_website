@@ -1,0 +1,10 @@
+.barcode {
+  text-align: center;
+  font-family: 'Libre Barcode 128';
+  font-size: 6em;
+}
+
+.barcode_number {
+  text-align: center;
+  font-size: 2em;
+}
