@@ -5,6 +5,7 @@ const robotsTxtFile = `
 User-agent: *
 Allow: /
 Disallow: /basket
+Disallow: /basket/*
 Disallow: /user-profile
 Disallow: /user-profile/*
 

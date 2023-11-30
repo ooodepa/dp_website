@@ -73,7 +73,11 @@ export default function ItemPosts(props: IProps) {
                         Старый артикул - {oldCode}
                       </div>
                     ) : null}
-                    <div className={styles.post__title}>{element.dp_name}</div>
+                    {element.dp_model === element.dp_name ? null : (
+                      <div className={styles.post__title}>
+                        {element.dp_name}
+                      </div>
+                    )}
                   </div>
                   <div className={styles.post__footer}>
                     {costIsView ? (

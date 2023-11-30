@@ -73,7 +73,7 @@ async function generatePages() {
 
   const items = await FetchItems.get();
   for (let i = 0; i < items.length; ++i) {
-    if (items[i].dp_isHidden === '1') {
+    if (items[i].dp_isHidden) {
       continue;
     }
 

@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import styles from './ItemCharacteristics.module.css';
 import ItemDto from '@/utils/FetchBackend/rest/api/items/dto/item.dto';
-import ItemOperations from '@/utils/FetchBackend/rest/api/items/dto/ItemObject.dto';
+import ItemObject from '@/utils/FetchBackend/rest/api/items/dto/ItemObject';
 import ItemBrandDto from '@/utils/FetchBackend/rest/api/item-brands/dto/item-brand.dto';
 import ItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dto/item-category.dto';
 import GetItemCharacteristicDto from '@/utils/FetchBackend/rest/api/item-characteristics/dto/get-item-characteristic.dto';
@@ -170,17 +170,17 @@ interface IViewCosts {
 }
 
 function ViewCosts(props: IViewCosts) {
-  const onBox = Number(ItemOperations.getParam(props.item, 1));
-  const CURRENT_CHARACTERISTICS = props.item.dp_itemCharacteristics;
-  const AllCharArr = props.itemCharacteristics;
+  const onBox = Number(ItemObject.getParam(props.item, 1));
+  const ITEM_CHARACTERISTICS = props.item.dp_itemCharacteristics;
+  const GLOBAL_CHARACTERISTICS = props.itemCharacteristics;
 
-  const CHAR_ID = [24, 25, 29];
+  const CHAR_ID = [24, 25, 29, 35, 36, 37];
 
   let count = 0;
 
   for (let i = 0; i < CHAR_ID.length; ++i) {
-    for (let j = 0; j < CURRENT_CHARACTERISTICS.length; ++j) {
-      if (CURRENT_CHARACTERISTICS[j].dp_characteristicId === CHAR_ID[i]) {
+    for (let j = 0; j < ITEM_CHARACTERISTICS.length; ++j) {
+      if (ITEM_CHARACTERISTICS[j].dp_characteristicId === CHAR_ID[i]) {
         count += 1;
         break;
       }
@@ -203,18 +203,21 @@ function ViewCosts(props: IViewCosts) {
           </tr>
         </thead>
         <tbody>
-          {CURRENT_CHARACTERISTICS.map(currentChar => {
-            for (let i = 0; i < AllCharArr.length; ++i) {
-              const ch = AllCharArr[i];
-              if (ch.dp_id === currentChar.dp_characteristicId) {
-                if (ch.dp_isHidden) return null;
+          {GLOBAL_CHARACTERISTICS.map(globalCharacteristic => {
+            for (let i = 0; i < ITEM_CHARACTERISTICS.length; ++i) {
+              const itemCharacteristic = ITEM_CHARACTERISTICS[i];
+              if (
+                globalCharacteristic.dp_id ===
+                itemCharacteristic.dp_characteristicId
+              ) {
+                if (globalCharacteristic.dp_isHidden) return null;
                 for (let j = 0; j < CHAR_ID.length; ++j) {
-                  if (CHAR_ID[j] === currentChar.dp_characteristicId) {
-                    const name = ch.dp_name;
-                    const cost = Number(currentChar.dp_value).toFixed(2);
+                  if (CHAR_ID[j] === itemCharacteristic.dp_characteristicId) {
+                    const name = globalCharacteristic.dp_name;
+                    const cost = Number(itemCharacteristic.dp_value).toFixed(2);
 
                     return (
-                      <tr key={ch.dp_id}>
+                      <tr key={itemCharacteristic.dp_characteristicId}>
                         <td>{name}</td>
                         <td style={{ textAlign: 'right' }}>{cost}</td>
                       </tr>
@@ -232,20 +235,27 @@ function ViewCosts(props: IViewCosts) {
                   Цена за коробку с количеством {onBox} шт. со скидкой 5%:
                 </td>
               </tr>
-              {CURRENT_CHARACTERISTICS.map(currentChar => {
-                for (let i = 0; i < AllCharArr.length; ++i) {
-                  const ch = AllCharArr[i];
-                  if (ch.dp_id === currentChar.dp_characteristicId) {
-                    if (ch.dp_isHidden) return null;
+              {GLOBAL_CHARACTERISTICS.map(globalCharacteristics => {
+                for (let i = 0; i < ITEM_CHARACTERISTICS.length; ++i) {
+                  const itemCharacteristic = ITEM_CHARACTERISTICS[i];
+                  if (
+                    globalCharacteristics.dp_id ===
+                    itemCharacteristic.dp_characteristicId
+                  ) {
+                    if (globalCharacteristics.dp_isHidden) return null;
                     for (let j = 0; j < CHAR_ID.length; ++j) {
-                      if (CHAR_ID[j] === currentChar.dp_characteristicId) {
-                        const name = ch.dp_name;
-                        const cost = Number(currentChar.dp_value).toFixed(2);
+                      if (
+                        CHAR_ID[j] === itemCharacteristic.dp_characteristicId
+                      ) {
+                        const name = globalCharacteristics.dp_name;
+                        const cost = Number(
+                          itemCharacteristic.dp_value,
+                        ).toFixed(2);
                         const costOpt = Number(
                           Number(cost) * onBox * 0.95,
                         ).toFixed(2);
                         return (
-                          <tr key={ch.dp_id}>
+                          <tr key={itemCharacteristic.dp_characteristicId}>
                             <td>{name}</td>
                             <td>{costOpt}</td>
                           </tr>
@@ -270,25 +280,28 @@ interface IViewOtherCharacteristics {
 }
 
 function ViewOtherCharacteristics(props: IViewOtherCharacteristics) {
-  const CURRENT_CHARACTERISTICS = props.item.dp_itemCharacteristics;
-  const ALL_CHARACTERISTICS = props.itemCharacteristics;
+  const ITEM_CHARACTERISTICS = props.item.dp_itemCharacteristics;
+  const GLOBAL_CHARACTERISTICS = props.itemCharacteristics;
 
   return (
     <div className={styles.wrapper}>
       <h3>Дополнительные характеристики:</h3>
       <table>
         <tbody>
-          {CURRENT_CHARACTERISTICS.map(currentChar => {
-            for (let i = 0; i < ALL_CHARACTERISTICS.length; ++i) {
-              const ch = ALL_CHARACTERISTICS[i];
-              if (ch.dp_id === currentChar.dp_characteristicId) {
-                if (ch.dp_isHidden) return null;
+          {GLOBAL_CHARACTERISTICS.map(globalCharacteristic => {
+            for (let i = 0; i < ITEM_CHARACTERISTICS.length; ++i) {
+              const itemCharacteristic = ITEM_CHARACTERISTICS[i];
+              if (
+                globalCharacteristic.dp_id ===
+                itemCharacteristic.dp_characteristicId
+              ) {
+                if (globalCharacteristic.dp_isHidden) return null;
 
-                const name = ch.dp_name;
-                const value = currentChar.dp_value;
+                const name = globalCharacteristic.dp_name;
+                const value = itemCharacteristic.dp_value;
 
                 return (
-                  <tr key={currentChar.dp_characteristicId}>
+                  <tr key={itemCharacteristic.dp_characteristicId}>
                     <td>{name}</td>
                     <td>{value}</td>
                   </tr>

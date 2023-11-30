@@ -38,7 +38,9 @@ export default function BrandPage(props: IProps) {
         );
         setDataCategory(jCategory);
 
-        const jItems = await FetchItems.filterByCategory(`${category}`);
+        const jItems = (
+          await FetchItems.filterByCategory(`${category}`)
+        ).filter(obj => !obj.dp_isHidden);
         setArrItems(jItems);
       } catch (exception) {
         await AsyncAlertExceptionHelper(exception);
@@ -102,7 +104,7 @@ export async function getStaticProps(context: IServerSideProps) {
     }
 
     const items = (await FetchItems.filterByCategory(category)).filter(
-      obj => obj.dp_isHidden === '0',
+      obj => !obj.dp_isHidden,
     );
 
     const props: IProps = { items, itemCategory };

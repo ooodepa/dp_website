@@ -14,6 +14,23 @@ function ItemCategoryId2YmlCategoryId(dp_itemCategoryId: number) {
   return dp_itemCategoryId + 1000000;
 }
 
+function YmlTag(
+  tabs: number,
+  tagName: string,
+  value: string,
+  params: Record<string, string> = {},
+) {
+  const resultValue = value.replaceAll('&', '&amp;');
+  const keys = Object.keys(params).map(key => {
+    const resultParamValue = params[key].replaceAll('&', '&amp;');
+    return ` ${key}="${resultParamValue}"`;
+  });
+
+  return `${'\t'.repeat(
+    tabs,
+  )}<${tagName}${keys}>${resultValue}</${tagName}> \n`;
+}
+
 export default async function SitemapXml(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -87,6 +104,10 @@ export default async function SitemapXml(
             const item = items[q];
 
             if (category.dp_id === item.dp_itemCategoryId) {
+              if (item.dp_isHidden) {
+                continue;
+              }
+
               const id = item.dp_id;
               let name = item.dp_name;
               const vendor = brand.dp_name;
@@ -136,7 +157,8 @@ export default async function SitemapXml(
               const weight = ItemObject.getParam(item, 2);
 
               YandexMarketLanuage += `\t\t\t<offer id="${id}">\n`;
-              YandexMarketLanuage += `\t\t\t\t<name>${name}</name>\n`;
+              // YandexMarketLanuage += `\t\t\t\t<name>${name}</name>\n`;
+              YandexMarketLanuage += YmlTag(4, 'name', name);
               YandexMarketLanuage += `\t\t\t\t<vendor>${vendor}</vendor>\n`;
               YandexMarketLanuage += `\t\t\t\t<vendorCode>${vendorCode}</vendorCode>\n`;
               YandexMarketLanuage += `\t\t\t\t<url>${url}</url>\n`;
@@ -179,7 +201,10 @@ export default async function SitemapXml(
                     YandexMarketLanuage +=
                       color.length === 0
                         ? ''
-                        : `\t\t\t\t<param name="${currentCharacteristic.dp_name}">${currentCh.dp_value}</param>\n`;
+                        : // : `\t\t\t\t<param name="${currentCharacteristic.dp_name}">${currentCh.dp_value}</param>\n`;
+                          YmlTag(4, 'param', currentCh.dp_value, {
+                            name: currentCharacteristic.dp_name,
+                          });
                     break;
                   }
                 }

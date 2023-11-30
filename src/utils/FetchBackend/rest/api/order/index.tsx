@@ -3,10 +3,23 @@ import FetchBackend from '@/utils/FetchBackend';
 import SendCheckDto from './dto/send-check.dto';
 import CreateOrderDto from './dto/create-order.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
+import CreateNoAuthOrderDto from './dto/create-no-auth-order.dto';
 
 export default class FetchOrders {
   static async create(dto: CreateOrderDto) {
     const result = await FetchBackend('access', 'POST', 'orders', dto);
+    const response = result.response;
+
+    if (response.status === 201) {
+      const json: CreateOrderResponseDto = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async createNoAuthOrder(dto: CreateNoAuthOrderDto) {
+    const result = await FetchBackend('none', 'POST', 'orders/no-auth', dto);
     const response = result.response;
 
     if (response.status === 201) {

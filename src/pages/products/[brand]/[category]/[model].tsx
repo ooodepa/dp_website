@@ -44,7 +44,9 @@ export default function ModelPage(props: IProps) {
         const jItem = await FetchItems.filterOneByModel(`${model}`);
         setDataItem(jItem);
 
-        const jCharacteristics = await FetchItemCharacteristics.get();
+        const jCharacteristics = (await FetchItemCharacteristics.get()).sort(
+          (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
+        );
         setArrCharacteristics(jCharacteristics);
 
         const jBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
@@ -107,7 +109,7 @@ export async function getStaticProps(context: any) {
   const { brand, category, model } = context.params;
   try {
     const jItem = await FetchItems.filterOneByModel(model);
-    if (jItem.dp_isHidden === '1') {
+    if (jItem.dp_isHidden) {
       return {
         notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
       };
@@ -161,6 +163,10 @@ export async function getStaticProps(context: any) {
       itemCharacteristicsCache['ch'] = jCharacteristics;
     }
 
+    jCharacteristics = jCharacteristics.sort(
+      (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
+    );
+
     const props: IProps = {
       item: jItem,
       itemCharacteristics: jCharacteristics,
@@ -182,7 +188,7 @@ export async function getStaticProps(context: any) {
       item: {
         dp_cost: 0,
         dp_id: '',
-        dp_isHidden: '0',
+        dp_isHidden: false,
         dp_itemCategoryId: 0,
         dp_itemCharacteristics: [],
         dp_itemGalery: [],

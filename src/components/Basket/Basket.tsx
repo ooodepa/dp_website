@@ -90,9 +90,14 @@ export default function Basket() {
     for (let i = 0; i < basketArr.length; i++) {
       const dp_cost = basketArr[i].dp_cost;
       const dp_count = basketArr[i].dp_count;
-      totalNoNds += Number(Number(dp_cost * dp_count).toFixed(2));
-      totalNds += Number(Number(dp_cost * dp_count * 0.2).toFixed(2));
-      totalSum += Number(Number(totalNoNds + totalNds).toFixed(2));
+
+      const noNDS = Math.round(dp_cost * dp_count * 100) / 100;
+      const nds = Math.round(dp_cost * dp_count * 0.2 * 100) / 100;
+      const withNDS = noNDS + nds;
+
+      totalNoNds += noNDS;
+      totalNds += nds;
+      totalSum += withNDS;
       positions += dp_count;
     }
 
@@ -170,7 +175,12 @@ export default function Basket() {
       <div className={styles.center_block}>
         <button onClick={sendOrder}>Отправить заявку</button>
         {isLogin ? null : (
-          <Link href="/user-profile/sign-in">Войти в аккаунт</Link>
+          <>
+            <Link href="/user-profile/sign-in">Войти в аккаунт</Link>
+            <Link href="/basket/send-no-auth-order">
+              Отправить заявку без регистрации
+            </Link>
+          </>
         )}
       </div>
     );
@@ -191,11 +201,14 @@ export default function Basket() {
       <Breadcrumbs />
       <h2>Корзина</h2>
       <AppContainer>
+        {/*
         {basketArray.length === 0 ? null : (
           <div className={styles.center_block}>
             <Link href="#my-table">Посмотреть таблицу расчётов</Link>
           </div>
         )}
+        */}
+        {/*
         <ul className={styles.posts}>
           {basketArray.map(element => {
             const costIsView = Number(element.dp_cost) === 0 ? false : true;
@@ -281,6 +294,7 @@ export default function Basket() {
             );
           })}
         </ul>
+        */}
         {basketArray.length === 0 ? null : (
           <>
             <div className={styles.table_wrapper}>
@@ -288,16 +302,20 @@ export default function Basket() {
                 <caption id="my-table">Таблица - расчёты</caption>
                 <thead>
                   <tr>
-                    <th>№</th>
-                    <th>Картинка</th>
-                    <th>Наименование</th>
-                    <th>Количество</th>
+                    <th rowSpan={2}>x</th>
+                    <th rowSpan={2}>№</th>
+                    <th rowSpan={2}>Картинка</th>
+                    <th rowSpan={2}>Наименование</th>
+                    <th rowSpan={2}>Количество</th>
+                    <th colSpan={5}>В белоруских рублях (BYN)</th>
+                    <th rowSpan={2}>Удалить</th>
+                  </tr>
+                  <tr>
                     <th>Цена, руб. коп.</th>
                     <th>НДС</th>
                     <th>Сумма, руб. коп.</th>
                     <th>Сумма НДС, руб. коп.</th>
                     <th>Всего с НДС, руб. коп.</th>
-                    <th>Удалить</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -319,6 +337,13 @@ export default function Basket() {
                     ).toFixed(2);
                     return (
                       <tr key={dp_id}>
+                        <td>
+                          <Link
+                            href={`/redirect/items/${element.dp_id}`}
+                            title={`Открыть страницу номенклатуры (${dp_model})`}>
+                            Открыть
+                          </Link>
+                        </td>
                         <td className={styles.tdCenter}>{index + 1}</td>
                         <td className={styles.tdCenter}>
                           <Image
@@ -330,12 +355,7 @@ export default function Basket() {
                           />
                         </td>
                         <td>
-                          <Link
-                            href={`/redirect/items/${element.dp_id}`}
-                            className={styles.tdLinkName}
-                            title={`Открыть страницу номенклатуры (${dp_model})`}>
-                            {dp_model} <br /> {dp_name}
-                          </Link>
+                          Артикул {dp_model} <br /> {dp_name}
                         </td>
                         <td className={styles.tdCenter}>
                           <input
@@ -370,7 +390,7 @@ export default function Basket() {
                     );
                   })}
                   <tr>
-                    <th colSpan={3} className={styles.tdRight}>
+                    <th colSpan={4} className={styles.tdRight}>
                       Итого:
                     </th>
                     <th>{totalBasketCounter.positions}</th>
