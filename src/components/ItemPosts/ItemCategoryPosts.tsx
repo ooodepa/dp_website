@@ -117,7 +117,7 @@ export default function ItemPosts(props: IProps) {
           </tr>
           <tr>
             <td>Описание</td>
-            <td style={{ whiteSpace: 'pre-line' }}>
+            <td style={{ whiteSpace: 'pre-wrap' }}>
               {props.itemCategory.dp_seoDescription}
             </td>
           </tr>

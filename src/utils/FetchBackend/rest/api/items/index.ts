@@ -19,6 +19,18 @@ export default class FetchItems {
     throw new HttpException(result.method, response);
   }
 
+  static async getByBrand(brand: string) {
+    const result = await FetchBackend('none', 'GET', `items?brand=${brand}`);
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetItemDto[] = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
   static async getById(id: string) {
     const result = await FetchBackend('none', 'GET', `items/${id}`);
     const response = result.response;

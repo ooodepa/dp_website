@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -19,42 +20,64 @@ import GetItemCategoryDto from '@/utils/FetchBackend/rest/api/item-categories/dt
 interface IProps {
   itemCategories: GetItemCategoryDto[];
   itemBrand: GetItemBrandDto;
+  // items: GetItemDto[];
 }
 
 export default function BrandPage(props: IProps) {
   const route = useRouter();
   const { brand } = route.query;
-  const [dataBrand, setDataBrand] = useState<GetItemBrandDto>(props.itemBrand);
-  const [arrCategories, setArrCategories] = useState<GetItemCategoryDto[]>(
-    props.itemCategories,
+  const [itemBrandData, setItemBrandData] = useState<GetItemBrandDto>(
+    props.itemBrand,
   );
+  const [itemCategoryArray, setItemCategoryArray] = useState<
+    GetItemCategoryDto[]
+  >([]);
 
   useEffect(() => {
     (async function () {
       try {
-        const jBrand = await FetchItemBrand.filterOneByUrl(`${brand}`);
-        setDataBrand(jBrand);
-        const jCategories = await FetchItemCategories.filterByBrand(`${brand}`);
-        setArrCategories(jCategories);
+        const TEMP_ITEM_BRAND = await FetchItemBrand.filterOneByUrl(`${brand}`);
+        setItemBrandData(TEMP_ITEM_BRAND);
+
+        const TEMP_ITEM_CATEGORIES = await FetchItemCategories.filterByBrand(
+          `${brand}`,
+        );
+        setItemCategoryArray(TEMP_ITEM_CATEGORIES);
       } catch (exception) {
         await AsyncAlertExceptionHelper(exception);
-        setDataBrand(props.itemBrand);
-        setArrCategories(props.itemCategories);
+        setItemBrandData(props.itemBrand);
+        setItemCategoryArray(props.itemCategories);
       }
     })();
   }, [brand, props.itemBrand, props.itemCategories]);
 
   return (
     <AppWrapper>
-      <AppTitle title={dataBrand.dp_name} />
-      <AppDescription description={dataBrand.dp_seoDescription} />
-      <AppKeywords keywords={dataBrand.dp_seoKeywords} />
+      <AppTitle title={itemBrandData.dp_name} />
+      <AppDescription description={itemBrandData.dp_seoDescription} />
+      <AppKeywords keywords={itemBrandData.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
       <AppContainer>
-        <h1>{dataBrand.dp_name}</h1>
+        <h1>{itemBrandData.dp_name}</h1>
+        <p style={{ textAlign: 'center' }}>
+          На странице показаны категории бренда {`«${itemBrandData.dp_name}»`}.
+          Вы можете выбрать категорию номенклатуры ниже. Желаемую номенклатуру
+          добавляйте в корзину. Вы можете отправить нам заявку (корзину)
+          желаемой номенклатуры - это не обязывает вас платить. Мы с вами
+          свяжемся и обсудим ваш выбор и способ доставки в вашу страну.
+        </p>
+        <p style={{ textAlign: 'center' }}>
+          Также, если вы зайдете с компьютера (большого экрана), то вы можете
+          указать желаемое количество номенклатуры в данной таблице{' '}
+          <Link
+            href={`/online-order/${brand}`}>{`"Номенклатура бренда ${brand}"`}</Link>{' '}
+          (тут есть, цена в разных валютах, наименование на разных языках,
+          количество в оптовой коробке, объем оптовой коробки, вес оптовой
+          коробки).
+        </p>
       </AppContainer>
-      <ItemCategoryPosts brand={`${brand}`} categories={arrCategories} />
+      <ItemCategoryPosts brand={`${brand}`} categories={itemCategoryArray} />
     </AppWrapper>
   );
 }
@@ -73,8 +96,13 @@ export async function getStaticProps(context: IServerSideProps) {
     const itemCategories = (
       await FetchItemCategories.filterByBrand(brand)
     ).filter(obj => !obj.dp_isHidden);
+    // const items = await FetchItems.getByBrand(brand);
 
-    const props: IProps = { itemCategories, itemBrand };
+    const props: IProps = {
+      itemCategories,
+      itemBrand,
+      // items,
+    };
     return {
       props,
       revalidate: 60, // Перегенерация страницы каждые 60 секунд
@@ -98,6 +126,7 @@ export async function getStaticProps(context: IServerSideProps) {
         dp_sortingIndex: 0,
         dp_urlSegment: '',
       },
+      // items: [],
     };
     return {
       props,
