@@ -13,3 +13,27 @@
   margin: 8px;
   width: calc(100% - 8px * 2);
 }
+
+.ozon_block {
+  display: flex;
+  align-items: center;
+}
+
+.ozon_button {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 8px;
+  display: block;
+  text-align: center;
+  color: white;
+  border: 1px solid white;
+  background: linear-gradient(to right, #005cfe, #fc0a5c);
+  font-size: 1.2em;
+}
+
+.ozon_button:hover {
+  border: 1px solid var(--site-color);
+  background: transparent;
+  color: var(--site-color);
+}

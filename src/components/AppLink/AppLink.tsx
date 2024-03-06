@@ -1,9 +1,9 @@
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 import { ReactNode } from 'react';
 
 import styles from './AppLink.module.css';
 
-interface IProps {
+interface IProps extends LinkProps {
   href: string;
   children: ReactNode;
 }

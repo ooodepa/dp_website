@@ -13,11 +13,23 @@ interface IItemBasketButtons {
 export default function ItemBasketButtons(props: IItemBasketButtons) {
   const [count, setCount] = useState<number>(0);
   const model = props.item.dp_model;
+  const [ozonCode, setOzonCode] = useState('');
 
   useEffect(() => {
     const jCount = BasketHelper.getCount(model);
     setCount(jCount);
   }, [model]);
+
+  useEffect(() => {
+    const ch = props.item.dp_itemCharacteristics;
+    for (let i = 0; i < ch.length; ++i) {
+      const currentCh = ch[i];
+      if (currentCh.dp_characteristicId === 110) {
+        setOzonCode(currentCh.dp_value);
+        return;
+      }
+    }
+  }, [props.item]);
 
   function plus() {
     BasketHelper.plus(model);
@@ -34,6 +46,15 @@ export default function ItemBasketButtons(props: IItemBasketButtons) {
         </AppButton>
         <AppLink href="/basket">Просмотреть корзину</AppLink>
       </div>
+      {ozonCode.length > 0 ? (
+        <div className={styles.ozon_block}>
+          <a
+            href="https://ozon.by/search/?text=1453392162&from_global=true"
+            className={styles.ozon_button}>
+            Купить в розницу через маркетплейс OZON
+          </a>
+        </div>
+      ) : null}
     </div>
   );
 }
