@@ -20,8 +20,9 @@ const Breadcrumbs = () => {
       linkPath.shift();
 
       const pathArray = linkPath.map((path, i) => {
+        const decodePath = decodeURIComponent(path);
         return {
-          breadcrumb: path,
+          breadcrumb: decodePath,
           href: '/' + linkPath.slice(0, i + 1).join('/'),
         };
       });
