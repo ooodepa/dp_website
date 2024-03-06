@@ -49,7 +49,7 @@ export default function ItemBasketButtons(props: IItemBasketButtons) {
       {ozonCode.length > 0 ? (
         <div className={styles.ozon_block}>
           <a
-            href="https://ozon.by/search/?text=1453392162&from_global=true"
+            href={`https://ozon.by/search/?text=${ozonCode}&from_global=true`}
             className={styles.ozon_button}>
             Купить в розницу через маркетплейс OZON
           </a>

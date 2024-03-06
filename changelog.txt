@@ -1,3 +1,9 @@
+1.6.0 (2024.03.06)
+- added OZON button
+
+1.5.0 (2024.03.06)
+- fix russian chars in breadcrumbs
+
 1.4.0 (2023.12.27)
 - barcode font updated
 - order table added on category and item pages 
