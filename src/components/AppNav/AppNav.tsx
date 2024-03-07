@@ -38,6 +38,10 @@ const menu: IMenuItem[] = [
     url: '/certificates',
   },
   {
+    title: 'Услуги',
+    url: 'https://www.kungconsulting.com',
+  },
+  {
     title: 'Контакты',
     url: '/contacts',
   },
