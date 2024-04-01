@@ -46,12 +46,16 @@ const menu: IMenuItem[] = [
     url: '/contacts',
   },
   {
-    title: 'Мой аккаунт',
-    url: '/user-profile',
+    title: 'Остатки',
+    url: '/remaining-stock',
   },
   {
     title: 'Корзина',
     url: '/basket',
+  },
+  {
+    title: 'Аккаунт',
+    url: '/user-profile',
   },
 ];
 
