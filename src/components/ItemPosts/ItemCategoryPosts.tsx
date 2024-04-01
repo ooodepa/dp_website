@@ -36,7 +36,7 @@ export default function ItemPosts(props: IProps) {
           return (
             <li key={element.dp_id}>
               <Link
-                href={`/products/${props.brand}/${props.category}/${element.dp_model}`}
+                href={`/products/${props.brand}/${props.category}/${element.dp_seoUrlSegment}`}
                 title="Открыть страницу этой номенклатуры">
                 <div className={styles.post__wrapper}>
                   <div className={styles.post__content}>
@@ -65,7 +65,7 @@ export default function ItemPosts(props: IProps) {
                       <div className={styles.post__model}>Артикул - {code}</div>
                     ) : (
                       <div className={styles.post__model}>
-                        {element.dp_model}
+                        {element.dp_seoUrlSegment}
                       </div>
                     )}
                     {oldCode ? (
@@ -73,9 +73,9 @@ export default function ItemPosts(props: IProps) {
                         Старый артикул - {oldCode}
                       </div>
                     ) : null}
-                    {element.dp_model === element.dp_name ? null : (
+                    {element.dp_seoUrlSegment === element.dp_seoTitle ? null : (
                       <div className={styles.post__title}>
-                        {element.dp_name}
+                        {element.dp_seoTitle}
                       </div>
                     )}
                   </div>
@@ -106,7 +106,7 @@ export default function ItemPosts(props: IProps) {
           </tr>
           <tr>
             <td rowSpan={2}>Наименование</td>
-            <td>{props.itemCategory.dp_name}</td>
+            <td>{props.itemCategory.dp_seoTitle}</td>
           </tr>
           <tr>
             <td>

@@ -47,7 +47,7 @@ async function generatePages() {
     }
 
     arr.push(
-      `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[i].dp_urlSegment}`,
+      `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[i].dp_seoUrlSegment}`,
     );
   }
 
@@ -64,7 +64,7 @@ async function generatePages() {
 
       if (brands[j].dp_id === categories[i].dp_itemBrandId) {
         arr.push(
-          `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[j].dp_urlSegment}/${categories[i].dp_urlSegment}`,
+          `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[j].dp_seoUrlSegment}/${categories[i].dp_seoUrlSegment}`,
         );
         break;
       }
@@ -90,7 +90,7 @@ async function generatePages() {
 
           if (brands[k].dp_id === categories[j].dp_itemBrandId) {
             arr.push(
-              `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[k].dp_urlSegment}/${categories[j].dp_urlSegment}/${items[i].dp_model}`,
+              `${process.env.NEXT_PUBLIC__SITE_URL}/products/${brands[k].dp_seoUrlSegment}/${categories[j].dp_seoUrlSegment}/${items[i].dp_seoUrlSegment}`,
             );
 
             break;

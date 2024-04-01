@@ -37,7 +37,7 @@ export default function Search() {
       const modelsInBasket = Object.keys(jBasket);
 
       const customItems: CustomItem[] = jItems.map(e => {
-        const model = e.dp_model;
+        const model = e.dp_seoUrlSegment;
         if (modelsInBasket.indexOf(model) !== -1) {
           return { ...e, isInBasket: true };
         }
@@ -60,7 +60,7 @@ export default function Search() {
     const modelsInBasket = Object.keys(jBasket);
 
     const customItems: CustomItem[] = items.map(e => {
-      const model = e.dp_model;
+      const model = e.dp_seoUrlSegment;
       if (modelsInBasket.indexOf(model) !== -1) {
         return { ...e, isInBasket: true };
       }
@@ -77,7 +77,7 @@ export default function Search() {
     const modelsInBasket = Object.keys(jBasket);
 
     const customItems: CustomItem[] = items.map(e => {
-      const model = e.dp_model;
+      const model = e.dp_seoUrlSegment;
       if (modelsInBasket.indexOf(model) !== -1) {
         return { ...e, isInBasket: true };
       }
@@ -107,10 +107,10 @@ export default function Search() {
             return (
               <li
                 key={e.dp_id}
-                title={`Открыть страницу об этой номенклатуре (${e.dp_model})`}>
+                title={`Открыть страницу об этой номенклатуре (${e.dp_seoUrlSegment})`}>
                 <div className={styles.results__text}>
-                  <div className={styles.model}>{e.dp_model}</div>
-                  <div>{e.dp_name}</div>
+                  <div className={styles.model}>{e.dp_seoUrlSegment}</div>
+                  <div>{e.dp_seoTitle}</div>
                 </div>
                 <Link
                   href={`/redirect/items/${e.dp_id}`}
@@ -121,14 +121,14 @@ export default function Search() {
                   <button
                     className={`${styles.search__button} ${styles.search__button_remove}`}
                     title="Убрать из корзины"
-                    onClick={() => removeFromBasket(e.dp_model)}>
+                    onClick={() => removeFromBasket(e.dp_seoUrlSegment)}>
                     <FontAwesomeIcon icon={faXmark} />
                   </button>
                 ) : (
                   <button
                     className={`${styles.search__button} ${styles.search__button_add}`}
                     title="Добавить в корзину"
-                    onClick={() => addToBasket(e.dp_model)}>
+                    onClick={() => addToBasket(e.dp_seoUrlSegment)}>
                     <FontAwesomeIcon icon={faBasketShopping} />
                   </button>
                 )}

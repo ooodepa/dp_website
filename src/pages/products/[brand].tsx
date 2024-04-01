@@ -53,29 +53,13 @@ export default function BrandPage(props: IProps) {
 
   return (
     <AppWrapper>
-      <AppTitle title={itemBrandData.dp_name} />
+      <AppTitle title={itemBrandData.dp_seoTitle} />
       <AppDescription description={itemBrandData.dp_seoDescription} />
       <AppKeywords keywords={itemBrandData.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
       <AppContainer>
-        <h1>{itemBrandData.dp_name}</h1>
-        <p style={{ textAlign: 'center' }}>
-          На странице показаны категории бренда {`«${itemBrandData.dp_name}»`}.
-          Вы можете выбрать категорию номенклатуры ниже. Желаемую номенклатуру
-          добавляйте в корзину. Вы можете отправить нам заявку (корзину)
-          желаемой номенклатуры - это не обязывает вас платить. Мы с вами
-          свяжемся и обсудим ваш выбор и способ доставки в вашу страну.
-        </p>
-        <p style={{ textAlign: 'center' }}>
-          Также, если вы зайдете с компьютера (большого экрана), то вы можете
-          указать желаемое количество номенклатуры в данной таблице{' '}
-          <Link
-            href={`/online-order/${brand}`}>{`"Номенклатура бренда ${brand}"`}</Link>{' '}
-          (тут есть, цена в разных валютах, наименование на разных языках,
-          количество в оптовой коробке, объем оптовой коробки, вес оптовой
-          коробки).
-        </p>
+        <h1>{itemBrandData.dp_seoTitle}</h1>
       </AppContainer>
       <ItemCategoryPosts brand={`${brand}`} categories={itemCategoryArray} />
     </AppWrapper>
@@ -119,12 +103,15 @@ export async function getStaticProps(context: IServerSideProps) {
       itemBrand: {
         dp_id: 0,
         dp_isHidden: false,
-        dp_name: '',
-        dp_photoUrl: '',
+        dp_seoTitle: '',
         dp_seoDescription: '',
         dp_seoKeywords: '',
+        dp_seoUrlSegment: '',
+        dp_photos: '',
+        dp_photos360: '',
+        dp_photoUrl: '',
         dp_sortingIndex: 0,
-        dp_urlSegment: '',
+        dp_youtubeIds: '',
       },
       // items: [],
     };
@@ -150,7 +137,7 @@ export async function getStaticPaths() {
     if (!element.dp_isHidden) {
       paths.push({
         params: {
-          brand: element.dp_urlSegment,
+          brand: element.dp_seoUrlSegment,
         },
       });
     }

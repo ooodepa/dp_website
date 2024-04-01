@@ -97,11 +97,11 @@ class BasketHelper {
       const count = value;
 
       for (let j = 0; j < products.length; ++j) {
-        if (model === products[j].dp_model) {
+        if (model === products[j].dp_seoUrlSegment) {
           arr.push({
             dp_id: products[j].dp_id,
             dp_model: model,
-            dp_name: products[j].dp_name,
+            dp_name: products[j].dp_seoTitle,
             dp_img: products[j].dp_photoUrl,
             dp_cost: products[j].dp_cost,
             dp_count: count,

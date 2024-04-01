@@ -1,14 +1,17 @@
 import GetItemBrandDto from './get-item-brand.dto';
 
-const EmptyGetItemBrand: GetItemBrandDto = {
+const GetItemBrand: GetItemBrandDto = {
   dp_id: -1,
   dp_isHidden: true,
-  dp_name: '',
-  dp_photoUrl: '',
+  dp_seoTitle: '',
   dp_seoDescription: '',
   dp_seoKeywords: '',
+  dp_seoUrlSegment: '',
+  dp_photos: '',
+  dp_photos360: '',
+  dp_photoUrl: '',
   dp_sortingIndex: -1,
-  dp_urlSegment: '',
+  dp_youtubeIds: '',
 };
 
-export default EmptyGetItemBrand;
+export default GetItemBrand;

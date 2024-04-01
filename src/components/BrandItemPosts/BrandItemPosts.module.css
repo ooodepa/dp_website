@@ -8,20 +8,20 @@
 
 .posts li {
   list-style-type: none;
-  border: 1px solid lightgray;
   width: 200px;
   margin: 16px;
-  border-radius: 8px;
 }
 
 .posts li a {
+  border: 1px solid var(--site-color);
+  border-radius: 8px;
   display: block;
   height: calc(100% - 2 * 8px);
   padding: 8px;
 }
 
 .posts li a:hover {
-  background-color: lightgrey;
+  background-color: silver;
 }
 
 .post__image_block img {

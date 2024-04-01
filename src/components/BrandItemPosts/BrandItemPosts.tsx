@@ -21,7 +21,7 @@ export default function BrandItemPosts(props: IProps) {
           return (
             <li key={element.dp_id}>
               <Link
-                href={`/products/${element.dp_urlSegment}`}
+                href={`/products/${element.dp_seoUrlSegment}`}
                 title="Просмотреть категории этого бренда">
                 <div className={styles.post__image_block}>
                   <Image
@@ -36,7 +36,7 @@ export default function BrandItemPosts(props: IProps) {
                     }}
                   />
                 </div>
-                <div className={styles.post__title}>{element.dp_name}</div>
+                <div className={styles.post__title}>{element.dp_seoTitle}</div>
               </Link>
             </li>
           );

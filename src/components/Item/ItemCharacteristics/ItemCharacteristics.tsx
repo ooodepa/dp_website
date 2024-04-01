@@ -42,9 +42,9 @@ interface IViewMainData {
 }
 
 function ViewMainData(props: IViewMainData) {
-  const urlSegmentBrand = props.itemBrand.dp_urlSegment;
-  const urlSegmentCategory = props.itemCategory.dp_urlSegment;
-  const urlSegmentModel = props.item.dp_model;
+  const urlSegmentBrand = props.itemBrand.dp_seoUrlSegment;
+  const urlSegmentCategory = props.itemCategory.dp_seoUrlSegment;
+  const urlSegmentModel = props.item.dp_seoUrlSegment;
 
   return (
     <div className={styles.wrapper}>
@@ -58,12 +58,12 @@ function ViewMainData(props: IViewMainData) {
           </tr>
           <tr>
             <td>Наименование</td>
-            <td>{props.item.dp_name}</td>
+            <td>{props.item.dp_seoTitle}</td>
           </tr>
           <tr>
             <td>Бренд</td>
             <td>
-              {props.itemBrand.dp_name}
+              {props.itemBrand.dp_seoTitle}
               <br />
               <Link
                 href={`/products/${urlSegmentBrand}`}
@@ -75,7 +75,7 @@ function ViewMainData(props: IViewMainData) {
           <tr>
             <td>Категория</td>
             <td>
-              {props.itemCategory.dp_name}
+              {props.itemCategory.dp_seoTitle}
               <br />
               <Link
                 href={`/products/${urlSegmentBrand}/${urlSegmentCategory}`}
@@ -94,6 +94,18 @@ function ViewMainData(props: IViewMainData) {
               </Link>
             </td>
           </tr>
+          {props.item.dp_1cCode ? (
+            <tr>
+              <td>Код 1С</td>
+              <td>{props.item.dp_1cCode}</td>
+            </tr>
+          ) : null}
+          {props.item.dp_1cDescription ? (
+            <tr>
+              <td>Наименование 1С</td>
+              <td>{props.item.dp_1cDescription}</td>
+            </tr>
+          ) : null}
         </tbody>
       </table>
       <h3>Описание</h3>

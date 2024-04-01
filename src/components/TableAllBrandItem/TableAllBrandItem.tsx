@@ -229,7 +229,7 @@ export default function TableAllBrandItem() {
               : language === 'TR'
               ? ItemObject.getNameTR(currentItem)
               : nameRU;
-          name = name.length === 0 ? currentItem.dp_name : name;
+          name = name.length === 0 ? currentItem.dp_seoTitle : name;
           // > > > > > > > > end name
           // < < < < < < < < cost
           const costBYN = Number(ItemObject.getCostBYN(currentItem)).toFixed(2);
@@ -246,7 +246,7 @@ export default function TableAllBrandItem() {
               ? Number(ItemObject.getCostGEL(currentItem)).toFixed(2)
               : '0.00';
           // > > > > > > > > end cost
-          const model = currentItem.dp_model;
+          const model = currentItem.dp_seoUrlSegment;
           const onBox = ItemObject.getOnBox(currentItem);
           const kg = ItemObject.getKg(currentItem);
           const m3 = ItemObject.getm3(currentItem);
@@ -270,7 +270,7 @@ export default function TableAllBrandItem() {
   if (procentLoader !== 100) {
     return (
       <AppContainer>
-        <h2>{itemBrandData.dp_name}</h2>
+        <h2>{itemBrandData.dp_seoTitle}</h2>
         <div className={styles.loader_block}>
           <div className={styles.loader}></div>
         </div>
@@ -370,7 +370,7 @@ export default function TableAllBrandItem() {
                 <>
                   <tr key={category.dp_id}>
                     <td colSpan={8} className={styles.td_category}>
-                      {category.dp_name}
+                      {category.dp_seoTitle}
                     </td>
                   </tr>
                   {itemArr.map(item => {

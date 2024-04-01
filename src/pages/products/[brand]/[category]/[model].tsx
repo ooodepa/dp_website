@@ -76,7 +76,7 @@ export default function ModelPage(props: IProps) {
 
   return (
     <AppWrapper>
-      <AppTitle title={dataItem.dp_name} />
+      <AppTitle title={dataItem.dp_seoTitle} />
       <AppDescription description={dataItem.dp_seoDescription} />
       <AppKeywords keywords={dataItem.dp_seoKeywords} />
       <AppHead />
@@ -129,7 +129,7 @@ export async function getStaticProps(context: any) {
       };
     }
 
-    if (jCategory.dp_urlSegment !== category) {
+    if (jCategory.dp_seoUrlSegment !== category) {
       return {
         notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
       };
@@ -149,7 +149,7 @@ export async function getStaticProps(context: any) {
       };
     }
 
-    if (jbrand.dp_urlSegment !== brand) {
+    if (jbrand.dp_seoUrlSegment !== brand) {
       return {
         notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
       };
@@ -188,37 +188,62 @@ export async function getStaticProps(context: any) {
       item: {
         dp_cost: 0,
         dp_id: '',
+        dp_1cCode: '',
+        dp_1cDescription: '',
+        dp_1cIsFolder: false,
+        dp_1cParentId: '',
         dp_isHidden: false,
         dp_itemCategoryId: 0,
         dp_itemCharacteristics: [],
         dp_itemGalery: [],
-        dp_model: '',
-        dp_name: '',
-        dp_photoUrl: '',
+        dp_seoTitle: '',
         dp_seoDescription: '',
         dp_seoKeywords: '',
+        dp_seoUrlSegment: '',
+        dp_barcodes: '',
+        dp_brand: '',
+        dp_combinedName: '',
+        dp_currancy: '',
+        dp_photos: '',
+        dp_photos360: '',
+        dp_photoUrl: '',
+        dp_textCharacteristics: '',
+        dp_vendorIds: '',
+        dp_sorintIndex: 0,
+        dp_youtubeIds: '',
+        dp_width: 0,
+        dp_height: 0,
+        dp_length: 0,
+        dp_weight: 0,
+        dp_wholesaleQuantity: 0,
       }, // You can set default values or handle null data accordingly
       itemCharacteristics: [],
       itemBrand: {
         dp_id: 0,
         dp_isHidden: true,
-        dp_name: '',
-        dp_photoUrl: '',
+        dp_seoTitle: '',
         dp_seoDescription: '',
         dp_seoKeywords: '',
+        dp_seoUrlSegment: '',
+        dp_photos: '',
+        dp_photos360: '',
+        dp_photoUrl: '',
         dp_sortingIndex: 0,
-        dp_urlSegment: '',
+        dp_youtubeIds: '',
       },
       itemCategory: {
         dp_id: 0,
         dp_isHidden: true,
         dp_itemBrandId: 0,
-        dp_name: '',
-        dp_photoUrl: '',
+        dp_seoTitle: '',
         dp_seoDescription: '',
         dp_seoKeywords: '',
+        dp_seoUrlSegment: '',
+        dp_photos: '',
+        dp_photos360: '',
+        dp_photoUrl: '',
         dp_sortingIndex: 0,
-        dp_urlSegment: '',
+        dp_youtubeIds: '',
       },
     };
     return {
@@ -258,7 +283,7 @@ export async function getStaticPaths() {
     let categoryBrandId = 0;
     for (let i = 0; i < itemsCategories.length; ++i) {
       if (element.dp_itemCategoryId == itemsCategories[i].dp_id) {
-        category = itemsCategories[i].dp_urlSegment;
+        category = itemsCategories[i].dp_seoUrlSegment;
         categoryBrandId = itemsCategories[i].dp_itemBrandId;
         break;
       }
@@ -268,7 +293,7 @@ export async function getStaticPaths() {
 
     for (let i = 0; i < itemBrand.length; ++i) {
       if (categoryBrandId == itemBrand[i].dp_id) {
-        brand = itemBrand[i].dp_urlSegment;
+        brand = itemBrand[i].dp_seoUrlSegment;
         break;
       }
     }
@@ -276,7 +301,7 @@ export async function getStaticPaths() {
     if (category !== 'undefined' && brand !== 'undefined') {
       paths.push({
         params: {
-          model: element.dp_model,
+          model: element.dp_seoUrlSegment,
           category,
           brand,
         },

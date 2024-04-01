@@ -60,7 +60,7 @@ export default async function SitemapXml(
       }
 
       const id = ItemBrandId2YmlCategoryId(brand.dp_id);
-      const name = brand.dp_name;
+      const name = brand.dp_seoTitle;
       YandexMarketLanuage += `\t\t\t<category id="${id}">${name}</category>\n`;
     }
 
@@ -75,7 +75,7 @@ export default async function SitemapXml(
 
           const id = ItemCategoryId2YmlCategoryId(category.dp_id);
           const parentId = category.dp_itemBrandId;
-          const name = category.dp_name;
+          const name = category.dp_seoTitle;
           YandexMarketLanuage += `\t\t\t<category id="${id}" parentId="${parentId}">${name}</category>\n`;
         }
       }
@@ -109,10 +109,10 @@ export default async function SitemapXml(
               }
 
               const id = item.dp_id;
-              let name = item.dp_name;
-              const vendor = brand.dp_name;
-              const vendorCode = item.dp_model;
-              const url = `https://de-pa.by/products/${brand.dp_urlSegment}/${category.dp_urlSegment}/${item.dp_model}`;
+              let name = item.dp_seoTitle;
+              const vendor = brand.dp_seoTitle;
+              const vendorCode = item.dp_seoUrlSegment;
+              const url = `https://de-pa.by/products/${brand.dp_seoUrlSegment}/${category.dp_seoUrlSegment}/${item.dp_seoUrlSegment}`;
               // const price = item.dp_cost;
               const numPrice = Number(ItemObject.getParam(item, 29));
               const numOnBox = Number(ItemObject.getParam(item, 1));
@@ -128,7 +128,7 @@ export default async function SitemapXml(
               let price = Number(numPrice).toFixed(2);
               if (numOnBox) {
                 price = Number(numPrice * numOnBox).toFixed(2);
-                name = `${item.dp_name} (за ${numOnBox} шт.)`;
+                name = `${item.dp_seoTitle} (за ${numOnBox} шт.)`;
               }
 
               const oldprice = '';

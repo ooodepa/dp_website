@@ -53,30 +53,13 @@ export default function BrandPage(props: IProps) {
 
   return (
     <AppWrapper>
-      <AppTitle title={dataCatagory.dp_name} />
+      <AppTitle title={dataCatagory.dp_seoTitle} />
       <AppDescription description={dataCatagory.dp_seoDescription} />
       <AppKeywords keywords={dataCatagory.dp_seoKeywords} />
       <AppHead />
       <Breadcrumbs />
       <AppContainer>
-        <h1>{dataCatagory.dp_name}</h1>
-        <p style={{ textAlign: 'center' }}>
-          На странице показана номенклатура категории{' '}
-          {`«${dataCatagory.dp_name}»`}. Вы можете выбрать номенклатуру ниже - и
-          вы увидете галерею картинок, характеристики товара. Желаемую
-          номенклатуру добавляйте в корзину. Вы можете отправить нам заявку
-          (корзину) желаемой номенклатуры - это не обязывает вас платить. Мы с
-          вами свяжемся и обсудим ваш выбор и способ доставки в вашу страну.
-        </p>
-        <p style={{ textAlign: 'center' }}>
-          Также, если вы зайдете с компьютера (большого экрана), то вы можете
-          указать желаемое количество номенклатуры в данной таблице{' '}
-          <Link
-            href={`/online-order/${brand}`}>{`"Номенклатура бренда ${brand}"`}</Link>{' '}
-          (тут есть, цена в разных валютах, наименование на разных языках,
-          количество в оптовой коробке, объем оптовой коробки, вес оптовой
-          коробки).
-        </p>
+        <h1>{dataCatagory.dp_seoTitle}</h1>
       </AppContainer>
       <ItemPosts
         brand={`${brand}`}
@@ -115,7 +98,7 @@ export async function getStaticProps(context: IServerSideProps) {
       };
     }
 
-    if (itemBrand.dp_urlSegment !== brand) {
+    if (itemBrand.dp_seoUrlSegment !== brand) {
       return {
         notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
       };
@@ -143,12 +126,15 @@ export async function getStaticProps(context: IServerSideProps) {
         dp_id: 0,
         dp_isHidden: false,
         dp_itemBrandId: 0,
-        dp_name: '',
-        dp_photoUrl: '',
+        dp_seoTitle: '',
         dp_seoDescription: '',
         dp_seoKeywords: '',
+        dp_seoUrlSegment: '',
+        dp_photos: '',
+        dp_photos360: '',
+        dp_photoUrl: '',
         dp_sortingIndex: 0,
-        dp_urlSegment: '',
+        dp_youtubeIds: '',
       },
     };
     return {
@@ -178,7 +164,7 @@ export async function getStaticPaths() {
     let brand = 'undefined';
     for (let i = 0; i < itemBrand.length; ++i) {
       if (itemBrand[i].dp_id === element.dp_itemBrandId) {
-        brand = itemBrand[i].dp_urlSegment;
+        brand = itemBrand[i].dp_seoUrlSegment;
         break;
       }
     }
@@ -186,7 +172,7 @@ export async function getStaticPaths() {
     if (brand !== 'undefined') {
       paths.push({
         params: {
-          category: element.dp_urlSegment,
+          category: element.dp_seoUrlSegment,
           brand: brand,
         },
       });

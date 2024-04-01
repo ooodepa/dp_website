@@ -12,7 +12,7 @@ interface IItemBasketButtons {
 
 export default function ItemBasketButtons(props: IItemBasketButtons) {
   const [count, setCount] = useState<number>(0);
-  const model = props.item.dp_model;
+  const model = props.item.dp_seoUrlSegment;
   const [ozonCode, setOzonCode] = useState('');
 
   useEffect(() => {

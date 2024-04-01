@@ -21,7 +21,7 @@ interface IProps {
 export default function Item(props: IProps) {
   return (
     <AppContainer>
-      <h1>{props.item.dp_name}</h1>
+      <h1>{props.item.dp_seoTitle}</h1>
       <ItemGalery item={props.item} />
       <ItemYouTubeVideos item={props.item} />
       <ItemBasketButtons item={props.item} />

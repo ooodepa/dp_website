@@ -60,7 +60,7 @@ export default function SendNoAuthOrder() {
         dp_phone: data.phone,
         dp_orderItems: items.map(object => ({
           dp_itemId: object.dp_id,
-          dp_count: BasketHelper.getCount(object.dp_model),
+          dp_count: BasketHelper.getCount(object.dp_seoUrlSegment),
         })),
       });
 

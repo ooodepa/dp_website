@@ -24,7 +24,7 @@ export default function ItemCategoryPosts(props: IProps) {
           return (
             <li key={element.dp_id}>
               <Link
-                href={`/products/${props.brand}/${element.dp_urlSegment}`}
+                href={`/products/${props.brand}/${element.dp_seoUrlSegment}`}
                 title="Просмотреть номенклатуру этой категории">
                 <div className={styles.post__image_block}>
                   {!element.dp_photoUrl ? (
@@ -45,7 +45,7 @@ export default function ItemCategoryPosts(props: IProps) {
                     />
                   )}
                 </div>
-                <div className={styles.post__title}>{element.dp_name}</div>
+                <div className={styles.post__title}>{element.dp_seoTitle}</div>
               </Link>
             </li>
           );
