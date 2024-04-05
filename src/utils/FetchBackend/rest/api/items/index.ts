@@ -87,7 +87,7 @@ export default class FetchItems {
     throw new HttpException(result.method, response);
   }
 
-  static async filterOneByModels(dto: FilterItemsByModelsDto) {
+  static async filterByModels(dto: FilterItemsByModelsDto) {
     const result = await FetchBackend(
       'none',
       'POST',

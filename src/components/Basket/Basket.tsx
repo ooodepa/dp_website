@@ -55,7 +55,7 @@ export default function Basket() {
       try {
         const models = BasketHelper.getModels();
 
-        const jItems = await FetchItems.filterOneByModels({ models });
+        const jItems = await FetchItems.filterByModels({ models });
         setItems(jItems);
 
         const jBasketArray = BasketHelper.getBasketArray(jItems);

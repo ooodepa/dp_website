@@ -47,7 +47,7 @@ export default function SendNoAuthOrder() {
         return;
       }
 
-      const items = await FetchItems.filterOneByModels({ models });
+      const items = await FetchItems.filterByModels({ models });
 
       if (items.length === 0) {
         alert('Вы не можете отправить заявку, так как корзина пуста');

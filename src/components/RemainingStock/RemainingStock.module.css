@@ -16,7 +16,7 @@
 .table_image_td {
   width: 60px;
   text-align: center;
-  min-height: 60px;
+  height: 60px;
 }
 
 .table_count_td {
