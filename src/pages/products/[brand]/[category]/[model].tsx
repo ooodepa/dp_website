@@ -209,6 +209,7 @@ export async function getStaticProps(context: any) {
         dp_photoUrl: '',
         dp_textCharacteristics: '',
         dp_vendorIds: '',
+        dp_ozonIds: '',
         dp_sorintIndex: 0,
         dp_youtubeIds: '',
         dp_width: 0,

@@ -53,65 +53,82 @@ function ViewMainData(props: IViewMainData) {
         <tbody>
           <tr>
             <td colSpan={2} style={{ textAlign: 'center' }}>
-              Данные номенклатуры:
+              1C
             </td>
           </tr>
           <tr>
-            <td>Наименование</td>
+            <td>1C Код</td>
+            <td>{props.item.dp_1cCode}</td>
+          </tr>
+          <tr>
+            <td>1C Наименование</td>
+            <td>{props.item.dp_1cDescription}</td>
+          </tr>
+          <tr>
+            <td colSpan={2} style={{ textAlign: 'center' }}>
+              SEO
+            </td>
+          </tr>
+          <tr>
+            <td>SEO заголовок</td>
             <td>{props.item.dp_seoTitle}</td>
           </tr>
           <tr>
-            <td>Бренд</td>
-            <td>
-              {props.itemBrand.dp_seoTitle}
-              <br />
-              <Link
-                href={`/products/${urlSegmentBrand}`}
-                title="Перейти на страницу с номенлатурой этого бренда">
-                ({urlSegmentBrand})
-              </Link>
+            <td>SEO описание</td>
+            <td style={{ whiteSpace: 'pre-line' }}>
+              {props.item.dp_seoDescription}
             </td>
           </tr>
           <tr>
-            <td>Категория</td>
-            <td>
-              {props.itemCategory.dp_seoTitle}
-              <br />
-              <Link
-                href={`/products/${urlSegmentBrand}/${urlSegmentCategory}`}
-                title="Перейти на страницу с номенлатурой этой категории">
-                ({urlSegmentCategory})
-              </Link>
+            <td>SEO ключевые слова</td>
+            <td style={{ whiteSpace: 'pre-line' }}>
+              {props.item.dp_seoKeywords}
             </td>
           </tr>
-          <tr>
-            <td>Модель</td>
-            <td>
-              <Link
-                href={`/products/${urlSegmentBrand}/${urlSegmentCategory}/${urlSegmentModel}`}
-                title="Перейти на страницу с номенлатурой (вы уже на ней)">
-                {urlSegmentModel}
-              </Link>
-            </td>
-          </tr>
-          {props.item.dp_1cCode ? (
-            <tr>
-              <td>Код 1С</td>
-              <td>{props.item.dp_1cCode}</td>
-            </tr>
+          {props.item.dp_length ||
+          props.item.dp_width ||
+          props.item.dp_height ||
+          props.item.dp_weight ? (
+            <>
+              <tr>
+                <td colSpan={2} style={{ textAlign: 'center' }}>
+                  Габариты
+                </td>
+              </tr>
+              <tr>
+                <td>Длина, мм</td>
+                <td>{props.item.dp_length || ''}</td>
+              </tr>
+              <tr>
+                <td>Ширина, мм</td>
+                <td>{props.item.dp_width || ''}</td>
+              </tr>
+              <tr>
+                <td>Высота, мм</td>
+                <td>{props.item.dp_height || ''}</td>
+              </tr>
+              <tr>
+                <td>Вес, г</td>
+                <td>{props.item.dp_weight || ''}</td>
+              </tr>
+            </>
           ) : null}
-          {props.item.dp_1cDescription ? (
-            <tr>
-              <td>Наименование 1С</td>
-              <td>{props.item.dp_1cDescription}</td>
-            </tr>
+          {props.item.dp_textCharacteristics ? (
+            <>
+              <tr>
+                <td colSpan={2} style={{ textAlign: 'center' }}>
+                  Характеристики
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={2} style={{ whiteSpace: 'pre-line' }}>
+                  {props.item.dp_textCharacteristics}
+                </td>
+              </tr>
+            </>
           ) : null}
         </tbody>
       </table>
-      <h3>Описание</h3>
-      <div className={styles.description_block}>
-        {props.item.dp_seoDescription}
-      </div>
     </div>
   );
 }
@@ -297,33 +314,35 @@ function ViewOtherCharacteristics(props: IViewOtherCharacteristics) {
 
   return (
     <div className={styles.wrapper}>
-      <h3>Дополнительные характеристики:</h3>
-      <table>
-        <tbody>
-          {GLOBAL_CHARACTERISTICS.map(globalCharacteristic => {
-            for (let i = 0; i < ITEM_CHARACTERISTICS.length; ++i) {
-              const itemCharacteristic = ITEM_CHARACTERISTICS[i];
-              if (
-                globalCharacteristic.dp_id ===
-                itemCharacteristic.dp_characteristicId
-              ) {
-                if (globalCharacteristic.dp_isHidden) return null;
+      <details>
+        <summary>Дополнительные характеристики</summary>
+        <table>
+          <tbody>
+            {GLOBAL_CHARACTERISTICS.map(globalCharacteristic => {
+              for (let i = 0; i < ITEM_CHARACTERISTICS.length; ++i) {
+                const itemCharacteristic = ITEM_CHARACTERISTICS[i];
+                if (
+                  globalCharacteristic.dp_id ===
+                  itemCharacteristic.dp_characteristicId
+                ) {
+                  if (globalCharacteristic.dp_isHidden) return null;
 
-                const name = globalCharacteristic.dp_name;
-                const value = itemCharacteristic.dp_value;
+                  const name = globalCharacteristic.dp_name;
+                  const value = itemCharacteristic.dp_value;
 
-                return (
-                  <tr key={itemCharacteristic.dp_characteristicId}>
-                    <td>{name}</td>
-                    <td>{value}</td>
-                  </tr>
-                );
+                  return (
+                    <tr key={itemCharacteristic.dp_characteristicId}>
+                      <td>{name}</td>
+                      <td>{value}</td>
+                    </tr>
+                  );
+                }
               }
-            }
-            return null;
-          })}
-        </tbody>
-      </table>
+              return null;
+            })}
+          </tbody>
+        </table>
+      </details>
     </div>
   );
 }

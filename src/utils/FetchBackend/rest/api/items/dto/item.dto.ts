@@ -24,6 +24,7 @@ export default interface ItemDto {
   dp_brand: string;
   dp_combinedName: string;
   dp_vendorIds: string;
+  dp_ozonIds: string;
   dp_barcodes: string;
   dp_length: number;
   dp_width: number;

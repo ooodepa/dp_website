@@ -94,12 +94,16 @@ export default function RemainingStock() {
               <td>Остатки</td>
               <td>Наименование</td>
               <td>Характеристики</td>
-              <td>Открыть на сайте</td>
+              <td>Открыть</td>
             </tr>
           </thead>
           <tbody>
             {stockArr.map(e => {
               const { count, info, model } = e;
+              const dp_photoUrl = info?.dp_photoUrl || '';
+              const dp_seoTitle = info?.dp_seoTitle || '';
+              const dp_textCharacteristics = info?.dp_textCharacteristics || '';
+              const dp_ozonIds = info?.dp_ozonIds || '';
 
               if (count === 0) {
                 return null;
@@ -110,20 +114,33 @@ export default function RemainingStock() {
                   <td className={styles.table_image_td}>
                     <img
                       className={styles.table_image}
-                      src={info?.dp_photoUrl || ''}
+                      src={dp_photoUrl}
                       alt="x"
                     />
                   </td>
                   <td>{model}</td>
                   <td className={styles.table_count_td}>{count}</td>
-                  <td>{info?.dp_seoTitle || ''}</td>
-                  <td>{info?.dp_textCharacteristics || ''}</td>
+                  <td>{dp_seoTitle}</td>
+                  <td>{dp_textCharacteristics}</td>
                   <td className={styles.table_openOnSite_td}>
                     {info ? (
                       <Link href={`/redirect/items/model/${model}`}>
-                        Открыть
+                        На сайте
                       </Link>
                     ) : null}
+                    {dp_ozonIds
+                      .split('\n')
+                      .filter(e => e.length > 0)
+                      .map(ozonId => {
+                        return (
+                          <a
+                            key={ozonId}
+                            href={`https://ozon.ru/products/${ozonId}`}
+                            custom-is-ozon="1">
+                            Ozon{ozonId}
+                          </a>
+                        );
+                      })}
                   </td>
                 </tr>
               );
