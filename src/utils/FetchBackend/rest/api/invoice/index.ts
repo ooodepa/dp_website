@@ -1,3 +1,4 @@
+import { DePaByStockDto } from '@/types/www.de-pa.by/api/v1/invoice/DePaByStock.dto';
 import FetchBackend from '@/utils/FetchBackend';
 import HttpException from '@/utils/FetchBackend/HttpException';
 
@@ -7,7 +8,7 @@ export default class FetchInvoice {
     const response = result.response;
 
     if (response.status === 200) {
-      const json: Record<string, number> = await response.json();
+      const json: DePaByStockDto = await response.json();
       return json;
     }
 

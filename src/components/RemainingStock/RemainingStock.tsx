@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootStoreDto } from '@/store';
 import styles from './RemainingStock.module.css';
 import AppWrapper from '../AppWrapper/AppWrapper';
 import AppContainer from '../AppContainer/AppContainer';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import FetchInvoice from '@/utils/FetchBackend/rest/api/invoice';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
+import { DePaByStockTypes } from '@/types/www.de-pa.by/api/v1/invoice/DePaByStockReducer.dto';
 
 interface DataStock {
   count: number;
@@ -19,13 +22,18 @@ interface StockArray {
 }
 
 export default function RemainingStock() {
-  const [stock, setStock] = useState<Record<string, DataStock>>({});
+  const dispatch = useDispatch();
+  const stockReduxData = useSelector(
+    (state: RootStoreDto) => state.DePaByStockReducer.stock,
+  );
   const [stockArr, setStockArr] = useState<StockArray[]>([]);
 
   useEffect(() => {
     (async function () {
       try {
+        dispatch({ type: DePaByStockTypes.FETCH_DEPABY_STOCK });
         const jStock = await FetchInvoice.getReportStock();
+
         const models = Object.keys(jStock);
 
         const jItems = await FetchItems.filterByModels({ models });
@@ -46,7 +54,6 @@ export default function RemainingStock() {
             info,
           };
         }
-        setStock(newStock);
 
         const arr: StockArray[] = Object.keys(newStock)
           .map(key => {
@@ -65,13 +72,41 @@ export default function RemainingStock() {
           });
 
         setStockArr(arr);
+        dispatch({ type: DePaByStockTypes.FETCH_DEPABY_STOCK_SUCCESS });
       } catch (exception) {
-        alert(exception);
+        dispatch({
+          type: DePaByStockTypes.FETCH_DEPABY_STOCK_ERROR,
+          payload: '' + exception,
+        });
       }
     })();
   }, []);
 
-  if (Object.keys(stock).length === 0) {
+  if (stockReduxData.loading) {
+    return (
+      <AppWrapper>
+        <AppContainer>
+          <h2>Остатки</h2>
+          <div style={{ textAlign: 'center' }}>
+            Получаем остатки... Загрузка номенклатуры...
+          </div>
+        </AppContainer>
+      </AppWrapper>
+    );
+  }
+
+  if (stockReduxData.error) {
+    return (
+      <AppWrapper>
+        <AppContainer>
+          <h2>Остатки</h2>
+          <div style={{ textAlign: 'center' }}>{stockReduxData.error}</div>
+        </AppContainer>
+      </AppWrapper>
+    );
+  }
+
+  if (stockArr.length === 0) {
     return (
       <AppWrapper>
         <AppContainer>

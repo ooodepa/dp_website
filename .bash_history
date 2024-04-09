@@ -14,3 +14,8 @@ yarn add sharp
 yarn add toastr
 yarn add -D @types/toastr
 yarn add number-to-words-ru
+yarn add redux
+yarn add react-redux
+yarn add @reduxjs/toolkit
+yarn add redux-thunk
+yarn add -D @types/react-redux
