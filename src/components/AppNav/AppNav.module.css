@@ -1,4 +1,4 @@
-@media (min-width: 1040px) {
+@media (min-width: 1101px) {
   .nav__menu_icon,
   .nav__menu_no_icon {
     display: none;
@@ -60,7 +60,7 @@
   }
 }
 
-@media (max-width: 1039px) {
+@media (max-width: 1101px) {
   .nav__wrapper_inner {
     display: flex;
     justify-content: space-between;

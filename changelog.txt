@@ -1,3 +1,8 @@
+3.2.0 (2024.04.22)
+- mobile page added for stock page (`/remaining-stock`)
+- ozon button added for stock page (`/remaining-stock`)
+- image count added for stock page (`/remaining-stock`)
+
 3.1.0 (2024.04.21)
 - markdown text added to nomenclatures page (`/nomenclatures/[urlSegment]`)
 - markdown text updated on pages (about page) (`/[page]`)
