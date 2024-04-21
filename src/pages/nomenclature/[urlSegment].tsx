@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Markdown from 'react-markdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import BasketHelper from '@/utils/BasketHelper';
@@ -119,7 +120,7 @@ export default function NomenclatureUrlSegment(props: IProps) {
   }
 
   if (item) {
-    const ozonIds = item.dp_ozonIds.split('\n');
+    const ozonIds = item.dp_ozonIds.split('\n').filter(e => e !== '');
     const photos = item.dp_photos.split('\n').filter(e => e !== '');
     const modelsSynonims = item.dp_vendorIds.split('\n').filter(e => e !== '');
     const barcodes = item.dp_barcodes.split('\n').filter(e => e !== '');
@@ -169,13 +170,14 @@ export default function NomenclatureUrlSegment(props: IProps) {
             )}
 
             <ul className={styles.ozon__ul}>
-              {ozonIds.length <= 1
+              {ozonIds.length === 0
                 ? null
                 : ozonIds.map(ozonId => {
                     return (
                       <li key={ozonId} className={styles.ozon__li}>
                         <a
                           href={`https://ozon.ru/products/${ozonId}`}
+                          target="_blank"
                           className={styles.ozon__a}>
                           Купить на OZON &quot;{ozonId}&quot;
                         </a>
@@ -204,6 +206,8 @@ export default function NomenclatureUrlSegment(props: IProps) {
                 <b>Бренд</b>: {brand}.
               </p>
             )}
+
+            <Markdown>{item.dp_markdown}</Markdown>
 
             <details>
               <summary style={{ color: 'lightgray' }}>Другие данные</summary>

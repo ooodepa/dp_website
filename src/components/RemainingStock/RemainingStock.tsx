@@ -34,19 +34,23 @@ export default function RemainingStock() {
         dispatch({ type: DePaByStockTypes.FETCH_DEPABY_STOCK });
         const jStock = await FetchInvoice.getReportStock();
 
-        const models = Object.keys(jStock);
+        const vendors = Object.keys(jStock);
 
-        const jItems = await FetchItems.filterByModels({ models });
+        const jItems = await FetchItems.filterByVendors({ vendors });
 
         let newStock: Record<string, DataStock> = {};
-        for (let i = 0; i < models.length; ++i) {
-          const model = models[i];
+        for (let i = 0; i < vendors.length; ++i) {
+          const model = vendors[i];
           const count = jStock[model];
           let info: GetItemDto | null = null;
           for (let j = 0; j < jItems.length; ++j) {
             const currentItem = jItems[j];
-            if (currentItem.dp_seoUrlSegment === model) {
-              info = currentItem;
+            const vendorIds = currentItem.dp_vendorIds.split('\n');
+            for (let k = 0; k < vendorIds.length; ++k) {
+              if (vendorIds[k] === model) {
+                info = currentItem;
+                break;
+              }
             }
           }
           newStock[model] = {

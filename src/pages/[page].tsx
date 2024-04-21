@@ -1,6 +1,6 @@
+import Markdown from 'react-markdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
@@ -61,9 +61,7 @@ export default function BrandPage(props: IProps) {
       )}
       <ArticlePosts article={dataArticle} />
       <BlogContainer>
-        {dataArticle?.dp_text.split(/\\n+/).map((element, index) => {
-          return <ReactMarkdown key={index}>{element}</ReactMarkdown>;
-        })}
+        <Markdown>{dataArticle?.dp_text || ''}</Markdown>
       </BlogContainer>
     </AppWrapper>
   );

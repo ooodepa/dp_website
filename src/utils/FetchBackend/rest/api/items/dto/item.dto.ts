@@ -17,6 +17,7 @@ export default interface ItemDto {
   dp_seoKeywords: string;
   dp_seoUrlSegment: string;
   dp_textCharacteristics: string;
+  dp_markdown: string;
   dp_photos: string;
   dp_photos360: string;
   dp_photoUrl: string;

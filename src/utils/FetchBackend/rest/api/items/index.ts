@@ -7,6 +7,7 @@ import FilterItemsByModelsDto from './dto/filter-models.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
 import GetItemPagination from './dto/get-item-pagination.dto';
 import GetItemBreadcrumbs from './dto/get-item-breadcrumbs.dto';
+import FindAllItemsByVendors from './dto/find-all-items-by-vendors.dto';
 
 interface QueryItemPagination {
   dp_1cParentId?: string;
@@ -141,6 +142,23 @@ export default class FetchItems {
       'none',
       'POST',
       'items/filter/models',
+      dto,
+    );
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetItemDto[] = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async filterByVendors(dto: FindAllItemsByVendors) {
+    const result = await FetchBackend(
+      'none',
+      'POST',
+      'items/filter/vendor',
       dto,
     );
     const response = result.response;

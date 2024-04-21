@@ -1,3 +1,9 @@
+3.1.0 (2024.04.21)
+- markdown text added to nomenclatures page (`/nomenclatures/[urlSegment]`)
+- markdown text updated on pages (about page) (`/[page]`)
+- fetch added that find all items by vendor ids
+- stock page updated (`/remaining-stock`)
+
 3.0.0 (2024.04.21)
 - nomenclature pages added (`/nomenclature/[urlSegment]`)
 - old product pages deleted (`/products/[brands]/[category]/[model]`)

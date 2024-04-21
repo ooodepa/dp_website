@@ -11,6 +11,7 @@ export const emptyGetItemDto: GetItemDto = {
   dp_seoKeywords: '',
   dp_seoUrlSegment: '',
   dp_textCharacteristics: '',
+  dp_markdown: '',
   dp_photos: '',
   dp_photos360: '',
   dp_photoUrl: '',

@@ -19,3 +19,4 @@ yarn add react-redux
 yarn add @reduxjs/toolkit
 yarn add redux-thunk
 yarn add -D @types/react-redux
+yarn add react-markdown
