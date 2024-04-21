@@ -1,0 +1,24 @@
+.breadcrumbs__wrapper {
+  background-color: #f0f0f0;
+  padding: 16px 0;
+  display: block;
+}
+
+.breadcrumbs__ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs__li {
+  list-style-type: none;
+}
+
+.breadcrumbs__li::before {
+  content: '/';
+}
+
+.breadcrumbs__a {
+  padding: 0 4px;
+}

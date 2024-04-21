@@ -5,6 +5,14 @@ import CreateItemDto from './dto/create-item.dto';
 import SearchItemDto from './dto/search-item.dto';
 import FilterItemsByModelsDto from './dto/filter-models.dto';
 import HttpException from '@/utils/FetchBackend/HttpException';
+import GetItemPagination from './dto/get-item-pagination.dto';
+import GetItemBreadcrumbs from './dto/get-item-breadcrumbs.dto';
+
+interface QueryItemPagination {
+  dp_1cParentId?: string;
+  page?: number;
+  limit?: number;
+}
 
 export default class FetchItems {
   static async get() {
@@ -13,6 +21,47 @@ export default class FetchItems {
 
     if (response.status === 200) {
       const json: GetItemDto[] = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async getFolders(dp_1cParentId: string) {
+    const result = await FetchBackend(
+      'none',
+      'GET',
+      `items?dp_1cParentId=${dp_1cParentId}`,
+    );
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetItemDto[] = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async getPagination(query: QueryItemPagination) {
+    let uri = `items/pagination?`;
+    if (query.limit) {
+      uri += `limit=${query.limit}&`;
+    }
+
+    if (query.page) {
+      uri += `page=${query.page}&`;
+    }
+
+    if (query.dp_1cParentId) {
+      uri += `dp_1cParentId=${query.dp_1cParentId}&`;
+    }
+
+    const result = await FetchBackend('none', 'GET', uri);
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetItemPagination = await response.json();
       return json;
     }
 
@@ -98,6 +147,22 @@ export default class FetchItems {
 
     if (response.status === 200) {
       const json: GetItemDto[] = await response.json();
+      return json;
+    }
+
+    throw new HttpException(result.method, response);
+  }
+
+  static async getBreadcrumbs(model: string) {
+    const result = await FetchBackend(
+      'none',
+      'GET',
+      `items/filter/breadcrumbs/model/${model}`,
+    );
+    const response = result.response;
+
+    if (response.status === 200) {
+      const json: GetItemBreadcrumbs[] = await response.json();
       return json;
     }
 

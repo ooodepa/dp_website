@@ -113,7 +113,7 @@ export default function Search() {
                   <div>{e.dp_seoTitle}</div>
                 </div>
                 <Link
-                  href={`/redirect/items/${e.dp_id}`}
+                  href={`/nomenclature/${e.dp_seoUrlSegment}`}
                   className={styles.search__button}>
                   <FontAwesomeIcon icon={faLink} />
                 </Link>

@@ -31,7 +31,7 @@ export default interface ItemDto {
   dp_height: number;
   dp_weight: number;
   dp_cost: number;
-  dp_sorintIndex: number;
+  dp_sortingIndex: number;
   dp_youtubeIds: string;
   dp_currancy: string;
   dp_isHidden: boolean;

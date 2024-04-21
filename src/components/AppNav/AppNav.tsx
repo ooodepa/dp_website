@@ -23,7 +23,7 @@ const menu: IMenuItem[] = [
   },
   {
     title: 'Продукты',
-    url: '/products',
+    url: '/nomenclature',
   },
   {
     title: 'Прайсы',

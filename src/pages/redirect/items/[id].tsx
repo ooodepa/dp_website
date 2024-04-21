@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
-import FetchItemBrand from '@/utils/FetchBackend/rest/api/item-brands';
-import FetchItemCategories from '@/utils/FetchBackend/rest/api/item-categories';
 
 interface IProps {
   params: {
@@ -10,22 +9,13 @@ interface IProps {
 }
 
 export default function RedirectByItemId(props: IProps) {
+  const route = useRouter();
+
   useEffect(() => {
     (async function () {
       const itemId = `${props.params.id}`;
       const jItem = await FetchItems.getById(itemId);
-
-      const categoryId = jItem.dp_itemCategoryId;
-      const jCategory = await FetchItemCategories.getById(categoryId);
-
-      const brandId = jCategory.dp_itemBrandId;
-      const jBrand = await FetchItemBrand.getById(brandId);
-
-      const model = jItem.dp_seoUrlSegment;
-      const category = jCategory.dp_seoUrlSegment;
-      const brand = jBrand.dp_seoUrlSegment;
-
-      window.location.replace(`/products/${brand}/${category}/${model}`);
+      route.replace(`/nomenclature/${jItem.dp_seoUrlSegment}`);
     })();
   }, [props.params.id]);
 

@@ -1,3 +1,11 @@
+3.0.0 (2024.04.21)
+- nomenclature pages added (`/nomenclature/[urlSegment]`)
+- old product pages deleted (`/products/[brands]/[category]/[model]`)
+- redirect basket updated to nomenclature page
+- search result redirect updated to nomenclature page
+- sitemap updated (nomenclature pages added, product page removed)
+- breadcrumbs added for nomenclature page
+
 2.0.0 (2024.04.09)
 - Redux, redux-thunc added
 - logic load stock updated

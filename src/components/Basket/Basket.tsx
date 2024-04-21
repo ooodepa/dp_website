@@ -339,7 +339,7 @@ export default function Basket() {
                       <tr key={dp_id}>
                         <td>
                           <Link
-                            href={`/redirect/items/${element.dp_id}`}
+                            href={`/nomenclature/${element.dp_model}`}
                             title={`Открыть страницу номенклатуры (${dp_model})`}>
                             Открыть
                           </Link>
