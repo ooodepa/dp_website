@@ -14,6 +14,26 @@
 
 .items__li {
   list-style: none;
+  position: relative;
+}
+
+.items__mini_icons {
+  display: flex;
+  height: 32px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  text-shadow: white 1px 1px 8px;
+}
+
+.items__mini_icon--ozon {
+  background: linear-gradient(to right, #fc0a5c, #005cfe);
+  color: white;
+  padding: 4px;
+  border-radius: 8px;
+  opacity: 0.8;
+  text-shadow: none;
 }
 
 .items__a {
@@ -69,6 +89,29 @@
 .items__img {
   max-width: 220px;
   max-height: 220px;
+}
+
+.items__img_circles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12px;
+}
+
+.items__img_circle {
+  width: 4px;
+  height: 4px;
+  background-color: var(--site-color);
+  display: block;
+  border-radius: 50%;
+  margin: 0 2px;
+}
+
+.items__urlSegment {
+  text-align: center;
+  color: lightgray;
+  font-weight: bold;
+  overflow: hidden;
 }
 
 .items__text {

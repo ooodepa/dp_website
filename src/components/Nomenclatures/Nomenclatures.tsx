@@ -20,9 +20,19 @@ export default function Nomenclatures(props: IProps) {
         .map(e => {
           const photos = e.dp_photos.split('\n');
           const mainPhoto = photos[0] || '';
+          const urlSegment = e.dp_seoUrlSegment || '';
+          const ozonIds = e.dp_ozonIds.split('\n').filter(e => e.length > 0);
 
           return (
             <li key={e.dp_id} className={styles.items__li}>
+              <div className={styles.items__mini_icons}>
+                {ozonIds.length > 0 ? (
+                  <span
+                    className={`${styles.items__mini_icon} ${styles['items__mini_icon--ozon']}`}>
+                    OZON
+                  </span>
+                ) : null}
+              </div>
               <Link
                 href={`/nomenclature/${e.dp_seoUrlSegment}`}
                 className={styles.items__a}>
@@ -49,6 +59,18 @@ export default function Nomenclatures(props: IProps) {
                     />
                   )}
                 </div>
+                <div className={styles.items__img_circles}>
+                  {photos.length > 1
+                    ? photos.map(e => {
+                        return (
+                          <span key={e} className={styles.items__img_circle} />
+                        );
+                      })
+                    : null}
+                </div>
+                {e.dp_1cIsFolder ? null : (
+                  <div className={styles.items__urlSegment}>{urlSegment}</div>
+                )}
                 <div className={styles.items__text}>{e.dp_seoTitle}</div>
               </Link>
             </li>
