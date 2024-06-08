@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Image from 'next/image';
 import styles from './Basket.module.css';
-import AppHead from '../AppHead/AppHead';
-import AppLink from '../AppLink/AppLink';
 import AppModal from '../AppModal/AppModal';
 import AppTitle from '../AppTitle/AppTitle';
 import BasketHelper from '@/utils/BasketHelper';
@@ -197,7 +195,6 @@ export default function Basket() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <h2>Корзина</h2>
       <AppContainer>

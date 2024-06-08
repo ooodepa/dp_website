@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import styles from './Orders.module.css';
-import AppHead from '@/components/AppHead/AppHead';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import DataController from '@/packages/DateController';
@@ -37,7 +36,6 @@ export default function Orders() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <AppContainer>
         <h2>{SEO_TITLE}</h2>

@@ -47,7 +47,7 @@ const menu: IMenuItem[] = [
   },
   {
     title: 'Остатки',
-    url: '/remaining-stock',
+    url: '/warehouses',
   },
   {
     title: 'Корзина',

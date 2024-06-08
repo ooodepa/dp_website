@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEventHandler, useEffect, useState, useId } from 'react';
 
-import AppHead from '../AppHead/AppHead';
 import AppTitle from '../AppTitle/AppTitle';
 import styles from './UserProfile.module.css';
 import AppKeywords from '../AppKeywords/AppKeywords';
@@ -124,7 +123,6 @@ export default function UserProfile() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <AppContainer>
         <h2>{SEO_TITLE}</h2>

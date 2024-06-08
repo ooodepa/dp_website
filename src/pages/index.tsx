@@ -1,7 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 
 import Search from '@/components/Search/Search';
-import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import FetchArticles from '@/utils/FetchBackend/rest/api/article';
@@ -18,7 +17,6 @@ export default function HomePage(props: IProps) {
     <AppWrapper>
       <AppTitle title="Главная" />
       <AppDescription description="Главная" />
-      <AppHead />
       <Search />
       <BlogContainer>
         {props.article?.dp_text.split(/\\n+/).map((element, index) => {

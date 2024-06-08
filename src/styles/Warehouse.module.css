@@ -1,0 +1,25 @@
+.list__ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.list__li {
+  list-style-type: none;
+  margin: 8px;
+}
+
+.list__a {
+  display: block;
+  width: 300px;
+  border: 1px solid var(--site-color);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.list__number {
+  color: lightgray;
+}

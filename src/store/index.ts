@@ -1,10 +1,10 @@
 import { thunk } from 'redux-thunk';
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './reducers';
-import { DePaByStockState } from '@/types/www.de-pa.by/api/v1/invoice/DePaByStockReducer.dto';
+import { InventoryState } from '@/store/reducers/inventory-reducer.dto';
 
 export interface RootStoreDto {
-  DePaByStockReducer: DePaByStockState;
+  InventoryReducer: InventoryState;
 }
 
 export const store = configureStore({

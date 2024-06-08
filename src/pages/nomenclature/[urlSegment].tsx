@@ -2,21 +2,23 @@ import Link from 'next/link';
 import Markdown from 'react-markdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import BasketHelper from '@/utils/BasketHelper';
 import styles from '@/styles/Nomenclature.module.css';
+import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
+import AppKeywords from '@/components/AppKeywords/AppKeywords';
+import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import Nomenclatures from '@/components/Nomenclatures/Nomenclatures';
+import AppDescription from '@/components/AppDescription/AppDescription';
 import { downloadFile } from '@/utils/DownloadOnBrowser/DownloadOnBrowser';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
-import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
-import HttpException from '@/utils/FetchBackend/HttpException';
 import { emptyGetItemDto } from '@/utils/FetchBackend/rest/api/items/dto/emptyGetItem';
-import AppTitle from '@/components/AppTitle/AppTitle';
-import AppDescription from '@/components/AppDescription/AppDescription';
-import AppKeywords from '@/components/AppKeywords/AppKeywords';
-import AppHead from '@/components/AppHead/AppHead';
+import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
 
 interface IProps {
   item: GetItemDto;
@@ -31,6 +33,45 @@ export default function NomenclatureUrlSegment(props: IProps) {
   const [isFolder, setIsFolder] = useState<boolean>(true);
   const [item, setItem] = useState<GetItemDto>(props.item);
   const [items, setItems] = useState<GetItemDto[]>(props.items);
+  const [selectedImage, setSelectedImage] = useState<string>('');
+
+  function leftImage() {
+    const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
+    let index = 0;
+    for (let i = 0; i < photos.length; ++i) {
+      if (selectedImage === photos[i]) {
+        index = i - 1;
+        break;
+      }
+    }
+
+    if (index < 0) {
+      setSelectedImage(photos[photos.length - 1]);
+      return;
+    }
+
+    setSelectedImage(photos[index]);
+    return;
+  }
+
+  function rightImage() {
+    const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
+    let index = 0;
+    for (let i = 0; i < photos.length; ++i) {
+      if (selectedImage === photos[i]) {
+        index = i + 1;
+        break;
+      }
+    }
+
+    if (index >= photos.length) {
+      setSelectedImage(photos[0]);
+      return;
+    }
+
+    setSelectedImage(photos[index]);
+    return;
+  }
 
   useEffect(() => {
     (async function () {
@@ -39,6 +80,9 @@ export default function NomenclatureUrlSegment(props: IProps) {
         if (model.length === 0) return;
         if (model === 'undefined') return;
         const item = await FetchItems.filterOneByModel(model);
+        setSelectedImage(
+          item.dp_photos.split('\n').filter(e => e.length > 0)[0] || '',
+        );
         setItem(item);
         setIsFolder(item.dp_1cIsFolder);
 
@@ -80,38 +124,78 @@ export default function NomenclatureUrlSegment(props: IProps) {
         <AppTitle title={item.dp_seoTitle} />
         <AppDescription description={item.dp_seoDescription} />
         <AppKeywords keywords={item.dp_seoKeywords} />
-        <AppHead />
         <NomenclatureBreadCrumbs model={item?.dp_seoUrlSegment || ''} />
         <AppContainer>
           <div className={styles.wrapper}>
             <h1>{item?.dp_seoTitle}</h1>
             <Nomenclatures items={items} />
-            <details>
-              <summary style={{ color: 'lightgray' }}>Другие данные</summary>
-              <p>
-                <b>ID</b>: {item?.dp_id}
-              </p>
-              <p>
-                <b>Сегмент ссылки</b>: &quot;{item?.dp_seoUrlSegment}&quot;
-              </p>
-              <p>
-                <b>Заголовок</b>: {item?.dp_seoTitle}
-              </p>
-              <p>
-                <b>Описание:</b>
-              </p>
-              {item?.dp_seoDescription.split('\n').map(p => {
-                return <p key={p}>{p}</p>;
-              })}
-              <p>
-                <b>Ключевые слова:</b>
-              </p>
-              {item?.dp_seoUrlSegment.split('\n').map(p => {
-                return <p key={p}>{p}</p>;
-              })}
-              <button onClick={EventDownloadFile}>
-                Скачать данные как JSON
-              </button>
+            <details className={styles.details}>
+              <summary>Для IT-отдела</summary>
+              <table className={styles.characteristics_table}>
+                <tbody>
+                  <tr>
+                    <td>ID</td>
+                    <td>{item.dp_id}</td>
+                  </tr>
+                  <tr>
+                    <td>Parent ID</td>
+                    <td>{item.dp_1cParentId}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO сегмент ссылки</td>
+                    <td>{item.dp_seoUrlSegment}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO заголовок</td>
+                    <td>{item.dp_seoTitle}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO описание</td>
+                    <td>{item.dp_seoDescription}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO ключевые слова</td>
+                    <td>{item.dp_seoKeywords}</td>
+                  </tr>
+                  <tr>
+                    <td>Номенклатура</td>
+                    <td>
+                      <CopyToClipboard
+                        text={JSON.stringify(item)}
+                        onCopy={() => alert('Скопирован JSON')}>
+                        <button>Скопировать сжатый JSON</button>
+                      </CopyToClipboard>
+                      <CopyToClipboard
+                        text={JSON.stringify(item, null, 2)}
+                        onCopy={() => alert('Скопирован JSON')}>
+                        <button>Скопировать JSON</button>
+                      </CopyToClipboard>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Список</td>
+                    <td>
+                      <button onClick={EventDownloadFile}>Скачать JSON</button>
+                      <CopyToClipboard
+                        text={JSON.stringify(
+                          {
+                            dp_seoTitle: item.dp_seoTitle,
+                            dp_urlSegment: item.dp_seoUrlSegment,
+                            dp_1cParentId: item.dp_1cParentId,
+                            dp_urlSegments: items
+                              .map(e => e.dp_seoUrlSegment)
+                              .join('\n'),
+                          },
+                          null,
+                          2,
+                        )}
+                        onCopy={() => alert('Скопирован JSON')}>
+                        <button>Скопировать JSON папки</button>
+                      </CopyToClipboard>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </details>
           </div>
         </AppContainer>
@@ -121,7 +205,7 @@ export default function NomenclatureUrlSegment(props: IProps) {
 
   if (item) {
     const ozonIds = item.dp_ozonIds.split('\n').filter(e => e !== '');
-    const photos = item.dp_photos.split('\n').filter(e => e !== '');
+    const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
     const modelsSynonims = item.dp_vendorIds.split('\n').filter(e => e !== '');
     const barcodes = item.dp_barcodes.split('\n').filter(e => e !== '');
     const x = item.dp_width;
@@ -135,23 +219,48 @@ export default function NomenclatureUrlSegment(props: IProps) {
         <AppTitle title={item.dp_seoTitle} />
         <AppDescription description={item.dp_seoDescription} />
         <AppKeywords keywords={item.dp_seoKeywords} />
-        <AppHead />
         <NomenclatureBreadCrumbs model={item.dp_seoUrlSegment} />
         <AppContainer>
           <div className={styles.wrapper}>
             <h2 custom-dp-id={item.dp_id}>{item.dp_seoTitle}</h2>
 
-            {photos.length === 0 ? null : (
-              <ul className={styles.photos__ul}>
+            <div className={styles.slider__wrapper}>
+              <div className={styles.slider__image_b}>
+                <img
+                  src={selectedImage}
+                  alt=""
+                  className={styles.slider__image}
+                />
+              </div>
+              <div className={styles.slider__arrow_left}>
+                <button
+                  className={styles.slider__arrow_icon}
+                  onClick={leftImage}>
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                </button>
+              </div>
+              <div className={styles.slider__arrow_right}>
+                <button
+                  className={styles.slider__arrow_icon}
+                  onClick={rightImage}>
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </button>
+              </div>
+              <div className={styles.slider__circles}>
                 {photos.map(e => {
                   return (
-                    <li key={e} className={styles.photos__li}>
-                      <img src={e} alt="x" className={styles.photos__img} />
-                    </li>
+                    <span
+                      key={e}
+                      className={`${styles.slider__circle} ${
+                        e === selectedImage
+                          ? styles['slider__circle--selected']
+                          : ''
+                      }`}
+                    />
                   );
                 })}
-              </ul>
-            )}
+              </div>
+            </div>
 
             {item.dp_seoUrlSegment in basket ? (
               <div className={styles.basket__wrapper}>
@@ -186,52 +295,96 @@ export default function NomenclatureUrlSegment(props: IProps) {
                   })}
             </ul>
 
-            {modelsSynonims.length === 0 ? null : (
-              <p>
-                <b>Список синонимов артикула</b>: {modelsSynonims.join('; ')}.
-              </p>
-            )}
-            {barcodes.length === 0 ? null : (
-              <p>
-                <b>Штрихкоды</b>: {barcodes.join(', ')}.
-              </p>
-            )}
-            {x === 0 && y === 0 && z === 0 ? null : (
-              <p>
-                <b>Габариты (1 шт)</b>: {x} x {y} x {z} мм, {m} г
-              </p>
-            )}
-            {brand.length === 0 ? null : (
-              <p>
-                <b>Бренд</b>: {brand}.
-              </p>
-            )}
-
             <Markdown>{item.dp_markdown}</Markdown>
 
-            <details>
-              <summary style={{ color: 'lightgray' }}>Другие данные</summary>
-              <p>
-                <b>ID</b>: {item.dp_id}
-              </p>
-              <p>
-                <b>Сегмент ссылки</b>: &quot;{item.dp_seoUrlSegment}&quot;
-              </p>
-              <p>
-                <b>Заголовок</b>: {item.dp_seoTitle}
-              </p>
-              <p>
-                <b>Описание:</b>
-              </p>
-              {item.dp_seoDescription.split('\n').map(p => {
-                return <p key={p}>{p}</p>;
-              })}
-              <p>
-                <b>Ключевые слова:</b>
-              </p>
-              {item.dp_seoUrlSegment.split('\n').map(p => {
-                return <p key={p}>{p}</p>;
-              })}
+            <table className={styles.characteristics_table}>
+              <tbody>
+                {brand.length === 0 ? null : (
+                  <tr>
+                    <td>Бренд</td>
+                    <td>{brand}</td>
+                  </tr>
+                )}
+                {modelsSynonims.length === 0 ? null : (
+                  <tr>
+                    <td>Артикул</td>
+                    <td>
+                      <ul>
+                        {modelsSynonims.map(e => {
+                          return <li key={e}>{e}</li>;
+                        })}
+                      </ul>
+                    </td>
+                  </tr>
+                )}
+                {barcodes.length === 0 ? null : (
+                  <tr>
+                    <td>Штрихкод</td>
+                    <td>
+                      <ul>
+                        {barcodes.map(e => {
+                          return <li key={e}>{e}</li>;
+                        })}
+                      </ul>
+                    </td>
+                  </tr>
+                )}
+                {x === 0 && y === 0 && z === 0 ? null : (
+                  <tr>
+                    <td>Габариты (1 шт): </td>
+                    <td>
+                      {x} x {y} x {z} мм, {m} г
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            <details className={styles.details}>
+              <summary>Для IT-отдела</summary>
+              <table className={styles.characteristics_table}>
+                <tbody>
+                  <tr>
+                    <td>ID</td>
+                    <td>{item.dp_id}</td>
+                  </tr>
+                  <tr>
+                    <td>Parent ID</td>
+                    <td>{item.dp_1cParentId}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO сегмент ссылки</td>
+                    <td>{item.dp_seoUrlSegment}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO заголовок</td>
+                    <td>{item.dp_seoTitle}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO описание</td>
+                    <td>{item.dp_seoDescription}</td>
+                  </tr>
+                  <tr>
+                    <td>SEO ключевые слова</td>
+                    <td>{item.dp_seoKeywords}</td>
+                  </tr>
+                  <tr>
+                    <td>Номенклатура</td>
+                    <td>
+                      <CopyToClipboard
+                        text={JSON.stringify(item)}
+                        onCopy={() => alert('Скопирован JSON')}>
+                        <button>Скопировать сжатый JSON</button>
+                      </CopyToClipboard>
+                      <CopyToClipboard
+                        text={JSON.stringify(item, null, 2)}
+                        onCopy={() => alert('Скопирован JSON')}>
+                        <button>Скопировать JSON</button>
+                      </CopyToClipboard>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </details>
           </div>
         </AppContainer>
@@ -262,7 +415,9 @@ export async function getStaticProps(context: IServerSideProps) {
 
   try {
     const item = await FetchItems.filterOneByModel(urlSegment);
-    const items = await FetchItems.getFolders(item.dp_id);
+    const items = (await FetchItems.getFolders(item.dp_id)).sort(
+      (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
+    );
 
     if (item.dp_isHidden) {
       return {

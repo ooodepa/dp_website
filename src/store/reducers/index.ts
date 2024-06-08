@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import { DePaByStockReducer } from './DePaByStockReducer';
+import { InventoryReducer } from './inventory-reducer';
 
 export const rootReducer = combineReducers({
-  DePaByStockReducer,
+  InventoryReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

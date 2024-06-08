@@ -10,7 +10,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import styles from './SignUp.module.css';
-import AppHead from '../AppHead/AppHead';
 import AppTitle from '../AppTitle/AppTitle';
 import AppModal from '../AppModal/AppModal';
 import AppWrapper from '../AppWrapper/AppWrapper';
@@ -279,7 +278,6 @@ export default function SignUp() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <AppContainer>
         <h2>
           Регистрация {step} / {maxStep}

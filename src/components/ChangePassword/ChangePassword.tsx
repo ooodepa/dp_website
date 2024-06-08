@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 
-import AppHead from '../AppHead/AppHead';
 import AppTitle from '../AppTitle/AppTitle';
 import styles from './ChangePassword.module.css';
 import AppWrapper from '../AppWrapper/AppWrapper';
@@ -73,7 +72,6 @@ export default function ChangePassword() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <AppContainer>
         <h2>Смена пароля</h2>

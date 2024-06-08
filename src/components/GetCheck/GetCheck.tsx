@@ -8,7 +8,6 @@ import {
 } from 'react';
 import { useRouter } from 'next/router';
 
-import AppHead from '../AppHead/AppHead';
 import styles from './GetCheck.module.css';
 import AppTitle from '../AppTitle/AppTitle';
 import AppKeywords from '../AppKeywords/AppKeywords';
@@ -90,7 +89,6 @@ export default function GetCheck() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <AppContainer>
         <h2>{SEO_TITLE}</h2>

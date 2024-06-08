@@ -20,3 +20,5 @@ yarn add @reduxjs/toolkit
 yarn add redux-thunk
 yarn add -D @types/react-redux
 yarn add react-markdown
+yarn add react-copy-to-clipboard
+yarn add -D @types/react-copy-to-clipboard

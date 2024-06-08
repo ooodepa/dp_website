@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 
-import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import AppButton from '@/components/AppButton/AppButton';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
@@ -26,7 +25,6 @@ export default function OrderPage() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <AppContainer>
         <h2>{SEO_TITLE}</h2>

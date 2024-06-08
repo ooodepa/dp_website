@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 
 import styles from './SignIn.module.css';
-import AppHead from '../AppHead/AppHead';
 import AppTitle from '../AppTitle/AppTitle';
 import AppKeywords from '../AppKeywords/AppKeywords';
 import AppModal from '@/components/AppModal/AppModal';
@@ -72,7 +71,6 @@ export default function SignIn() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <AppContainer>
         {modal}
         <h2>{SEO_TITLE}</h2>

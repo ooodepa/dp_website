@@ -2,7 +2,6 @@ import Markdown from 'react-markdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import AppHead from '@/components/AppHead/AppHead';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import YandexMap from '@/components/YandexMap/YandexMap';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
@@ -49,7 +48,6 @@ export default function BrandPage(props: IProps) {
       <AppTitle title={dataArticle.dp_name} />
       <AppDescription description={dataArticle.dp_seoDescription} />
       <AppKeywords keywords={dataArticle.dp_seoKeywords} />
-      <AppHead />
       <Breadcrumbs />
       {page !== 'contacts' ? null : <YandexMap />}
       <h1>{dataArticle.dp_name}</h1>

@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import AppHead from '../AppHead/AppHead';
 import styles from './Sessions.module.css';
 import AppTitle from '../AppTitle/AppTitle';
 import AppKeywords from '../AppKeywords/AppKeywords';
@@ -86,7 +85,6 @@ export default function Sessions() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <Breadcrumbs />
       <AppContainer>
         <h2>Это устройство</h2>

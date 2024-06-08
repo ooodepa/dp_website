@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 
-import AppHead from '../AppHead/AppHead';
 import AppTitle from '../AppTitle/AppTitle';
 import styles from './ForgetPassword.module.css';
 import AppWrapper from '../AppWrapper/AppWrapper';
@@ -59,7 +58,6 @@ export default function ForgetPassword() {
       <AppTitle title={SEO_TITLE} />
       <AppDescription description={SEO_DESCRIPTION} />
       <AppKeywords keywords={SEO_KEYWORDS} />
-      <AppHead />
       <AppContainer>
         <h2>Восстановление пароля</h2>
         <div className={styles.wrapper}>
