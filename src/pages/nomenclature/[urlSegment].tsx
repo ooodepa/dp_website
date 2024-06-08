@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Markdown from 'react-markdown';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +19,7 @@ import { downloadFile } from '@/utils/DownloadOnBrowser/DownloadOnBrowser';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import { emptyGetItemDto } from '@/utils/FetchBackend/rest/api/items/dto/emptyGetItem';
 import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
+import GetLibreBarcode128Text from '@/utils/GetLibreBarcode128Text';
 
 interface IProps {
   item: GetItemDto;
@@ -339,6 +340,35 @@ export default function NomenclatureUrlSegment(props: IProps) {
                 )}
               </tbody>
             </table>
+
+            {barcodes.length > 0 ? (
+              <>
+                <h2>Libre Barcode EAN13 Text</h2>
+                <ul className={styles.barcodes__ul}>
+                  {barcodes.map(e => {
+                    return (
+                      <li
+                        key={e}
+                        className={`${styles.barcodes__li} ${styles['barcodes__li--Libre-Barcode-EAN13-Text']}`}>
+                        {e}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <h2>Libre Barcode 128 Text</h2>
+                <ul className={styles.barcodes__ul}>
+                  {barcodes.map(e => {
+                    return (
+                      <li
+                        key={e}
+                        className={`${styles.barcodes__li} ${styles['barcodes__li--Libre-Barcode-128-Text']}`}>
+                        {GetLibreBarcode128Text(e)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            ) : null}
 
             <details className={styles.details}>
               <summary>Для IT-отдела</summary>

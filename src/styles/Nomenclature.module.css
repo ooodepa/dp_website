@@ -360,3 +360,31 @@
 .details[open] summary {
   color: var(--site-color);
 }
+
+.barcodes__ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.barcodes__li {
+  max-width: 200px;
+  border: 1px solid var(--site-color);
+  padding: 16px;
+  margin: 8px;
+  list-style-type: none;
+  border-radius: 8px;
+}
+
+.barcodes__li--Libre-Barcode-128-Text {
+  font-family: 'Libre Barcode 128 Text', system-ui;
+  font-size: 48px;
+}
+
+.barcodes__li--Libre-Barcode-EAN13-Text {
+  font-family: 'Libre Barcode EAN13 Text';
+  font-size: 100px;
+}
