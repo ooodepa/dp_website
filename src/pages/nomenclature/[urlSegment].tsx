@@ -20,6 +20,7 @@ import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import { emptyGetItemDto } from '@/utils/FetchBackend/rest/api/items/dto/emptyGetItem';
 import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
 import GetLibreBarcode128Text from '@/utils/GetLibreBarcode128Text';
+import YouTubeIframe from '@/components/YouTubeIframe/YouTubeIframe';
 
 interface IProps {
   item: GetItemDto;
@@ -209,11 +210,55 @@ export default function NomenclatureUrlSegment(props: IProps) {
     const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
     const modelsSynonims = item.dp_vendorIds.split('\n').filter(e => e !== '');
     const barcodes = item.dp_barcodes.split('\n').filter(e => e !== '');
+    const youtubeIds = item.dp_youtubeIds.split('\n').filter(e => e !== '');
     const x = item.dp_width;
     const y = item.dp_length;
     const z = item.dp_height;
     const m = item.dp_weight;
     const brand = item.dp_brand;
+
+    let md = '';
+
+    if (item.dp_brand) {
+      const arr = item.dp_brand.split('\n');
+      md += `Бренд:\n- ${arr.join('\n- ')}\n\n`;
+    }
+
+    if (item.dp_vendorIds) {
+      const arr = item.dp_vendorIds.split('\n');
+      md += `Артикул:\n- ${arr.join('\n- ')}\n\n`;
+    }
+
+    if (item.dp_barcodes) {
+      const arr = item.dp_barcodes.split('\n');
+      md += `Штрихкод:\n- ${arr.join('\n- ')}\n\n`;
+    }
+
+    if (item.dp_ozonIds) {
+      const arr = item.dp_ozonIds.split('\n');
+      md += `Артикул OZON:\n`;
+      arr.forEach(ozonId => {
+        md += `- [${ozonId}](https://ozon.ru/products/${ozonId})\n`;
+      });
+      md += '\n';
+    }
+
+    if (item.dp_youtubeIds) {
+      const arr = item.dp_youtubeIds.split('\n');
+      md += `YouTube:\n`;
+      arr.forEach(youtubeId => {
+        md += `- [${youtubeId}](https://youtu.be/${youtubeId})\n`;
+      });
+      md += '\n';
+    }
+
+    if (x !== 0 && y !== 0 && z !== 0 && m !== 0) {
+      md += `Габариты и вес (1 шт): ${x} x ${y} x ${z} | ${m} г.\n\n`;
+    } else if (x !== 0 && y !== 0 && z !== 0) {
+      md += `Габариты (1 шт): ${x} x ${y} x ${z}\n\n`;
+    } else if (m !== 0) {
+      md += `Вес (1 шт): ${m} г.\n\n`;
+    }
 
     return (
       <AppWrapper>
@@ -296,54 +341,34 @@ export default function NomenclatureUrlSegment(props: IProps) {
                   })}
             </ul>
 
+            {youtubeIds.length === 0 ? null : (
+              <>
+                <h2>YouTube видео</h2>
+                <ul className={styles.youtube__ul}>
+                  {youtubeIds.map(youtubeId => {
+                    return (
+                      <li key={youtubeId} className={styles.youtube__li}>
+                        <YouTubeIframe id={youtubeId} />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+
             <Markdown>{item.dp_markdown}</Markdown>
 
-            <table className={styles.characteristics_table}>
-              <tbody>
-                {brand.length === 0 ? null : (
-                  <tr>
-                    <td>Бренд</td>
-                    <td>{brand}</td>
-                  </tr>
-                )}
-                {modelsSynonims.length === 0 ? null : (
-                  <tr>
-                    <td>Артикул</td>
-                    <td>
-                      <ul>
-                        {modelsSynonims.map(e => {
-                          return <li key={e}>{e}</li>;
-                        })}
-                      </ul>
-                    </td>
-                  </tr>
-                )}
-                {barcodes.length === 0 ? null : (
-                  <tr>
-                    <td>Штрихкод</td>
-                    <td>
-                      <ul>
-                        {barcodes.map(e => {
-                          return <li key={e}>{e}</li>;
-                        })}
-                      </ul>
-                    </td>
-                  </tr>
-                )}
-                {x === 0 && y === 0 && z === 0 ? null : (
-                  <tr>
-                    <td>Габариты (1 шт): </td>
-                    <td>
-                      {x} x {y} x {z} мм, {m} г
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            {md.length > 0 ? (
+              <>
+                <h2>Другие данные</h2>
+                <Markdown>{md}</Markdown>
+              </>
+            ) : null}
 
             {barcodes.length > 0 ? (
               <>
-                <h2>Libre Barcode EAN13 Text</h2>
+                <h2>Штрихкоды</h2>
+                <h3>Libre Barcode EAN13 Text</h3>
                 <ul className={styles.barcodes__ul}>
                   {barcodes.map(e => {
                     return (
@@ -355,7 +380,7 @@ export default function NomenclatureUrlSegment(props: IProps) {
                     );
                   })}
                 </ul>
-                <h2>Libre Barcode 128 Text</h2>
+                <h3>Libre Barcode 128 Text</h3>
                 <ul className={styles.barcodes__ul}>
                   {barcodes.map(e => {
                     return (

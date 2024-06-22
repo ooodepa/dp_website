@@ -20,7 +20,6 @@ export default function Nomenclatures(props: IProps) {
         .map(e => {
           const photos = e.dp_photos.split('\n');
           const mainPhoto = photos[0] || '';
-          const urlSegment = e.dp_seoUrlSegment || '';
           const ozonIds = e.dp_ozonIds.split('\n').filter(e => e.length > 0);
 
           return (
@@ -68,9 +67,6 @@ export default function Nomenclatures(props: IProps) {
                       })
                     : null}
                 </div>
-                {e.dp_1cIsFolder ? null : (
-                  <div className={styles.items__urlSegment}>{urlSegment}</div>
-                )}
                 <div className={styles.items__text}>{e.dp_seoTitle}</div>
               </Link>
             </li>

@@ -388,3 +388,30 @@
   font-family: 'Libre Barcode EAN13 Text';
   font-size: 100px;
 }
+
+.youtube__ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.youtube__li {
+  text-align: center;
+  width: calc(100% - 8px * 2 - 2px * 2);
+  list-style-type: none;
+  border: 2px solid var(--site-color);
+  border-radius: 8px;
+  margin: 8px 0;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.youtube__li iframe {
+  border: none;
+  height: 100%;
+  width: 100%;
+}
