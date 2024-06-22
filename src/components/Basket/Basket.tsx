@@ -167,7 +167,7 @@ export default function Basket() {
   function BasketButtons() {
     return basketArray.length === 0 ? (
       <div className={styles.center_block}>
-        <Link href="/products">Выбрать товары</Link>
+        <Link href="/nomenclature">Выбрать товары</Link>
       </div>
     ) : (
       <div className={styles.center_block}>
