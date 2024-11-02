@@ -46,8 +46,8 @@ const menu: IMenuItem[] = [
     url: '/contacts',
   },
   {
-    title: 'Остатки',
-    url: '/warehouses',
+    title: 'OZON',
+    url: '/ozon',
   },
   {
     title: 'Корзина',
