@@ -11,6 +11,7 @@ import {
   faFileZipper,
   faFileText,
 } from '@fortawesome/free-solid-svg-icons';
+import { ReactNode, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './ArticlePosts.module.css';
@@ -19,6 +20,67 @@ import GetArticleDto from '@/utils/FetchBackend/rest/api/article/dto/get-article
 
 interface IProps {
   article: GetArticleDto;
+}
+
+interface IImageWithPlaceholder {
+  src: string;
+  alt?: string;
+  width: number;
+  height: number;
+  css_width?: string;
+  css_height?: string;
+  textAlign?: 'center' | 'end' | 'start';
+  maxWidth?: string;
+  maxHeight?: string;
+  iconHtml?: ReactNode;
+}
+
+function ImageWithPlaceholder(props: IImageWithPlaceholder) {
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const IMAGE = (
+    <Image
+      src={props.src}
+      alt={props.alt || 'x'}
+      onLoad={() => {
+        setLoading(false);
+        console.log('loading', loading);
+      }}
+      width={props.width}
+      height={props.height}
+      style={{
+        width: loading ? '0px' : props.css_width,
+        height: loading ? '0px' : props.css_height,
+        textAlign: props.textAlign,
+        maxWidth: props.maxWidth,
+        maxHeight: props.maxHeight,
+      }}
+    />
+  );
+
+  if (props.src == '') {
+    return props.iconHtml ? <>{props.iconHtml}</> : <div>x</div>;
+  }
+
+  if (loading && props.iconHtml) {
+    return (
+      <>
+        {props.iconHtml}
+        {IMAGE}
+      </>
+    );
+  }
+
+  if (loading) {
+    return (
+      <>
+        <div>IMG</div>
+        {IMAGE}
+      </>
+    );
+  }
+
+  return IMAGE;
 }
 
 export default function ArticlePosts(props: IProps) {
@@ -82,23 +144,20 @@ export default function ArticlePosts(props: IProps) {
             <li key={element.dp_id}>
               <Link href={element.dp_url} title="Просмотреть">
                 <div className={styles.post__image_block}>
-                  {element.dp_photoUrl === '' ? (
-                    <FontAwesomeIcon icon={getIcon(element.dp_url)} />
-                  ) : (
-                    <Image
-                      src={element.dp_photoUrl}
-                      alt="x"
-                      width={180}
-                      height={200}
-                      style={{
-                        width: 'auto',
-                        height: 'auto',
-                        textAlign: 'center',
-                        maxWidth: '180px',
-                        maxHeight: '200px',
-                      }}
-                    />
-                  )}
+                  <ImageWithPlaceholder
+                    src={element.dp_photoUrl}
+                    alt="x"
+                    iconHtml={
+                      <FontAwesomeIcon icon={getIcon(element.dp_url)} />
+                    }
+                    width={180}
+                    height={200}
+                    css_width="auto"
+                    css_height="auto"
+                    textAlign="center"
+                    maxWidth="180px"
+                    maxHeight="200px"
+                  />
                 </div>
                 <div className={styles.post__title}>{element.dp_name}</div>
               </Link>
