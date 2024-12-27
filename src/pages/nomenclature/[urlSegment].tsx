@@ -11,7 +11,6 @@ import AppTitle from '@/components/AppTitle/AppTitle';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
-import HttpException from '@/utils/FetchBackend/HttpException';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import Nomenclatures from '@/components/Nomenclatures/Nomenclatures';
 import AppDescription from '@/components/AppDescription/AppDescription';
@@ -465,33 +464,76 @@ interface IServerSideProps {
   };
 }
 
+let apiCache: { [key: string]: any } = {}; // Кэш в памяти
+
+// Функция для кэшированного запроса
+async function fetchWithCache(url: string, cacheDuration = 60): Promise<any> {
+  const now = Date.now();
+
+  // Если данные в кэше и не устарели
+  if (apiCache[url] && now - apiCache[url].timestamp < cacheDuration * 1000) {
+    return apiCache[url].data;
+  }
+
+  // Запрашиваем новые данные
+  const response = await fetch(url);
+
+  if (response.status !== 200) {
+    throw new Error(`HTTP status ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  // Сохраняем данные в кэш
+  apiCache[url] = {
+    data,
+    timestamp: now,
+  };
+
+  return data;
+}
+
 export async function getStaticProps(context: IServerSideProps) {
   const { urlSegment } = context.params;
 
   try {
-    const item = await FetchItems.filterOneByModel(urlSegment);
-    const items = (await FetchItems.getFolders(item.dp_id)).sort(
-      (a, b) => a.dp_sortingIndex - b.dp_sortingIndex,
-    );
+    const URL_ = 'https://de-pa.by/api/v1/items/pagination?limit=10000';
 
-    if (item.dp_isHidden) {
-      return {
-        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
-      };
+    // Используем кэшированный запрос
+    const NOMENCLATURE_ARRAY = (await fetchWithCache(URL_)).data;
+
+    let item = null;
+    for (let i = 0; i < NOMENCLATURE_ARRAY.length; ++i) {
+      const ITEM = NOMENCLATURE_ARRAY[i];
+      if (ITEM.dp_seoUrlSegment == urlSegment) {
+        item = ITEM;
+        break;
+      }
     }
 
-    const props: IProps = { item, items };
+    if (!item) {
+      throw new Error(`NOT FOUND ${urlSegment}`);
+    }
+
+    const ID = item.dp_id;
+
+    const CHILDRENS = NOMENCLATURE_ARRAY.filter(
+      (e: any) => e.dp_1cParentId == ID,
+    );
+
+    const props: IProps = {
+      item: item,
+      items: CHILDRENS,
+    };
+
     return {
       props,
       revalidate: 60, // Перегенерация страницы каждые 60 секунд
     };
   } catch (exception) {
-    if (exception instanceof HttpException && exception.HTTP_STATUS === 404) {
-      return {
-        notFound: true, // Установите флаг notFound на true, чтобы вернуть 404
-      };
-    }
-
+    console.error('< < < < < < < <');
+    console.error(exception);
+    console.error('> > > > > > > >');
     const props: IProps = {
       item: emptyGetItemDto,
       items: [],
@@ -504,23 +546,33 @@ export async function getStaticProps(context: IServerSideProps) {
 }
 
 export async function getStaticPaths() {
-  const nomenclature = (
-    await FetchItems.getPagination({
-      limit: 10000,
-      page: 1,
-    })
-  ).data.filter(obj => !obj.dp_isHidden);
+  try {
+    const URL_ = 'https://de-pa.by/api/v1/items/pagination?limit=10000';
 
-  let paths: IServerSideProps[] = nomenclature.map(e => {
-    return {
-      params: {
-        urlSegment: e.dp_seoUrlSegment,
+    // Используем кэшированный запрос
+    const NOMENCLATURE_ARRAY = (await fetchWithCache(URL_)).data;
+
+    const PARAMS = NOMENCLATURE_ARRAY.filter((e: any) => !e.dpdp_isHidden).map(
+      (e: any) => {
+        return {
+          params: {
+            urlSegment: e.dp_seoUrlSegment,
+          },
+        };
       },
-    };
-  });
+    );
 
-  return {
-    paths,
-    fallback: 'blocking', // Используйте обработку ошибок 404 и ISR
-  };
+    return {
+      paths: PARAMS,
+      fallback: false, // Используйте обработку ошибок 404 и ISR
+    };
+  } catch (exception) {
+    console.error('< < < < < < < <');
+    console.error(exception);
+    console.error('> > > > > > > >');
+    return {
+      paths: [],
+      fallback: true, // Используйте обработку ошибок 404 и ISR
+    };
+  }
 }
