@@ -74,7 +74,7 @@ export default function OzonSellerProductsPage() {
         const RESULT = await FetchBackend(
           'none',
           'GET',
-          `ozon-seller/products/info-products`,
+          `ozon-seller/info-products?limit=10000`,
         );
         const RESPONSE = RESULT.response;
 
@@ -82,7 +82,7 @@ export default function OzonSellerProductsPage() {
           throw new Error(`HTTP status ${RESPONSE.status}`);
         }
 
-        const JSON_: OzonSeller__InfoProduct[] = await RESPONSE.json();
+        const JSON_: OzonSeller__InfoProduct[] = (await RESPONSE.json()).data;
         const SORTED_ARRAY = JSON_.filter(e => !e.is_archived)
           .filter(e => !e.is_autoarchived)
           .sort((a, b) => {
