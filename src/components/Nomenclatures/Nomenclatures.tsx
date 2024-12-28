@@ -1,15 +1,77 @@
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Image from 'next/image';
 import {
   faFileContract,
   faFolderOpen,
   faImage,
 } from '@fortawesome/free-solid-svg-icons';
+import { ReactNode, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from '@/styles/Nomenclature.module.css';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 
 interface IProps {
   items: GetItemDto[];
+}
+
+interface IImageWithPlaceholder {
+  src: string;
+  alt?: string;
+  width: number;
+  height: number;
+  css_width?: string;
+  css_height?: string;
+  textAlign?: 'center' | 'end' | 'start';
+  maxWidth?: string;
+  maxHeight?: string;
+  iconHtml?: ReactNode;
+}
+
+function ImageWithPlaceholder(props: IImageWithPlaceholder) {
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const IMAGE = (
+    <Image
+      src={props.src}
+      alt={props.alt || 'x'}
+      onLoad={() => {
+        setLoading(false);
+      }}
+      width={props.width}
+      height={props.height}
+      style={{
+        width: loading ? '0px' : props.css_width,
+        height: loading ? '0px' : props.css_height,
+        textAlign: props.textAlign,
+        maxWidth: props.maxWidth,
+        maxHeight: props.maxHeight,
+      }}
+    />
+  );
+
+  if (props.src == '') {
+    return props.iconHtml ? <>{props.iconHtml}</> : <div>x</div>;
+  }
+
+  if (loading && props.iconHtml) {
+    return (
+      <>
+        {props.iconHtml}
+        {IMAGE}
+      </>
+    );
+  }
+
+  if (loading) {
+    return (
+      <>
+        <div>IMG</div>
+        {IMAGE}
+      </>
+    );
+  }
+
+  return IMAGE;
 }
 
 export default function Nomenclatures(props: IProps) {
@@ -46,17 +108,19 @@ export default function Nomenclatures(props: IProps) {
                   />
                 </div>
                 <div className={styles.items__img_b}>
-                  {mainPhoto.length === 0 ? (
-                    <FontAwesomeIcon
-                      icon={e.dp_1cIsFolder ? faFolderOpen : faImage}
-                    />
-                  ) : (
-                    <img
-                      src={mainPhoto}
-                      alt="x"
-                      className={styles.items__img}
-                    />
-                  )}
+                  <ImageWithPlaceholder
+                    src={mainPhoto}
+                    alt="x"
+                    width={100}
+                    height={100}
+                    css_height="auto"
+                    css_width="100%"
+                    iconHtml={
+                      <FontAwesomeIcon
+                        icon={e.dp_1cIsFolder ? faFolderOpen : faImage}
+                      />
+                    }
+                  />
                 </div>
                 <div className={styles.items__img_circles}>
                   {photos.length > 1

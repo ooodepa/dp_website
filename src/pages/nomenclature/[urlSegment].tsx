@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Markdown from 'react-markdown';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import BasketHelper from '@/utils/BasketHelper';
@@ -12,14 +11,13 @@ import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import AppContainer from '@/components/AppContainer/AppContainer';
+import GetLibreBarcode128Text from '@/utils/GetLibreBarcode128Text';
 import Nomenclatures from '@/components/Nomenclatures/Nomenclatures';
+import YouTubeIframe from '@/components/YouTubeIframe/YouTubeIframe';
 import AppDescription from '@/components/AppDescription/AppDescription';
-import { downloadFile } from '@/utils/DownloadOnBrowser/DownloadOnBrowser';
 import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 import { emptyGetItemDto } from '@/utils/FetchBackend/rest/api/items/dto/emptyGetItem';
 import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
-import GetLibreBarcode128Text from '@/utils/GetLibreBarcode128Text';
-import YouTubeIframe from '@/components/YouTubeIframe/YouTubeIframe';
 
 interface IProps {
   item: GetItemDto;
@@ -112,13 +110,6 @@ export default function NomenclatureUrlSegment(props: IProps) {
     setBasket(b);
   }
 
-  function EventDownloadFile() {
-    downloadFile(
-      `Номенклатура_${item?.dp_id}_${item?.dp_seoUrlSegment}.json`,
-      JSON.stringify(items, null, 2),
-    );
-  }
-
   if (isFolder) {
     return (
       <AppWrapper>
@@ -130,74 +121,6 @@ export default function NomenclatureUrlSegment(props: IProps) {
           <div className={styles.wrapper}>
             <h1>{item?.dp_seoTitle}</h1>
             <Nomenclatures items={items} />
-            <details className={styles.details}>
-              <summary>Для IT-отдела</summary>
-              <table className={styles.characteristics_table}>
-                <tbody>
-                  <tr>
-                    <td>ID</td>
-                    <td>{item.dp_id}</td>
-                  </tr>
-                  <tr>
-                    <td>Parent ID</td>
-                    <td>{item.dp_1cParentId}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO сегмент ссылки</td>
-                    <td>{item.dp_seoUrlSegment}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO заголовок</td>
-                    <td>{item.dp_seoTitle}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO описание</td>
-                    <td>{item.dp_seoDescription}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO ключевые слова</td>
-                    <td>{item.dp_seoKeywords}</td>
-                  </tr>
-                  <tr>
-                    <td>Номенклатура</td>
-                    <td>
-                      <CopyToClipboard
-                        text={JSON.stringify(item)}
-                        onCopy={() => alert('Скопирован JSON')}>
-                        <button>Скопировать сжатый JSON</button>
-                      </CopyToClipboard>
-                      <CopyToClipboard
-                        text={JSON.stringify(item, null, 2)}
-                        onCopy={() => alert('Скопирован JSON')}>
-                        <button>Скопировать JSON</button>
-                      </CopyToClipboard>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Список</td>
-                    <td>
-                      <button onClick={EventDownloadFile}>Скачать JSON</button>
-                      <CopyToClipboard
-                        text={JSON.stringify(
-                          {
-                            dp_seoTitle: item.dp_seoTitle,
-                            dp_urlSegment: item.dp_seoUrlSegment,
-                            dp_1cParentId: item.dp_1cParentId,
-                            dp_urlSegments: items
-                              .map(e => e.dp_seoUrlSegment)
-                              .join('\n'),
-                          },
-                          null,
-                          2,
-                        )}
-                        onCopy={() => alert('Скопирован JSON')}>
-                        <button>Скопировать JSON папки</button>
-                      </CopyToClipboard>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </details>
           </div>
         </AppContainer>
       </AppWrapper>
@@ -393,53 +316,6 @@ export default function NomenclatureUrlSegment(props: IProps) {
                 </ul>
               </>
             ) : null}
-
-            <details className={styles.details}>
-              <summary>Для IT-отдела</summary>
-              <table className={styles.characteristics_table}>
-                <tbody>
-                  <tr>
-                    <td>ID</td>
-                    <td>{item.dp_id}</td>
-                  </tr>
-                  <tr>
-                    <td>Parent ID</td>
-                    <td>{item.dp_1cParentId}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO сегмент ссылки</td>
-                    <td>{item.dp_seoUrlSegment}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO заголовок</td>
-                    <td>{item.dp_seoTitle}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO описание</td>
-                    <td>{item.dp_seoDescription}</td>
-                  </tr>
-                  <tr>
-                    <td>SEO ключевые слова</td>
-                    <td>{item.dp_seoKeywords}</td>
-                  </tr>
-                  <tr>
-                    <td>Номенклатура</td>
-                    <td>
-                      <CopyToClipboard
-                        text={JSON.stringify(item)}
-                        onCopy={() => alert('Скопирован JSON')}>
-                        <button>Скопировать сжатый JSON</button>
-                      </CopyToClipboard>
-                      <CopyToClipboard
-                        text={JSON.stringify(item, null, 2)}
-                        onCopy={() => alert('Скопирован JSON')}>
-                        <button>Скопировать JSON</button>
-                      </CopyToClipboard>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </details>
           </div>
         </AppContainer>
       </AppWrapper>

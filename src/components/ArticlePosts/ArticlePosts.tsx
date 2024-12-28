@@ -44,7 +44,6 @@ function ImageWithPlaceholder(props: IImageWithPlaceholder) {
       alt={props.alt || 'x'}
       onLoad={() => {
         setLoading(false);
-        console.log('loading', loading);
       }}
       width={props.width}
       height={props.height}
