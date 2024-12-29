@@ -9,15 +9,17 @@ import NomenclatureDto, {
 import styles from '@/styles/Nomenclature.module.css';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import OzonProductDto from '@/types/api/OzonProduct.dto';
+import fetchWithCache from '@/utils/fetch/fetchWithCache';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import GetLibreBarcode128Text from '@/utils/GetLibreBarcode128Text';
 import Nomenclatures from '@/components/Nomenclatures/Nomenclatures';
 import YouTubeIframe from '@/components/YouTubeIframe/YouTubeIframe';
-import AppDescription from '@/components/AppDescription/AppDescription';
-import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
 import CarouselPhotos from '@/components/CarouselPhotos/CarouselPhotos';
+import AppDescription from '@/components/AppDescription/AppDescription';
+import OzonSellerProductsPage from '@/components/OzonSellerProducts/OzonSellerProducts';
+import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
 
 interface IProps {
   item: NomenclatureDto_withOzonProducts;
@@ -85,25 +87,7 @@ export default function NomenclatureUrlSegment(props: IProps) {
             <h2 custom-dp-id={props.item.dp_id}>{props.item.dp_seoTitle}</h2>
 
             <CarouselPhotos photos={props.item.dp_photos.split('\n')} />
-
-            <ul className={styles.ozon__ul}>
-              {props.item.ozonProducts.length === 0
-                ? null
-                : props.item.ozonProducts.map(ozonProduct => {
-                    return (
-                      <li
-                        key={ozonProduct.offer_id}
-                        className={styles.ozon__li}>
-                        <a
-                          href={`https://ozon.ru/products/${ozonProduct.sku}`}
-                          target="_blank"
-                          className={styles.ozon__a}>
-                          Купить на OZON {ozonProduct.offer_id}
-                        </a>
-                      </li>
-                    );
-                  })}
-            </ul>
+            <OzonSellerProductsPage ozonProducts={props.item.ozonProducts} />
 
             {youtubeIds.length === 0 ? null : (
               <>
@@ -180,35 +164,6 @@ interface IServerSideProps {
   params: {
     urlSegment: string;
   };
-}
-
-let apiCache: { [key: string]: any } = {}; // Кэш в памяти
-
-// Функция для кэшированного запроса
-async function fetchWithCache(url: string, cacheDuration = 60): Promise<any> {
-  const now = Date.now();
-
-  // Если данные в кэше и не устарели
-  if (apiCache[url] && now - apiCache[url].timestamp < cacheDuration * 1000) {
-    return apiCache[url].data;
-  }
-
-  // Запрашиваем новые данные
-  const response = await fetch(url);
-
-  if (response.status !== 200) {
-    throw new Error(`HTTP status ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  // Сохраняем данные в кэш
-  apiCache[url] = {
-    data,
-    timestamp: now,
-  };
-
-  return data;
 }
 
 export async function getStaticProps(context: IServerSideProps) {

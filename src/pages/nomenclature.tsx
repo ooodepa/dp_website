@@ -5,6 +5,7 @@ import NomenclatureDto, {
 import styles from '@/styles/Nomenclature.module.css';
 import AppTitle from '@/components/AppTitle/AppTitle';
 import OzonProductDto from '@/types/api/OzonProduct.dto';
+import fetchWithCache from '@/utils/fetch/fetchWithCache';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import AppContainer from '@/components/AppContainer/AppContainer';
@@ -17,10 +18,6 @@ const dp_1cParentId = '0c56bfe0-33f4-42a2-85a5-3b14978cb728';
 interface IProps {
   item: NomenclatureDto_withOzonProducts;
   items: NomenclatureDto_withOzonProducts[];
-}
-
-interface IServerSideProps {
-  params: {};
 }
 
 export default function NomenclaturePage(props: IProps) {
@@ -40,36 +37,7 @@ export default function NomenclaturePage(props: IProps) {
   );
 }
 
-let apiCache: { [key: string]: any } = {}; // Кэш в памяти
-
-// Функция для кэшированного запроса
-async function fetchWithCache(url: string, cacheDuration = 60): Promise<any> {
-  const now = Date.now();
-
-  // Если данные в кэше и не устарели
-  if (apiCache[url] && now - apiCache[url].timestamp < cacheDuration * 1000) {
-    return apiCache[url].data;
-  }
-
-  // Запрашиваем новые данные
-  const response = await fetch(url);
-
-  if (response.status !== 200) {
-    throw new Error(`HTTP status ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  // Сохраняем данные в кэш
-  apiCache[url] = {
-    data,
-    timestamp: now,
-  };
-
-  return data;
-}
-
-export async function getStaticProps(context: IServerSideProps) {
+export async function getStaticProps() {
   try {
     const URL_ = 'https://de-pa.by/api/v1/items/pagination?limit=10000';
 
