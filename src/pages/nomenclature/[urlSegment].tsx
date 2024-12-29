@@ -395,7 +395,7 @@ export async function getStaticProps(context: IServerSideProps) {
 
     const CHILDRENS = NOMENCLATURE_ARRAY.filter(
       (e: any) => e.dp_1cParentId == ID,
-    );
+    ).sort((a: any, b: any) => a.dp_sortingIndex - b.dp_sortingIndex);
 
     const props: IProps = {
       item: item,
