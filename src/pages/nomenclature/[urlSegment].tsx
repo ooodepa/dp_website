@@ -1,172 +1,72 @@
+import React from 'react';
 import Link from 'next/link';
 import Markdown from 'react-markdown';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import BasketHelper from '@/utils/BasketHelper';
+
+import NomenclatureDto, {
+  emptyNomenclature_withOzonProducts,
+  NomenclatureDto_withOzonProducts,
+} from '@/types/api/Nomenclature.dto';
 import styles from '@/styles/Nomenclature.module.css';
 import AppTitle from '@/components/AppTitle/AppTitle';
+import OzonProductDto from '@/types/api/OzonProduct.dto';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
-import FetchItems from '@/utils/FetchBackend/rest/api/items';
 import AppKeywords from '@/components/AppKeywords/AppKeywords';
 import AppContainer from '@/components/AppContainer/AppContainer';
 import GetLibreBarcode128Text from '@/utils/GetLibreBarcode128Text';
 import Nomenclatures from '@/components/Nomenclatures/Nomenclatures';
 import YouTubeIframe from '@/components/YouTubeIframe/YouTubeIframe';
 import AppDescription from '@/components/AppDescription/AppDescription';
-import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
-import { emptyGetItemDto } from '@/utils/FetchBackend/rest/api/items/dto/emptyGetItem';
 import NomenclatureBreadCrumbs from '@/components/NomenclatureBreadCrumbs/NomenclatureBreadCrumbs';
+import CarouselPhotos from '@/components/CarouselPhotos/CarouselPhotos';
 
 interface IProps {
-  item: GetItemDto;
-  items: GetItemDto[];
+  item: NomenclatureDto_withOzonProducts;
+  items: NomenclatureDto_withOzonProducts[];
 }
 
 export default function NomenclatureUrlSegment(props: IProps) {
-  const [basket, setBasket] = useState<Record<string, number>>({});
-
-  const route = useRouter();
-  const { urlSegment } = route.query;
-  const [isFolder, setIsFolder] = useState<boolean>(true);
-  const [item, setItem] = useState<GetItemDto>(props.item);
-  const [items, setItems] = useState<GetItemDto[]>(props.items);
-  const [selectedImage, setSelectedImage] = useState<string>('');
-
-  function leftImage() {
-    const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
-    let index = 0;
-    for (let i = 0; i < photos.length; ++i) {
-      if (selectedImage === photos[i]) {
-        index = i - 1;
-        break;
-      }
-    }
-
-    if (index < 0) {
-      setSelectedImage(photos[photos.length - 1]);
-      return;
-    }
-
-    setSelectedImage(photos[index]);
-    return;
-  }
-
-  function rightImage() {
-    const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
-    let index = 0;
-    for (let i = 0; i < photos.length; ++i) {
-      if (selectedImage === photos[i]) {
-        index = i + 1;
-        break;
-      }
-    }
-
-    if (index >= photos.length) {
-      setSelectedImage(photos[0]);
-      return;
-    }
-
-    setSelectedImage(photos[index]);
-    return;
-  }
-
-  useEffect(() => {
-    (async function () {
-      try {
-        const model = '' + urlSegment;
-        if (model.length === 0) return;
-        if (model === 'undefined') return;
-        const item = await FetchItems.filterOneByModel(model);
-        setSelectedImage(
-          item.dp_photos.split('\n').filter(e => e.length > 0)[0] || '',
-        );
-        setItem(item);
-        setIsFolder(item.dp_1cIsFolder);
-
-        if (item.dp_1cIsFolder) {
-          const jItems = await FetchItems.getFolders(item.dp_id);
-          const arr = jItems
-            .sort((a, b) => a.dp_sortingIndex - b.dp_sortingIndex)
-            .filter(e => !e.dp_isHidden);
-
-          setItems(arr);
-        }
-      } catch (exception) {
-        alert(exception);
-      }
-    })();
-
-    try {
-      const b = BasketHelper.getBasket();
-      setBasket(b);
-    } catch (exception) {}
-  }, [urlSegment]);
-
-  function plusInBasket() {
-    BasketHelper.plus(item?.dp_seoUrlSegment || '');
-    const b = BasketHelper.getBasket();
-    setBasket(b);
-  }
-
-  if (isFolder) {
+  if (props.item.dp_1cIsFolder) {
     return (
       <AppWrapper>
-        <AppTitle title={item.dp_seoTitle} />
-        <AppDescription description={item.dp_seoDescription} />
-        <AppKeywords keywords={item.dp_seoKeywords} />
-        <NomenclatureBreadCrumbs model={item?.dp_seoUrlSegment || ''} />
+        <AppTitle title={props.item.dp_seoTitle} />
+        <AppDescription description={props.item.dp_seoDescription} />
+        <AppKeywords keywords={props.item.dp_seoKeywords} />
+        <NomenclatureBreadCrumbs model={props.item.dp_seoUrlSegment || ''} />
         <AppContainer>
           <div className={styles.wrapper}>
-            <h1>{item?.dp_seoTitle}</h1>
-            <Nomenclatures items={items} />
+            <h1>{props.item.dp_seoTitle}</h1>
+            <Nomenclatures items={props.items} />
           </div>
         </AppContainer>
       </AppWrapper>
     );
   }
 
-  if (item) {
-    const ozonIds = item.dp_ozonIds.split('\n').filter(e => e !== '');
-    const photos = item.dp_photos.split('\n').filter(e => e.length > 0);
-    const modelsSynonims = item.dp_vendorIds.split('\n').filter(e => e !== '');
-    const barcodes = item.dp_barcodes.split('\n').filter(e => e !== '');
-    const youtubeIds = item.dp_youtubeIds.split('\n').filter(e => e !== '');
-    const x = item.dp_width;
-    const y = item.dp_length;
-    const z = item.dp_height;
-    const m = item.dp_weight;
-    const brand = item.dp_brand;
+  if (props.item) {
+    const barcodes = props.item.dp_barcodes.split('\n').filter(e => e !== '');
+    const youtubeIds = props.item.dp_youtubeIds
+      .split('\n')
+      .filter(e => e !== '');
 
     let md = '';
 
-    if (item.dp_brand) {
-      const arr = item.dp_brand.split('\n');
+    if (props.item.dp_brand) {
+      const arr = props.item.dp_brand.split('\n');
       md += `Бренд:\n- ${arr.join('\n- ')}\n\n`;
     }
 
-    if (item.dp_vendorIds) {
-      const arr = item.dp_vendorIds.split('\n');
+    if (props.item.dp_vendorIds) {
+      const arr = props.item.dp_vendorIds.split('\n');
       md += `Артикул:\n- ${arr.join('\n- ')}\n\n`;
     }
 
-    if (item.dp_barcodes) {
-      const arr = item.dp_barcodes.split('\n');
+    if (props.item.dp_barcodes) {
+      const arr = props.item.dp_barcodes.split('\n');
       md += `Штрихкод:\n- ${arr.join('\n- ')}\n\n`;
     }
 
-    if (item.dp_ozonIds) {
-      const arr = item.dp_ozonIds.split('\n');
-      md += `Артикул OZON:\n`;
-      arr.forEach(ozonId => {
-        md += `- [${ozonId}](https://ozon.ru/products/${ozonId})\n`;
-      });
-      md += '\n';
-    }
-
-    if (item.dp_youtubeIds) {
-      const arr = item.dp_youtubeIds.split('\n');
+    if (props.item.dp_youtubeIds) {
+      const arr = props.item.dp_youtubeIds.split('\n');
       md += `YouTube:\n`;
       arr.forEach(youtubeId => {
         md += `- [${youtubeId}](https://youtu.be/${youtubeId})\n`;
@@ -174,89 +74,31 @@ export default function NomenclatureUrlSegment(props: IProps) {
       md += '\n';
     }
 
-    if (x !== 0 && y !== 0 && z !== 0 && m !== 0) {
-      md += `Габариты и вес (1 шт): ${x} x ${y} x ${z} | ${m} г.\n\n`;
-    } else if (x !== 0 && y !== 0 && z !== 0) {
-      md += `Габариты (1 шт): ${x} x ${y} x ${z}\n\n`;
-    } else if (m !== 0) {
-      md += `Вес (1 шт): ${m} г.\n\n`;
-    }
-
     return (
       <AppWrapper>
-        <AppTitle title={item.dp_seoTitle} />
-        <AppDescription description={item.dp_seoDescription} />
-        <AppKeywords keywords={item.dp_seoKeywords} />
-        <NomenclatureBreadCrumbs model={item.dp_seoUrlSegment} />
+        <AppTitle title={props.item.dp_seoTitle} />
+        <AppDescription description={props.item.dp_seoDescription} />
+        <AppKeywords keywords={props.item.dp_seoKeywords} />
+        <NomenclatureBreadCrumbs model={props.item.dp_seoUrlSegment} />
         <AppContainer>
           <div className={styles.wrapper}>
-            <h2 custom-dp-id={item.dp_id}>{item.dp_seoTitle}</h2>
+            <h2 custom-dp-id={props.item.dp_id}>{props.item.dp_seoTitle}</h2>
 
-            <div className={styles.slider__wrapper}>
-              <div className={styles.slider__image_b}>
-                <img
-                  src={selectedImage}
-                  alt=""
-                  className={styles.slider__image}
-                />
-              </div>
-              <div className={styles.slider__arrow_left}>
-                <button
-                  className={styles.slider__arrow_icon}
-                  onClick={leftImage}>
-                  <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
-              </div>
-              <div className={styles.slider__arrow_right}>
-                <button
-                  className={styles.slider__arrow_icon}
-                  onClick={rightImage}>
-                  <FontAwesomeIcon icon={faArrowRight} />
-                </button>
-              </div>
-              <div className={styles.slider__circles}>
-                {photos.map(e => {
-                  return (
-                    <span
-                      key={e}
-                      className={`${styles.slider__circle} ${
-                        e === selectedImage
-                          ? styles['slider__circle--selected']
-                          : ''
-                      }`}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-
-            {item.dp_seoUrlSegment in basket ? (
-              <div className={styles.basket__wrapper}>
-                <Link href="/basket" className={styles.basket__button}>
-                  Уже в корзине. Показать
-                </Link>
-              </div>
-            ) : (
-              <div className={styles.basket__wrapper}>
-                <button
-                  className={styles.basket__button}
-                  onClick={plusInBasket}>
-                  Добавить в корзину
-                </button>
-              </div>
-            )}
+            <CarouselPhotos photos={props.item.dp_photos.split('\n')} />
 
             <ul className={styles.ozon__ul}>
-              {ozonIds.length === 0
+              {props.item.ozonProducts.length === 0
                 ? null
-                : ozonIds.map(ozonId => {
+                : props.item.ozonProducts.map(ozonProduct => {
                     return (
-                      <li key={ozonId} className={styles.ozon__li}>
+                      <li
+                        key={ozonProduct.offer_id}
+                        className={styles.ozon__li}>
                         <a
-                          href={`https://ozon.ru/products/${ozonId}`}
+                          href={`https://ozon.ru/products/${ozonProduct.sku}`}
                           target="_blank"
                           className={styles.ozon__a}>
-                          Купить на OZON &quot;{ozonId}&quot;
+                          Купить на OZON {ozonProduct.offer_id}
                         </a>
                       </li>
                     );
@@ -278,7 +120,7 @@ export default function NomenclatureUrlSegment(props: IProps) {
               </>
             )}
 
-            <Markdown>{item.dp_markdown}</Markdown>
+            <Markdown>{props.item.dp_markdown}</Markdown>
 
             {md.length > 0 ? (
               <>
@@ -376,9 +218,10 @@ export async function getStaticProps(context: IServerSideProps) {
     const URL_ = 'https://de-pa.by/api/v1/items/pagination?limit=10000';
 
     // Используем кэшированный запрос
-    const NOMENCLATURE_ARRAY = (await fetchWithCache(URL_)).data;
+    const NOMENCLATURE_ARRAY: NomenclatureDto[] = (await fetchWithCache(URL_))
+      .data;
 
-    let item = null;
+    let item: NomenclatureDto | null = null;
     for (let i = 0; i < NOMENCLATURE_ARRAY.length; ++i) {
       const ITEM = NOMENCLATURE_ARRAY[i];
       if (ITEM.dp_seoUrlSegment == urlSegment) {
@@ -387,7 +230,7 @@ export async function getStaticProps(context: IServerSideProps) {
       }
     }
 
-    if (!item) {
+    if (item == null) {
       throw new Error(`NOT FOUND ${urlSegment}`);
     }
 
@@ -397,9 +240,42 @@ export async function getStaticProps(context: IServerSideProps) {
       (e: any) => e.dp_1cParentId == ID,
     ).sort((a: any, b: any) => a.dp_sortingIndex - b.dp_sortingIndex);
 
+    const URL_OZON_PRODUCTS =
+      'https://de-pa.by/api/v1/ozon-seller/info-products?limit=10000';
+    const OZON_PRODUCTS: OzonProductDto[] = (
+      await fetchWithCache(URL_OZON_PRODUCTS)
+    ).data;
+
+    const ITEMS_WITH_OZON_PRODUCTS: NomenclatureDto_withOzonProducts[] =
+      CHILDRENS.map(nomenclature_i => {
+        const ITEM_OZON_PRODUCTS: OzonProductDto[] = [];
+        OZON_PRODUCTS.forEach(ozonProduct_j => {
+          const MODEL_J = `${ozonProduct_j.offer_id}`.replace(/\(\d+шт\)/g, '');
+          if (nomenclature_i.dp_vendorIds.includes(MODEL_J)) {
+            ITEM_OZON_PRODUCTS.push(ozonProduct_j);
+          }
+        });
+        return {
+          ...nomenclature_i,
+          ozonProducts: ITEM_OZON_PRODUCTS,
+        };
+      });
+
+    const ITEM_OZON_PRODUCTS: OzonProductDto[] = [];
+    OZON_PRODUCTS.forEach(ozonProduct_j => {
+      const MODEL_J = `${ozonProduct_j.offer_id}`.replace(/\(\d+шт\)/g, '');
+      if (`${item?.dp_vendorIds}`.includes(MODEL_J)) {
+        ITEM_OZON_PRODUCTS.push(ozonProduct_j);
+      }
+    });
+    const ITEM_WITH_OZON_PRODUCTS: NomenclatureDto_withOzonProducts = {
+      ...item,
+      ozonProducts: ITEM_OZON_PRODUCTS,
+    };
+
     const props: IProps = {
-      item: item,
-      items: CHILDRENS,
+      item: ITEM_WITH_OZON_PRODUCTS,
+      items: ITEMS_WITH_OZON_PRODUCTS,
     };
 
     return {
@@ -411,7 +287,7 @@ export async function getStaticProps(context: IServerSideProps) {
     console.error(exception);
     console.error('> > > > > > > >');
     const props: IProps = {
-      item: emptyGetItemDto,
+      item: emptyNomenclature_withOzonProducts,
       items: [],
     };
     return {

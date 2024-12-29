@@ -7,12 +7,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { ReactNode, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from '@/styles/Nomenclature.module.css';
-import GetItemDto from '@/utils/FetchBackend/rest/api/items/dto/get-item.dto';
 
-interface IProps {
-  items: GetItemDto[];
-}
+import styles from '@/styles/Nomenclature.module.css';
+import { NomenclatureDto_withOzonProducts } from '@/types/api/Nomenclature.dto';
 
 interface IImageWithPlaceholder {
   src: string;
@@ -72,6 +69,10 @@ function ImageWithPlaceholder(props: IImageWithPlaceholder) {
   return IMAGE;
 }
 
+interface IProps {
+  items: NomenclatureDto_withOzonProducts[];
+}
+
 export default function Nomenclatures(props: IProps) {
   return (
     <ul className={styles.items__ul}>
@@ -80,12 +81,11 @@ export default function Nomenclatures(props: IProps) {
         .map(e => {
           const photos = e.dp_photos.split('\n');
           const mainPhoto = photos[0] || '';
-          const ozonIds = e.dp_ozonIds.split('\n').filter(e => e.length > 0);
 
           return (
             <li key={e.dp_id} className={styles.items__li}>
               <div className={styles.items__mini_icons}>
-                {ozonIds.length > 0 ? (
+                {e.ozonProducts.length > 0 ? (
                   <span
                     className={`${styles.items__mini_icon} ${styles['items__mini_icon--ozon']}`}>
                     OZON
@@ -113,8 +113,8 @@ export default function Nomenclatures(props: IProps) {
                     height={100}
                     css_height="auto"
                     css_width="auto"
-                    css_maxHeight='220px'
-                    css_maxWidth='220px'
+                    css_maxHeight="220px"
+                    css_maxWidth="220px"
                     iconHtml={
                       <FontAwesomeIcon
                         icon={e.dp_1cIsFolder ? faFolderOpen : faImage}
