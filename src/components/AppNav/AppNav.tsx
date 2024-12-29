@@ -49,14 +49,6 @@ const menu: IMenuItem[] = [
     title: 'OZON',
     url: '/ozon',
   },
-  {
-    title: 'Корзина',
-    url: '/basket',
-  },
-  {
-    title: 'Аккаунт',
-    url: '/user-profile',
-  },
 ];
 
 export default function AppNav() {
