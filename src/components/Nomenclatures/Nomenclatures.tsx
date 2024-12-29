@@ -19,12 +19,11 @@ interface IImageWithPlaceholder {
   alt?: string;
   width: number;
   height: number;
+  iconHtml?: ReactNode;
   css_width?: string;
   css_height?: string;
-  textAlign?: 'center' | 'end' | 'start';
-  maxWidth?: string;
-  maxHeight?: string;
-  iconHtml?: ReactNode;
+  css_maxWidth?: string;
+  css_maxHeight?: string;
 }
 
 function ImageWithPlaceholder(props: IImageWithPlaceholder) {
@@ -42,9 +41,8 @@ function ImageWithPlaceholder(props: IImageWithPlaceholder) {
       style={{
         width: loading ? '0px' : props.css_width,
         height: loading ? '0px' : props.css_height,
-        textAlign: props.textAlign,
-        maxWidth: props.maxWidth,
-        maxHeight: props.maxHeight,
+        maxWidth: props.css_maxWidth,
+        maxHeight: props.css_maxHeight,
       }}
     />
   );
@@ -114,7 +112,9 @@ export default function Nomenclatures(props: IProps) {
                     width={100}
                     height={100}
                     css_height="auto"
-                    css_width="100%"
+                    css_width="auto"
+                    css_maxHeight='220px'
+                    css_maxWidth='220px'
                     iconHtml={
                       <FontAwesomeIcon
                         icon={e.dp_1cIsFolder ? faFolderOpen : faImage}

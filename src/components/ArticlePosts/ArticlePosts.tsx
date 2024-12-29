@@ -27,12 +27,11 @@ interface IImageWithPlaceholder {
   alt?: string;
   width: number;
   height: number;
+  iconHtml?: ReactNode;
   css_width?: string;
   css_height?: string;
-  textAlign?: 'center' | 'end' | 'start';
-  maxWidth?: string;
-  maxHeight?: string;
-  iconHtml?: ReactNode;
+  css_maxWidth?: string;
+  css_maxHeight?: string;
 }
 
 function ImageWithPlaceholder(props: IImageWithPlaceholder) {
@@ -50,9 +49,8 @@ function ImageWithPlaceholder(props: IImageWithPlaceholder) {
       style={{
         width: loading ? '0px' : props.css_width,
         height: loading ? '0px' : props.css_height,
-        textAlign: props.textAlign,
-        maxWidth: props.maxWidth,
-        maxHeight: props.maxHeight,
+        maxWidth: props.css_maxWidth,
+        maxHeight: props.css_maxHeight,
       }}
     />
   );
@@ -153,9 +151,8 @@ export default function ArticlePosts(props: IProps) {
                     height={200}
                     css_width="auto"
                     css_height="auto"
-                    textAlign="center"
-                    maxWidth="180px"
-                    maxHeight="200px"
+                    css_maxWidth="180px"
+                    css_maxHeight="200px"
                   />
                 </div>
                 <div className={styles.post__title}>{element.dp_name}</div>
