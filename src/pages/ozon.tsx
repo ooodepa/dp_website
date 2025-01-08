@@ -16,7 +16,7 @@ export default function OzonPage(props: IProps) {
       <AppTitle title={'Продукция OZON'} />
       <AppDescription description={'Продукция OZON. ООО "ДЕ-ПА" на OZON'} />
       <AppKeywords keywords={'ООО "ДЕ-ПА" на OZON'} />
-      <OzonSellerProductsPage ozonProducts={props.ozonProducts}/>
+      <OzonSellerProductsPage ozonProducts={props.ozonProducts} />
     </AppWrapper>
   );
 }

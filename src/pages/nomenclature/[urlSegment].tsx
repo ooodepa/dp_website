@@ -206,7 +206,7 @@ export async function getStaticProps(context: IServerSideProps) {
         const ITEM_OZON_PRODUCTS: OzonProductDto[] = [];
         OZON_PRODUCTS.forEach(ozonProduct_j => {
           const MODEL_J = `${ozonProduct_j.offer_id}`.replace(/\(\d+шт\)/g, '');
-          if (nomenclature_i.dp_vendorIds.includes(MODEL_J)) {
+          if (`\n${nomenclature_i.dp_vendorIds}\n`.includes(`\n${MODEL_J}\n`)) {
             ITEM_OZON_PRODUCTS.push(ozonProduct_j);
           }
         });
@@ -219,7 +219,7 @@ export async function getStaticProps(context: IServerSideProps) {
     const ITEM_OZON_PRODUCTS: OzonProductDto[] = [];
     OZON_PRODUCTS.forEach(ozonProduct_j => {
       const MODEL_J = `${ozonProduct_j.offer_id}`.replace(/\(\d+шт\)/g, '');
-      if (`${item?.dp_vendorIds}`.includes(MODEL_J)) {
+      if (`\n${item?.dp_vendorIds}\n`.includes(`\n${MODEL_J}\n`)) {
         ITEM_OZON_PRODUCTS.push(ozonProduct_j);
       }
     });

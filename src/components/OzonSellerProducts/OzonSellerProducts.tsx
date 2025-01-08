@@ -11,6 +11,10 @@ interface IProps {
 }
 
 export default function OzonSellerProductsPage(props: IProps) {
+  if (props.ozonProducts.length == 0) {
+    return null;
+  }
+
   return (
     <AppContainer>
       <h2>Продукция на OZON</h2>
