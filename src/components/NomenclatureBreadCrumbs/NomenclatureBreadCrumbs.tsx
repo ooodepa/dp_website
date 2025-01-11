@@ -29,6 +29,11 @@ export default function NomenclatureBreadCrumbs(props: IProps) {
     <div className={styles.breadcrumbs__wrapper}>
       <AppContainer>
         <ul className={styles.breadcrumbs__ul}>
+          <li className={styles.breadcrumbs__li}>
+            <Link href={`/`} className={styles.breadcrumbs__a}>
+              home
+            </Link>
+          </li>
           {breadcrumbs.map((e, index) => {
             if (index === 0) {
               return (
