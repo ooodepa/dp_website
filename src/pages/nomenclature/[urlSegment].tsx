@@ -241,12 +241,15 @@ export async function getStaticProps(context: IServerSideProps) {
     console.error('< < < < < < < <');
     console.error(exception);
     console.error('> > > > > > > >');
+
     const props: IProps = {
       item: emptyNomenclature_withOzonProducts,
       items: [],
     };
+
     return {
       props,
+      notFound: true,
       revalidate: 60, // Перегенерация страницы каждые 60 секунд
     };
   }
@@ -257,29 +260,29 @@ export async function getStaticPaths() {
     const URL_ = 'https://de-pa.by/api/v1/items/pagination?limit=10000';
 
     // Используем кэшированный запрос
-    const NOMENCLATURE_ARRAY = (await fetchWithCache(URL_)).data;
+    const NOMENCLATURE_ARRAY: NomenclatureDto[] = (await fetchWithCache(URL_))
+      .data;
 
-    const PARAMS = NOMENCLATURE_ARRAY.filter((e: any) => !e.dpdp_isHidden).map(
-      (e: any) => {
-        return {
-          params: {
-            urlSegment: e.dp_seoUrlSegment,
-          },
-        };
-      },
-    );
+    const PARAMS = NOMENCLATURE_ARRAY.filter(e => !e.dp_isHidden).map(e => {
+      return {
+        params: {
+          urlSegment: e.dp_seoUrlSegment,
+        },
+      };
+    });
 
     return {
       paths: PARAMS,
-      fallback: false, // Используйте обработку ошибок 404 и ISR
+      fallback: 'blocking',
     };
   } catch (exception) {
     console.error('< < < < < < < <');
     console.error(exception);
     console.error('> > > > > > > >');
+
     return {
       paths: [],
-      fallback: true, // Используйте обработку ошибок 404 и ISR
+      fallback: 'blocking',
     };
   }
 }
